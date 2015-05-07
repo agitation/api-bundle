@@ -1,0 +1,60 @@
+services:
+
+    # ENDPOINTS
+
+    agit.api.endpoint:
+        class: Agit\ApiBundle\Service\EndpointService
+        arguments: [@agit.api.endpoint.loader, @service_container]
+
+    agit.api.endpoint.loader:
+        private: true
+        class: CacheLoader
+        factory_service:  agit.plugin.cache.loader.factory
+        factory_method:   create
+        arguments: [ agit.api.endpoint ]
+
+    # OBJECTS
+
+    agit.api.object:
+        class: Agit\ApiBundle\Service\ObjectService
+        arguments: [@agit.api.object.loader, @service_container]
+
+    agit.api.object.loader:
+        private: true
+        class: CacheLoader
+        factory_service:  agit.plugin.cache.loader.factory
+        factory_method:   create
+        arguments: [ agit.api.object ]
+
+    # FORMATTERS
+
+    agit.api.formatter:
+        class: Agit\ApiBundle\Service\FormatterService
+        arguments: [@agit.api.formatter.loader, @service_container]
+
+    agit.api.formatter.loader:
+        private: true
+        class: CacheLoader
+        factory_service:  agit.plugin.cache.loader.factory
+        factory_method:   create
+        arguments: [ agit.api.formatter ]
+
+    # CSRF PROTECTION
+
+    # token manager
+    agit.api.csrf:
+        class: Agit\ApiBundle\Service\CsrfTokenService
+        arguments: [@session]
+
+    # Twig extension for embedding the CSRF token into pages and providing the base URL
+    # (optional, no dependency on Twig, as long it's not instantiated)
+    agit.api.twig:
+        class: Agit\ApiBundle\Service\TwigExtension
+        tags:
+            - { name: twig.extension }
+        arguments:  [@agit.core.url, @agit.api.csrf]
+
+
+imports:
+    - { resource: services.pluggable.yml }
+    - { resource: services.plugin.yml }

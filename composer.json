@@ -1,0 +1,35 @@
+{
+    "name": "agitation/api",
+    "type": "symfony-bundle",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.9",
+        "symfony/symfony": "2.3.*",
+        "agitation/intl": "dev-master",
+        "agitation/core": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Agit\\ApiBundle\\": ""
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AGITsol GmbH",
+            "homepage": "http://www.agitsol.com/"
+        }
+    ],
+    "description": "API service for Agitation, provides security and type safety through annotated API endpoints and objects.",
+    "keywords": [
+        "agit",
+        "agitation",
+        "tixys",
+        "api",
+        "json",
+        "authentication",
+        "authorization",
+        "valdation",
+        "pluggable"
+    ]
+}
