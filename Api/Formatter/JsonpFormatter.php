@@ -20,7 +20,7 @@ class JsonpFormatter extends JsonFormatter
     protected function getHttpHeaders()
     {
         // extra check to prevent SOP circumvention
-        if (!$this->Endpoint->getMeta('Security')->crossOriginAllowed())
+        if (!$this->Endpoint->getMeta('Security')->get('allowCrossOrigin'))
             throw new IncompatibleFormatterException("This endpoint does not allow cross-origin requests.");
 
         return parent::getHttpHeaders();

@@ -17,7 +17,7 @@ use Agit\ApiBundle\Api\Meta\MetaContainer;
 use Agit\ApiBundle\Api\Object\AbstractObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Exception\BadRequestException;
-
+use Agit\ApiBundle\Exception\UnauthorizedException;
 
 /**
  * Generic Endpoint handler. To be inherited by an API version specific
@@ -112,7 +112,7 @@ abstract class AbstractEndpoint
     {
         try
         {
-            $this->getMeta('Security')->checkAuthorisation();
+            $this->checkAuthorisation();
             $this->getService('agit.api.csrf')->checkToken($this->getCsrfToken());
 
             if (!$this->Request)
@@ -201,6 +201,26 @@ abstract class AbstractEndpoint
         return $ResponseObject;
     }
 
+    private function checkAuthorisation()
+    {
+        $reqCapibilty = $this->getMeta('Security')->get('capability');
+
+        if (is_null($reqCapibilty))
+            throw new InternalErrorException("The endpoint call must specify the required capabilities.");
+
+        if ($reqCapibilty)
+        {
+            $User = $this->getCurrentUser();
+
+            if (!$User)
+                throw new UnauthorizedException($this->translate->t('You must be logged in to perform this operation.'));
+
+            if (!$User->hasCapability($reqCapibilty))
+                throw new UnauthorizedException($this->translate->t("You do not have sufficient permissions to perform this operation."));
+        }
+    }
+
+
     // some helpers
 
     protected function getService($serviceName)
@@ -213,23 +233,11 @@ abstract class AbstractEndpoint
         return $this->Container->getParameter($paramName);
     }
 
-    protected function retrieveEntity($name, $id)
-    {
-        try
-        {
-            $Entity = $this->getService('agit.entity')->retrieveEntity($name, $id);
-        }
-        catch(\Exception $e)
-        {
-            throw new ObjectNotFoundException($e->getMessage());
-        }
-
-        return $Entity;
-    }
-
     protected function getCurrentUser()
     {
-        return $this->Container->get('agit.user')->getCurrentUser();
+        return $this->Container->has('agit.user')
+            ? $this->Container->get('agit.user')->getCurrentUser()
+            : null;
     }
 
     protected function createObject($name, $data = null)

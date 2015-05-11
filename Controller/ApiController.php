@@ -44,7 +44,7 @@ class ApiController extends Controller
                     ->getFormatter($_format, $Endpoint, $Request)->getResponse();
             }
 
-            if ($Endpoint->getMeta('Security')->crossOriginAllowed())
+            if ($Endpoint->getMeta('Security')->get('allowCrossOrigin'))
                 $Response->headers->set('Access-Control-Allow-Origin', "*");
         }
         catch (\Exception $e)
@@ -63,11 +63,14 @@ class ApiController extends Controller
 
     private function checkHeaderAuth()
     {
-        $username = isset($_SERVER['HTTP_X_USER']) ? $_SERVER['HTTP_X_USER'] : '';
-        $password = isset($_SERVER['HTTP_X_PASSWORD']) ? $_SERVER['HTTP_X_PASSWORD'] : '';
+        if ($this->container->has('agit.user'))
+        {
+            $username = isset($_SERVER['HTTP_X_USER']) ? $_SERVER['HTTP_X_USER'] : '';
+            $password = isset($_SERVER['HTTP_X_PASSWORD']) ? $_SERVER['HTTP_X_PASSWORD'] : '';
 
-        if ($username && $password)
-            $this->container->get('agit.user')->authenticate($username, $password);
+            if ($username && $password)
+                $this->container->get('agit.user')->authenticate($username, $password);
+        }
     }
 
     private function setLocale()
