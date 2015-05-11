@@ -36,10 +36,6 @@ class ApiJsGeneratorCommand extends AbstractCommand
         if (!$this->flock(__FILE__)) return;
 
         $this->output = $output;
-        $this->output->write("Initializing … ");
-
-        $this->jsPath = realpath(__DIR__.'/../Resources/public/js/api');
-        $this->output->writeln('done.');
         $this->Filesystem = new Filesystem();
 
         $targetPath = $this->getContainer()->get('agit.core.filecollector')->resolve($input->getArgument('bundle'));
