@@ -8,6 +8,9 @@
         "agitation/intl": "dev-master",
         "agitation/core": "dev-master"
     },
+    "suggest": {
+        "agitation/user": "Required to check for user capabilities. Without it, all calls requiring a capability will fail."
+    },
     "autoload": {
         "psr-4": {
             "Agit\\ApiBundle\\": ""
