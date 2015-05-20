@@ -27,6 +27,11 @@ abstract class AbstractObject implements \JsonSerializable
     protected $Container;
 
     /**
+     * @var instance of translator.
+     */
+    protected $translate;
+
+    /**
      * @var MetaContainer instance for the object.
      */
     protected $ObjectMetaContainer;
