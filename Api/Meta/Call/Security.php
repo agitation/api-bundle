@@ -22,7 +22,7 @@ class Security extends AbstractMeta
     protected $capability;
 
     /**
-     * @var whether or not to allow cross-origin requests.
+     * @var whether or not to allow cross-origin requests without a CSRF token.
      */
     protected $allowCrossOrigin = false;
 }

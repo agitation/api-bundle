@@ -113,7 +113,9 @@ abstract class AbstractEndpoint
         try
         {
             $this->checkAuthorisation();
-            $this->getService('agit.api.csrf')->checkToken($this->getCsrfToken());
+
+            if (!$this->getMeta('Security')->get('allowCrossOrigin'))
+                $this->getService('agit.api.csrf')->checkToken($this->getCsrfToken());
 
             if (!$this->Request)
                 throw new InternalErrorException("The request object could not be created, as the actual request has not been passed to the endpoint.");
