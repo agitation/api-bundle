@@ -38,6 +38,6 @@ class ObjectType extends AbstractType
         static::$_ValidationService->validate('object', $value);
 
         if (!($value instanceof AbstractObject) || $value->getObjectName() !== $this->class)
-            throw new InvalidObjectValueException(sprintf("The value must be a '%s' object.", $fullName));
+            throw new InvalidObjectValueException(sprintf("The value must be a '%s' object.", $value->getObjectName()));
     }
 }
