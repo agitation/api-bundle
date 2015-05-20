@@ -40,7 +40,7 @@ class ArrayType extends AbstractType
                 $this->checkKey($k);
 
                 if ($this->elemtype === 'integer')
-                    static::$_ValidationService->validate('int', $val);
+                    static::$_ValidationService->validate('integer', $val);
                 elseif ($this->elemtype === 'string')
                     static::$_ValidationService->validate('string', $val);
                 elseif ($this->elemtype === 'float')
@@ -56,6 +56,6 @@ class ArrayType extends AbstractType
     protected function checkKey($arrayKey)
     {
         // numeric array: keys must be integer values
-        $this->getContainer()->get('agit.core.validate')->numeric($arrayKey);
+        static::$_ValidationService->validate('numeric', $arrayKey);
     }
 }

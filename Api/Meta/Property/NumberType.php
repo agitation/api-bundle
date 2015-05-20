@@ -37,8 +37,7 @@ class NumberType extends AbstractType
             if ($this->positive === true && (!$this->minValue || $this->minValue < 0))
                 $this->minValue = 0;
 
-            $func = $this->allowFloat === true ? 'float' : 'int';
-            static::$_ValidationService->validate($func, $value, $this->minValue, $this->maxValue);
+            static::$_ValidationService->validate($this->allowFloat === true ? 'float' : 'integer', $value, $this->minValue, $this->maxValue);
 
             if (is_array($this->allowedValues))
                 static::$_ValidationService->validate('selection', $value, $this->allowedValues);

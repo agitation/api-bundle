@@ -36,7 +36,7 @@ class EntityListType extends ObjectListType
                 static::$_ValidationService->validate('array', $value);
 
                 foreach ($value as $val)
-                    static::$_ValidationService->validate('int', $val, 1);
+                    static::$_ValidationService->validate('integer', $val, 1);
             }
             else
             {

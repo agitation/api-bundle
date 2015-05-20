@@ -28,7 +28,7 @@ class EntityType extends ObjectType
         if ($this->mustCheck())
         {
             if ($this->_direction === 'in')
-                static::$_ValidationService->validate('int', $value, 1);
+                static::$_ValidationService->validate('integer', $value, 1);
             else
                 parent::check($value);
         }
