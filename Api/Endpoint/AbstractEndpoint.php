@@ -244,6 +244,9 @@ abstract class AbstractEndpoint
 
     protected function createObject($name, $data = null)
     {
+        if (strpos($name, '/') === false)
+            $name = $this->getMeta('Call')->get('namespace') . "/$name";
+
         return $this->Container->get('agit.api.object')->createObject($name, $data);
     }
 
