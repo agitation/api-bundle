@@ -1,6 +1,6 @@
-AgitApiBundle:
+AgitApiBundle_call:
     pattern:  /api/{namespace}/{endpoint}.{call}.{_format}
-    defaults: { _controller : AgitApiBundle:Api:main, _format : json }
+    defaults: { _controller : AgitApiBundle:Api:call, _format : json }
     host: %agit.core.domain.backend%
     requirements:
         path: ".*"
