@@ -27,8 +27,8 @@ class ApiJsGeneratorCommand extends AbstractCommand
     {
         $this
             ->setName('agit:api:generate:js')
-            ->setDescription('Generate JS list of endpoints and objects.')
-            ->addArgument('bundle', InputArgument::REQUIRED, 'target bundle (e.g. FooBarBundle)');
+            ->setDescription('Generate JS lists of a bundle’s endpoints and objects.')
+            ->addArgument('bundle', InputArgument::REQUIRED, 'bundle for which the JS should be generated (e.g. FooBarBundle).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -110,7 +110,13 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
             foreach ($details['propMetaList'] as $propName => $meta)
             {
-                $values[$propName] = (isset($defaultValues[$propName])) ? $defaultValues[$propName] : null;
+                $values[$propName] = [
+                    'name' => $meta['Name']['options']['value'],
+                    'default' => (isset($defaultValues[$propName])) ? $defaultValues[$propName] : null
+                ];
+
+                if ($form = $this->getFormConfig($meta))
+                    $values[$propName]['form'] = $form;
 
                 $this->output->write('.');
             }
@@ -124,13 +130,45 @@ class ApiJsGeneratorCommand extends AbstractCommand
         return $jsLists;
     }
 
+    private function getFormConfig($meta)
+    {
+        $form = null;
+
+        if (isset($meta['Form']))
+        {
+            $form = [];
+            $form['type'] = $meta['Form']['options']['type'];
+
+            if (is_array($meta['Form']['options']['values']))
+                $form['values'] = $meta['Form']['options']['values'];
+
+            foreach ($meta['Type']['options'] as $key => $value)
+            {
+                if (in_array($key, ['minLength', 'maxLength', 'minValue', 'maxValue', 'positive', 'allowFloat', 'class']) && $value !== null)
+                {
+                    $form[$key] = $value;
+                }
+                elseif (in_array($key, ['nullable', 'readonly']) && $value)
+                {
+                    $form[$key] = $value;
+                }
+                elseif ($key === 'allowedValues' && !isset($form['values']))
+                {
+                    $form['values'] = $value;
+                }
+            }
+        }
+
+        return $form;
+    }
+
     private function createJsFiles($path, $type, $propName, $jsLists)
     {
         foreach ($jsLists as $namespace => $elements)
         {
             $jsFile  = "/*jslint white: true */\n/*global Agit */\n\n";
             $jsFile .= "Agit.$propName = Agit.$propName || {};\n\n";
-            $jsFile .= sprintf("Agit.%s['%s'] = %s;\n",$propName, $namespace, json_encode($elements, JSON_PRETTY_PRINT));
+            $jsFile .= sprintf("Agit.%s['%s'] = %s;\n",$propName, $namespace, json_encode($elements, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
             file_put_contents("$path/{$type}s-$namespace.js", $jsFile);
         }
     }
