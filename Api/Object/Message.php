@@ -18,7 +18,6 @@ use Agit\ApiBundle\Api\Meta\Property;
 class Message extends AbstractObject
 {
     /**
-     * @Property\Name("Hallola")
      * @Property\StringType(allowedValues={"info","success","warning","error"})
      *
      * There are different types of messages:
