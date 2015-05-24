@@ -36,6 +36,9 @@ class ObjectService extends AbstractApiService
 
     private $objects;
 
+    // reverse mapping (class => object name)
+    private $classes;
+
     public function __construct(CacheLoader $CacheLoader, ContainerInterface $Container)
     {
         $this->CacheLoader = $CacheLoader;
@@ -86,6 +89,22 @@ class ObjectService extends AbstractApiService
             $this->objects = $this->CacheLoader->loadPlugins();
 
         return $this->objects;
+    }
+
+    public function getObjectNameFromClass($class)
+    {
+        if (is_null($this->classes))
+        {
+            $this->classes = [];
+
+            foreach ($this->getObjectNames() as $objectName => $data)
+                $this->classes[$data['class']] = $objectName;
+        }
+
+        if (!isset($this->classes[$class]))
+            throw new InternalErrorException("Class '$class' has not been registered.");
+
+        return $this->classes[$class];
     }
 
     public function fill(AbstractObject &$Object, $data)
