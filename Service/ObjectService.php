@@ -48,13 +48,6 @@ class ObjectService extends AbstractApiService
         AbstractType::setTranslationService($Container->get('agit.intl.translate'));
     }
 
-    /**
-     * @param namespace namespace of object to create.
-     * @param name name of object to create.
-     * @param data data to fill the object with. Defaults to null.
-     * @param child marks object as child (some objects omit certain properties and hence save resources). Defaults to false.
-     * @return AbstractObject
-     **/
     public function createObject($objectName, $data = null)
     {
         if (is_string($data))
