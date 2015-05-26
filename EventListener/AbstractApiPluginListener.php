@@ -11,12 +11,11 @@ namespace Agit\ApiBundle\EventListener;
 
 use Doctrine\Common\Annotations\Reader;
 use Agit\CoreBundle\Helper\StringHelper;
-use Agit\IntlBundle\Service\Translate;
 use Agit\ApiBundle\Api\Meta\AbstractMeta;
+use Agit\ApiBundle\Api\Meta\Object\Object;
 use Agit\ApiBundle\Api\Meta\Property\AbstractType;
 use Agit\ApiBundle\Api\Meta\Property\ObjectType;
 use Agit\ApiBundle\Api\Meta\Property\Name;
-use Agit\ApiBundle\Api\Meta\Object\Object;
 
 /**
  * Listener skeleton containing the logic for processing endpoint, object and
@@ -27,12 +26,9 @@ abstract class AbstractApiPluginListener
 {
     protected $AnnotationReader;
 
-    protected $Translate;
-
     public function __construct(Reader $AnnotationReader)
     {
         $this->AnnotationReader = $AnnotationReader;
-        $this->Translate = new Translate();
     }
 
     abstract protected function getRegistrationEvent();
@@ -125,13 +121,10 @@ abstract class AbstractApiPluginListener
 
             $propMeta['Type']->setReference($this->getNamespace(), $ClassRefl->getShortName(), $propName);
 
-
             if ($propMeta['Type'] instanceof ObjectType)
                 $propMeta['Type']->set('class', $this->fixObjectName($propMeta['Type']->get('class')));
 
-            if (isset($propMeta['Name']) && $propMeta['Name']->getName())
-                $propMeta['Name']->setName($this->Translate->t($propMeta['Name']->getName()));
-            else
+            if (!isset($propMeta['Name']) || !$propMeta['Name']->get('value'))
                 $propMeta['Name'] = new Name(['value' => $propName]);
 
             $propMetaList[$propName] = $this->dissectMetaList($propMeta);
