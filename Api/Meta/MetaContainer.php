@@ -15,6 +15,11 @@ class MetaContainer
 {
     private $MetaList = [];
 
+    public function has($name)
+    {
+        return isset($this->MetaList[$name]);
+    }
+
     public function set($name, AbstractMeta $Meta)
     {
         $this->MetaList[$name] = $Meta;
