@@ -33,9 +33,10 @@ class StringType extends AbstractType
         if ($this->mustCheck())
         {
             if (is_array($this->allowedValues))
-                static::$_ValidationService->validate('selection', $value, $this->allowedValues);
-
-            if ($this->minLength || $value !== '')
+            {
+                static::$_ValidationService->validate('selection', $value, array_keys($this->allowedValues));
+            }
+            elseif ($this->minLength || $value !== '')
             {
                 static::$_ValidationService->validate('string', $value, $this->minLength, $this->maxLength, !$this->allowLineBreaks);
 
