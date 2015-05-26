@@ -92,13 +92,13 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
     private function generateObjectsFiles()
     {
-        $objectList = $this->getContainer()->get('agit.api.object')->getObjectNames();
+        $objectMetaList = $this->getContainer()->get('agit.api.object')->getMetaList();
         $jsLists = [];
         $count = 0;
 
         $this->output->write("Processing objects ");
 
-        foreach ($objectList as $objectName => $details)
+        foreach ($objectMetaList as $objectName => $details)
         {
             $namespace = strstr($objectName, '/', true);
             $ReflObj = new \ReflectionClass($details['class']);

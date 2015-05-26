@@ -53,19 +53,15 @@ class ObjectService extends AbstractApiService
         if (is_string($data))
             throw new InternalErrorException("ATTENTION: New method signature.");
 
-        if (is_null($this->objects))
-            $this->objects = $this->CacheLoader->loadPlugins();
+        $meta = $this->getMeta($objectName);
 
-        if (!isset($this->objects[$objectName]))
-            throw new InvalidObjectException("Invalid object: $objectName");
-
-        $ObjectMetaContainer = $this->createMetaContainer($this->objects[$objectName]['objectMeta']);
+        $ObjectMetaContainer = $this->createMetaContainer($meta['objectMeta']);
         $PropMetaContainerList = [];
 
-        foreach ($this->objects[$objectName]['propMetaList'] as $propName => $propMetaList)
+        foreach ($meta['propMetaList'] as $propName => $propMetaList)
             $PropMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
 
-        $objectClass = $this->objects[$objectName]['class'];
+        $objectClass = $meta['class'];
         $Object = new $objectClass($this->Container, $ObjectMetaContainer, $PropMetaContainerList, $objectName);
 
         // TODO: Don't pass $objectName as a parameter, instead there should be a Meta carring this
@@ -76,7 +72,18 @@ class ObjectService extends AbstractApiService
         return $Object;
     }
 
-    public function getObjectNames()
+    public function getMeta($objectName)
+    {
+        if (is_null($this->objects))
+            $this->objects = $this->CacheLoader->loadPlugins();
+
+        if (!isset($this->objects[$objectName]))
+            throw new InvalidObjectException("Invalid object: $objectName");
+
+        return $this->objects[$objectName];
+    }
+
+    public function getMetaList()
     {
         if (is_null($this->objects))
             $this->objects = $this->CacheLoader->loadPlugins();
@@ -90,7 +97,7 @@ class ObjectService extends AbstractApiService
         {
             $this->classes = [];
 
-            foreach ($this->getObjectNames() as $objectName => $data)
+            foreach ($this->getMetaList() as $objectName => $data)
                 $this->classes[$data['class']] = $objectName;
         }
 
