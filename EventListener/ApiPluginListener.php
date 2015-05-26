@@ -13,14 +13,6 @@ use Doctrine\Common\Annotations\Reader;
 use Agit\CoreBundle\Exception\InternalErrorException;
 use Agit\CoreBundle\Service\ClassCollector;
 use Agit\CoreBundle\Pluggable\Strategy\Cache\CacheRegistrationEvent;
-use Agit\CoreBundle\Helper\StringHelper;
-use Agit\IntlBundle\Service\Translate;
-use Agit\ApiBundle\Service\ObjectService;
-use Agit\ApiBundle\Api\Meta\AbstractMeta;
-use Agit\ApiBundle\Api\Meta\Property\AbstractType;
-use Agit\ApiBundle\Api\Meta\Property\ObjectType;
-use Agit\ApiBundle\Api\Meta\Property\Name;
-use Agit\ApiBundle\Api\Meta\Object\Object;
 
 /**
  * Reusable listener that collects plugin objects from a given path. "Reusable"
