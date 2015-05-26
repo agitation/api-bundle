@@ -9,8 +9,9 @@
 
 namespace Agit\ApiBundle\Api\Meta\Property;
 
-use Agit\ApiBundle\Api\Meta\AbstractMeta;
 use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\IntlBundle\Service\Translate;
+use Agit\ApiBundle\Api\Meta\AbstractMeta;
 
 /**
  * @Annotation
@@ -18,17 +19,20 @@ use Agit\CoreBundle\Exception\InternalErrorException;
 class Name extends AbstractMeta
 {
     /**
-     * @var human readable name of the annotated property.
+     * @var human readable name of the annotated property
      */
     protected $value;
+    /**
+     * @var context, in case the name is ambiguous
+     */
+    protected $context = '';
 
+    // NOTE: This method returns the translated name. If you want the original
+    // string, use `Name::get('value')`.
     public function getName()
     {
-        return $this->value;
-    }
-
-    public function setName($value)
-    {
-        $this->value = $value;
+        return $this->context
+            ? Translate::getInstance()->x($this->value, $this->context)
+            : Translate::getInstance()->t($this->value);
     }
 }
