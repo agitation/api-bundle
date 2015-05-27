@@ -17,7 +17,12 @@ use Agit\ApiBundle\Api\Meta\AbstractMeta;
 class Object extends AbstractMeta
 {
     /**
-     * @var the full name of the object with namespace prefix, e.g. `common.v1/SomeObject`
+     * @var the full name of the object with namespace prefix, e.g. `common.v1/SomeObject`.
      */
     protected $objectName;
+
+    /**
+     * @var this is a scalar "object", i.e. a dummy object that carries a scalar value.
+     */
+    protected $isScalar = false;
 }

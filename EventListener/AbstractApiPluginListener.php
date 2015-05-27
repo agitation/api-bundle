@@ -16,6 +16,7 @@ use Agit\ApiBundle\Api\Meta\Object\Object;
 use Agit\ApiBundle\Api\Meta\Property\AbstractType;
 use Agit\ApiBundle\Api\Meta\Property\ObjectType;
 use Agit\ApiBundle\Api\Meta\Property\Name;
+use Agit\CoreBundle\Exception\InternalErrorException;
 
 /**
  * Listener skeleton containing the logic for processing endpoint, object and
@@ -129,6 +130,9 @@ abstract class AbstractApiPluginListener
 
             $propMetaList[$propName] = $this->dissectMetaList($propMeta);
         }
+
+        if ($objectMeta['Object']->get('isScalar') && (count($propMetaList) !== 1 || !isset($propMetaList['value'])))
+            throw new InternalErrorException("Scalar objects must contain only a 'value' property.");
 
         $this->registerEntry($objectName, [
             'class' => $ClassRefl->getName(),

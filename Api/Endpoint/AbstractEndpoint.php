@@ -51,25 +51,30 @@ abstract class AbstractEndpoint
     private $MessageList = [];
 
     /**
-     * @var raw request, only used for security checks
+     * @var Symfony's request object, only used for security checks
      */
-    private $Request;
+    private $HttpRequest;
 
     /**
-     * @var request object, passed by the controller
+     * @var processed request data.
      */
-    private $RequestObject;
+    private $request;
 
     /**
-     * @var the generated response object
+     * @var indicates that the request has been processed.
      */
-    private $ResponseObject;
+    private $haveProcessedRequest = false;
 
-    public function __construct(ContainerInterface $Container, MetaContainer $Meta, Request $Request = null)
+    /**
+     * @var the generated response data
+     */
+    private $response;
+
+    public function __construct(ContainerInterface $Container, MetaContainer $Meta, Request $HttpRequest = null)
     {
         $this->Container = $Container;
         $this->Meta = $Meta;
-        $this->Request = $Request;
+        $this->HttpRequest = $HttpRequest;
         $this->translate = $Container->get('agit.intl.translate');
     }
 
@@ -103,7 +108,7 @@ abstract class AbstractEndpoint
 
     public function getResponse()
     {
-        return $this->ResponseObject;
+        return $this->response;
     }
 
     // this is a separate method (and not in the constructor) because there
@@ -117,17 +122,19 @@ abstract class AbstractEndpoint
             if (!$this->getMeta('Security')->get('allowCrossOrigin'))
                 $this->getService('agit.api.csrf')->checkToken($this->getCsrfToken());
 
-            if (!$this->Request)
+            if (!$this->HttpRequest)
                 throw new InternalErrorException("The request object could not be created, as the actual request has not been passed to the endpoint.");
 
-            $request = json_decode($this->Request->get('request'));
+            $request = json_decode($this->HttpRequest->get('request'));
 
-            if (!is_object($request))
-                throw new BadRequestException($this->translate->t("The `request` parameter must contain a valid JSON object."));
+            // allow literal strings without quotes
+            if (is_null($request) && strlen($this->HttpRequest->get('request')))
+                $request = $this->HttpRequest->get('request');
 
-            $this->RequestObject = $this->createObject(
-                $this->getMeta('Call')->get('request'),
-                $request);
+            $this->request = $this->getService('agit.api.object')
+                ->rawRequestToApiObject($request, $this->getMeta('Call')->get('request'));
+
+            $this->haveProcessedRequest = true;
         }
         catch (\Exception $e)
         {
@@ -153,14 +160,11 @@ abstract class AbstractEndpoint
         {
             try
             {
-                if (!$this->RequestObject)
+                if (!$this->haveProcessedRequest)
                     throw new InternalErrorException("The request object must be set before executing the call.");
 
-                $result = call_user_func([$this, $this->getMeta('Call')->get('method')], $this->RequestObject);
-                $ResponseObject = $this->createResponse($result);
+                $this->response = call_user_func([$this, $this->getMeta('Call')->get('method')], $this->request);
 
-                // only set this after security is checked
-                $this->ResponseObject = $ResponseObject;
                 $this->setSuccess(true);
             }
             catch (\Exception $e)
@@ -168,39 +172,6 @@ abstract class AbstractEndpoint
                 $this->handleException($e);
             }
         }
-    }
-
-    /**
-     * Generic helper to transform responses; covers most cases. Overload only
-     * if you're doing something *very* special, e.g. filling objects with
-     * extra data they need from context, otherwise trust the response objects.
-     */
-    protected function createResponse($result)
-    {
-        $ResponseObject = null;
-
-        if ($result instanceof AbstractObject)
-        {
-            $ResponseObject = $result;
-        }
-        elseif (is_array($result) && $this->getMeta('Call')->get('listobject'))
-        {
-            $ResponseObject = $this->createObject($this->getMeta('Call')->get('response'));
-
-            foreach ($result as $object)
-            {
-                $item = $this->createObject($this->getMeta('Call')->get('listobject'), $object);
-                $ResponseObject->add('itemList', $item);
-            }
-        }
-        elseif (is_object($result))
-        {
-            $ResponseObject = $this->createObject(
-                $this->getMeta('Call')->get('response'),
-                $result);
-        }
-
-        return $ResponseObject;
     }
 
     private function checkAuthorisation()

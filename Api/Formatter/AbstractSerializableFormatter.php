@@ -122,7 +122,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     private function addEntityObject($Object)
     {
-        $key = sprintf('%s:%s', $Object->getName(), $Object->get('id'));
+        $key = sprintf('%s:%s', $Object->getObjectName(), $Object->get('id'));
 
         if (!isset($this->compactEntityList[$key]))
         {
