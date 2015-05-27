@@ -14,6 +14,8 @@ namespace Agit\ApiBundle\Api\Meta\Property;
  */
 class PolymorphicType extends AbstractType
 {
+    protected $nullable = true;
+
     public function check($value)
     {
         $this->init($value);
