@@ -7,24 +7,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "nplurals=2; plural=(n != 1);\n"
 
-#: @AgitApiBundle/Api/Endpoint/AbstractEndpoint.php:124
-msgid "The `request` parameter must contain a valid JSON object."
-msgstr ""
-
-#: @AgitApiBundle/Api/Meta/Call/Security.php:57
+#: @AgitApiBundle/Api/Endpoint/AbstractEndpoint.php:189
 msgid "You must be logged in to perform this operation."
-msgstr ""
+msgstr "Sie müssen eingeloggt sein, um "
 
-#: @AgitApiBundle/Api/Meta/Call/Security.php:60
+#: @AgitApiBundle/Api/Endpoint/AbstractEndpoint.php:192
 msgid "You do not have sufficient permissions to perform this operation."
-msgstr ""
+msgstr "Ihre Zugriffsrechte reichen für diese Aktion nicht aus."
 
-#: @AgitApiBundle/Api/Meta/Property/StringType.php:49
+#: @AgitApiBundle/Api/Meta/Property/StringType.php:50
 #, php-format
 msgid "The “%s” character must not be contained."
 msgstr "Das Zeichen „%s“ darf nicht enthalten sein."
 
-#: @AgitApiBundle/Api/Object/AbstractObject.php:150
+#: @AgitApiBundle/Api/Object/AbstractObject.php:161
 #, php-format
-msgid "Invalid value for '%s': %s"
-msgstr ""
+msgid "Invalid value for “%s”: %s"
+msgstr "Ungültiger Wert für „%s“: %s"
+
+#: @AgitApiBundle/Service/ObjectService.php:61
+msgid "The request is expected to be an array."
+msgstr "Die Anfrage muss ein Array sein."
+
+#: @AgitApiBundle/Service/ObjectService.php:76
+msgid "The request is expected to be a scalar value."
+msgstr "Die Anfrage muss ein skalarer Wert sein."
+
+#: @AgitApiBundle/Service/ObjectService.php:208
+#: @AgitApiBundle/Service/ObjectService.php:214
+#, php-format
+msgid "Invalid value for the “%s” property."
+msgstr "Ungültiger Wert für die Eigenschaft „%s“."
