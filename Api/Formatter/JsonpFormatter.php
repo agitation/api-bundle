@@ -20,7 +20,7 @@ class JsonpFormatter extends JsonFormatter
     protected function getHttpHeaders()
     {
         // extra check to prevent SOP circumvention
-        if (!$this->Endpoint->getMeta('Security')->get('allowCrossOrigin'))
+        if (!$this->endpoint->getMeta('Security')->get('allowCrossOrigin'))
             throw new IncompatibleFormatterException("This endpoint does not allow cross-origin requests.");
 
         return parent::getHttpHeaders();
@@ -29,7 +29,7 @@ class JsonpFormatter extends JsonFormatter
     protected function getHttpContent()
     {
         $httpContent = parent::getHttpContent();
-        $callbackName = $this->Request->get('callback') ?: 'jsonpCallback';
+        $callbackName = $this->request->get('callback') ?: 'jsonpCallback';
 
         if (preg_match('|[^a-z0-9_-]|i', $callbackName))
             throw new IncompatibleFormatterException("The callback function name is invalid.");

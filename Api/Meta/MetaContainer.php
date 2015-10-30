@@ -13,23 +13,23 @@ use Agit\CoreBundle\Exception\InternalErrorException;
 
 class MetaContainer
 {
-    private $MetaList = [];
+    private $metaList = [];
 
     public function has($name)
     {
-        return isset($this->MetaList[$name]);
+        return isset($this->metaList[$name]);
     }
 
-    public function set($name, AbstractMeta $Meta)
+    public function set($name, AbstractMeta $meta)
     {
-        $this->MetaList[$name] = $Meta;
+        $this->metaList[$name] = $meta;
     }
 
     public function get($name)
     {
-        if (!isset($this->MetaList[$name]))
+        if (!isset($this->metaList[$name]))
             throw new InternalErrorException("No meta named '$name' found.");
 
-        return $this->MetaList[$name];
+        return $this->metaList[$name];
     }
 }

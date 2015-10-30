@@ -24,25 +24,25 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     protected function getHttpContent()
     {
-        $Response = $this->createContent();
-        $this->compactEntities($Response->getPayload());
-        $Response->setPayload($this->getCompactPayload());
-        $Response->setEntityList($this->getCompactEntityList());
-        return $this->getEncoder()->encode($Response, static::$format);
+        $response = $this->createContent();
+        $this->compactEntities($response->getPayload());
+        $response->setPayload($this->getCompactPayload());
+        $response->setEntityList($this->getCompactEntityList());
+        return $this->getEncoder()->encode($response, static::$format);
     }
 
     private function createContent()
     {
-        $Response = $this->Container->get('agit.api.object')->createObject('common.v1/Response');
-        $Response->set('success', $this->Endpoint->getSuccess());
+        $response = $this->container->get('agit.api.object')->createObject('common.v1/Response');
+        $response->set('success', $this->endpoint->getSuccess());
 
-        foreach ($this->Endpoint->getMessages() as $Message)
-            $Response->add('MessageList', $Message);
+        foreach ($this->endpoint->getMessages() as $message)
+            $response->add('MessageList', $message);
 
-        if ($this->Endpoint->getSuccess())
-            $Response->set('payload', $this->Endpoint->getResponse());
+        if ($this->endpoint->getSuccess())
+            $response->set('payload', $this->endpoint->getResponse());
 
-        return $Response;
+        return $response;
     }
 
     abstract protected function getEncoder();
@@ -120,15 +120,15 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
             $value->get('id'));
     }
 
-    private function addEntityObject($Object)
+    private function addEntityObject($object)
     {
-        $key = sprintf('%s:%s', $Object->getObjectName(), $Object->get('id'));
+        $key = sprintf('%s:%s', $object->getObjectName(), $object->get('id'));
 
         if (!isset($this->compactEntityList[$key]))
         {
             $this->compactEntityList[$key] = array('idx'=>sprintf("%s:%s", $this->keyPrefix, $this->idx++), 'obj'=>new \stdClass());
 
-            foreach ($Object->getValues() as $k => $v)
+            foreach ($object->getValues() as $k => $v)
                 $this->compactEntityList[$key]['obj']->$k = $this->processValue($v);
         }
 

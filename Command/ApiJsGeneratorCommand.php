@@ -21,7 +21,7 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
     private $output;
 
-    private $Filesystem;
+    private $filesystem;
 
     protected function configure()
     {
@@ -36,7 +36,7 @@ class ApiJsGeneratorCommand extends AbstractCommand
         if (!$this->flock(__FILE__)) return;
 
         $this->output = $output;
-        $this->Filesystem = new Filesystem();
+        $this->filesystem = new Filesystem();
 
         $targetPath = $this->getContainer()->get('agit.core.filecollector')->resolve($input->getArgument('bundle'));
 
@@ -46,7 +46,7 @@ class ApiJsGeneratorCommand extends AbstractCommand
         $targetPath .= $this->relJsPath;
 
         if (!is_dir($targetPath))
-            $this->Filesystem->mkdir($targetPath);
+            $this->filesystem->mkdir($targetPath);
 
         $endpointJsList = $this->generateEndpointsFiles();
         $objectJsList = $this->generateObjectsFiles();
@@ -59,9 +59,9 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
     private function generateEndpointsFiles()
     {
-        $AnnotationReader = $this->getContainer()->get('annotation_reader');
-        $EndpointService = $this->getContainer()->get('agit.api.endpoint');
-        $endpointList = $EndpointService->getEndpointNames();
+        $annotationReader = $this->getContainer()->get('annotation_reader');
+        $endpointService = $this->getContainer()->get('agit.api.endpoint');
+        $endpointList = $endpointService->getEndpointNames();
 
         $jsLists = [];
         $count = 0;
@@ -71,8 +71,8 @@ class ApiJsGeneratorCommand extends AbstractCommand
         foreach ($endpointList as $endpointName => $details)
         {
             $namespace = strstr($endpointName, '/', true);
-            $Endpoint = $EndpointService->createEndpoint($endpointName, null);
-            $requestObjectName = $Endpoint->getMeta('Call')->get('request');
+            $endpoint = $endpointService->createEndpoint($endpointName, null);
+            $requestObjectName = $endpoint->getMeta('Call')->get('request');
 
             if ($requestObjectName)
             {
@@ -101,8 +101,8 @@ class ApiJsGeneratorCommand extends AbstractCommand
         foreach ($objectMetaList as $objectName => $details)
         {
             $namespace = strstr($objectName, '/', true);
-            $ReflObj = new \ReflectionClass($details['class']);
-            $defaultValues = $ReflObj->getDefaultProperties();
+            $reflObj = new \ReflectionClass($details['class']);
+            $defaultValues = $reflObj->getDefaultProperties();
             $values = [];
 
             if (!isset($jsLists[$namespace]))

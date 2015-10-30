@@ -25,11 +25,11 @@ use Agit\CoreBundle\Exception\InternalErrorException;
  */
 abstract class AbstractApiPluginListener
 {
-    protected $AnnotationReader;
+    protected $annotationReader;
 
-    public function __construct(Reader $AnnotationReader)
+    public function __construct(Reader $annotationReader)
     {
-        $this->AnnotationReader = $AnnotationReader;
+        $this->annotationReader = $annotationReader;
     }
 
     abstract protected function getRegistrationEvent();
@@ -38,20 +38,20 @@ abstract class AbstractApiPluginListener
 
     abstract protected function getPriority();
 
-    protected function processEndpoint(\ReflectionClass $ClassRefl)
+    protected function processEndpoint(\ReflectionClass $classRefl)
     {
-        foreach ($ClassRefl->getMethods() as $MethodRefl)
+        foreach ($classRefl->getMethods() as $methodRefl)
         {
-            $AnnotationList = $this->AnnotationReader->getMethodAnnotations($MethodRefl);
+            $annotationList = $this->annotationReader->getMethodAnnotations($methodRefl);
             $callMeta = [];
 
-            foreach ($AnnotationList as $Annotation)
+            foreach ($annotationList as $annotation)
             {
-                if (!($Annotation instanceof AbstractMeta))
+                if (!($annotation instanceof AbstractMeta))
                     continue;
 
-                $callMetaName = StringHelper::getBareClassName(get_class($Annotation));
-                $callMeta[$callMetaName] = $Annotation;
+                $callMetaName = StringHelper::getBareClassName(get_class($annotation));
+                $callMeta[$callMetaName] = $annotation;
             }
 
             if (!isset($callMeta['Call']) || !isset($callMeta['Security']))
@@ -64,36 +64,36 @@ abstract class AbstractApiPluginListener
             if ($callMeta['Call']->get('listobject'))
                 $callMeta['Call']->set('listobject', $this->fixObjectName($callMeta['Call']->get('listobject')));
 
-            $callMeta['Call']->setReference($this->getNamespace(), $ClassRefl->getShortName(), $MethodRefl->getName());
+            $callMeta['Call']->setReference($this->getNamespace(), $classRefl->getShortName(), $methodRefl->getName());
 
             $endpointCall = sprintf(
                 "%s/%s.%s",
                 $this->getNamespace(),
-                $ClassRefl->getShortName(),
-                $MethodRefl->getName());
+                $classRefl->getShortName(),
+                $methodRefl->getName());
 
             $this->registerEntry($endpointCall, [
-                'class' => $ClassRefl->getName(),
+                'class' => $classRefl->getName(),
                 'meta' => $this->dissectMetaList($callMeta)
             ]);
         }
     }
 
-    protected function processObject(\ReflectionClass $ClassRefl)
+    protected function processObject(\ReflectionClass $classRefl)
     {
         $objectMeta = [];
         $propMetaList = [];
-        $objectName = sprintf("%s/%s", $this->getNamespace(), $ClassRefl->getShortName());
+        $objectName = sprintf("%s/%s", $this->getNamespace(), $classRefl->getShortName());
 
-        $ObjAnnotationList = $this->AnnotationReader->getClassAnnotations($ClassRefl);
+        $objAnnotationList = $this->annotationReader->getClassAnnotations($classRefl);
 
-        foreach ($ObjAnnotationList as $Annotation)
+        foreach ($objAnnotationList as $annotation)
         {
-            if (!($Annotation instanceof AbstractMeta))
+            if (!($annotation instanceof AbstractMeta))
                 continue;
 
-            $objMetaName = StringHelper::getBareClassName($Annotation);
-            $objectMeta[$objMetaName] = $Annotation;
+            $objMetaName = StringHelper::getBareClassName($annotation);
+            $objectMeta[$objMetaName] = $annotation;
         }
 
         if (isset($objectMeta['Object']))
@@ -101,26 +101,26 @@ abstract class AbstractApiPluginListener
         else
             $objectMeta['Object'] = new Object(['objectName' => $objectName]);
 
-        foreach ($ClassRefl->getProperties() as $PropertyRefl)
+        foreach ($classRefl->getProperties() as $propertyRefl)
         {
-            $AnnotationList = $this->AnnotationReader->getPropertyAnnotations($PropertyRefl);
-            $propName = $PropertyRefl->getName();
+            $annotationList = $this->annotationReader->getPropertyAnnotations($propertyRefl);
+            $propName = $propertyRefl->getName();
             $propMeta = [];
 
-            foreach ($AnnotationList as $Annotation)
+            foreach ($annotationList as $annotation)
             {
-                if (!($Annotation instanceof AbstractMeta))
+                if (!($annotation instanceof AbstractMeta))
                     continue;
 
-                $propMetaClass = StringHelper::getBareClassName($Annotation);
-                $propMetaName = ($Annotation instanceof AbstractType) ? 'Type' : $propMetaClass;
-                $propMeta[$propMetaName] = $Annotation;
+                $propMetaClass = StringHelper::getBareClassName($annotation);
+                $propMetaName = ($annotation instanceof AbstractType) ? 'Type' : $propMetaClass;
+                $propMeta[$propMetaName] = $annotation;
             }
 
             if (!isset($propMeta['Type']))
                 continue;
 
-            $propMeta['Type']->setReference($this->getNamespace(), $ClassRefl->getShortName(), $propName);
+            $propMeta['Type']->setReference($this->getNamespace(), $classRefl->getShortName(), $propName);
 
             if ($propMeta['Type'] instanceof ObjectType)
                 $propMeta['Type']->set('class', $this->fixObjectName($propMeta['Type']->get('class')));
@@ -135,19 +135,19 @@ abstract class AbstractApiPluginListener
             throw new InternalErrorException("Scalar objects must contain only a 'value' property.");
 
         $this->registerEntry($objectName, [
-            'class' => $ClassRefl->getName(),
+            'class' => $classRefl->getName(),
             'objectMeta' => $this->dissectMetaList($objectMeta),
             'propMetaList' => $propMetaList
         ]);
     }
 
-    protected function processFormatter(\ReflectionClass $ClassRefl)
+    protected function processFormatter(\ReflectionClass $classRefl)
     {
-        $properties = $ClassRefl->getStaticProperties();
-        $this->registerEntry($properties['format'], $ClassRefl->getName());
+        $properties = $classRefl->getStaticProperties();
+        $this->registerEntry($properties['format'], $classRefl->getName());
     }
 
-    protected function dissectMetaList($MetaList)
+    protected function dissectMetaList($metaList)
     {
         $newList = [];
 
@@ -155,8 +155,8 @@ abstract class AbstractApiPluginListener
         // we'd have to unserialize hundreds of them on every API access.
         // Therefore we store class names and options separately.
 
-        foreach ($MetaList as $name => $Meta)
-            $newList[$name] = ['class' => get_class($Meta), 'options' => $Meta->getOptions()];
+        foreach ($metaList as $name => $meta)
+            $newList[$name] = ['class' => get_class($meta), 'options' => $meta->getOptions()];
 
         return $newList;
     }
@@ -182,10 +182,10 @@ abstract class AbstractApiPluginListener
 
     protected function registerEntry($key, $value)
     {
-        $RegistrationEvent = $this->getRegistrationEvent();
-        $CacheData = $RegistrationEvent->createContainer();
-        $CacheData->setId($key);
-        $CacheData->setData($value);
-        $RegistrationEvent->register($CacheData, $this->getPriority());
+        $registrationEvent = $this->getRegistrationEvent();
+        $cacheData = $registrationEvent->createContainer();
+        $cacheData->setId($key);
+        $cacheData->setData($value);
+        $registrationEvent->register($cacheData, $this->getPriority());
     }
 }

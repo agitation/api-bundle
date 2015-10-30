@@ -15,30 +15,30 @@ use Agit\CoreBundle\Helper\StringHelper;
 
 class CsrfTokenService
 {
-    private $SessionService;
+    private $sessionService;
 
     const sessionKey = 'agit.api.csrf.token';
 
-    public function __construct(Session $SessionService)
+    public function __construct(Session $sessionService)
     {
-        $this->SessionService = $SessionService;
+        $this->sessionService = $sessionService;
     }
 
     public function initToken()
     {
-        if (!$this->SessionService->get(self::sessionKey))
-            $this->SessionService->set(self::sessionKey, StringHelper::createRandomString(25));
+        if (!$this->sessionService->get(self::sessionKey))
+            $this->sessionService->set(self::sessionKey, StringHelper::createRandomString(25));
     }
 
     public function getToken()
     {
         $this->initToken();
-        return $this->SessionService->get(self::sessionKey);
+        return $this->sessionService->get(self::sessionKey);
     }
 
     public function checkToken($submittedToken)
     {
-            $correctCsrfToken = $this->SessionService->get(self::sessionKey);
+            $correctCsrfToken = $this->sessionService->get(self::sessionKey);
 
             if (!$submittedToken || !$correctCsrfToken || $submittedToken !== $correctCsrfToken)
                 throw new CsrfException("The CSRF token is invalid.");

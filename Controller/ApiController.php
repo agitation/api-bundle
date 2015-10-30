@@ -19,46 +19,46 @@ class ApiController extends Controller
 {
     public function callAction($namespace, $endpoint, $call, $_format)
     {
-        $Request = $this->getRequest();
-        $Response = new Response();
+        $request = $this->getRequest();
+        $response = new Response();
 
         try
         {
             $this->setLocale();
             $this->checkHeaderAuth();
 
-            $EndpointService = $this->container->get('agit.api.endpoint');
-            $FormatterService = $this->container->get('agit.api.formatter');
+            $endpointService = $this->container->get('agit.api.endpoint');
+            $formatterService = $this->container->get('agit.api.formatter');
 
-            if (!$FormatterService->formatExists($_format))
+            if (!$formatterService->formatExists($_format))
                 throw new BadRequestException("Invalid format.");
 
-            $Endpoint = $EndpointService->createEndpoint("$namespace/$endpoint.$call", $Request);
-            $Endpoint->setupEnvironment();
+            $endpoint = $endpointService->createEndpoint("$namespace/$endpoint.$call", $request);
+            $endpoint->setupEnvironment();
 
-            if ($Request->getMethod() !== 'OPTIONS')
+            if ($request->getMethod() !== 'OPTIONS')
             {
-                $Endpoint->executeCall();
+                $endpoint->executeCall();
 
-                $Response = $this->container->get('agit.api.formatter')
-                    ->getFormatter($_format, $Endpoint, $Request)->getResponse();
+                $response = $this->container->get('agit.api.formatter')
+                    ->getFormatter($_format, $endpoint, $request)->getResponse();
             }
 
-            if ($Endpoint->getMeta('Security')->get('allowCrossOrigin'))
-                $Response->headers->set('Access-Control-Allow-Origin', "*");
+            if ($endpoint->getMeta('Security')->get('allowCrossOrigin'))
+                $response->headers->set('Access-Control-Allow-Origin', "*");
         }
         catch (\Exception $e)
         {
             // NOTE: Exceptions thrown during `executeCall` are caught by the endpoint itself
             // and transformed into a proper API response, so this one is just for edge cases.
-            $Response->setContent($e->getMessage());
-            $Response->headers->set("Content-Type", "text/html; charset=UTF-8", true);
+            $response->setContent($e->getMessage());
+            $response->headers->set("Content-Type", "text/html; charset=UTF-8", true);
         }
 
-        $Response->headers->set("Cache-Control", "no-cache, must-revalidate, max-age=0", true);
-        $Response->headers->set("Pragma", "no-store", true);
+        $response->headers->set("Cache-Control", "no-cache, must-revalidate, max-age=0", true);
+        $response->headers->set("Pragma", "no-store", true);
 
-        return $Response;
+        return $response;
     }
 
     private function checkHeaderAuth()
@@ -75,12 +75,12 @@ class ApiController extends Controller
 
     private function setLocale()
     {
-        $LocaleService = $this->container->get('agit.intl.locale');
+        $localeService = $this->container->get('agit.intl.locale');
 
-        $locale = (isset($_REQUEST['locale']) && in_array($_REQUEST['locale'], $LocaleService->getAvailableLocales()))
+        $locale = (isset($_REQUEST['locale']) && in_array($_REQUEST['locale'], $localeService->getAvailableLocales()))
             ? $_REQUEST['locale']
             : 'en_GB';
 
-        $LocaleService->setLocale($locale);
+        $localeService->setLocale($locale);
     }
 }

@@ -58,17 +58,17 @@ class ExampleEndpoint extends AbstractEndpoint
      *
      * This is the `doSomething` call of the `ExampleEndpoint` endpoint.
      */
-    protected function doSomething(AbstractObject $RequestObject)
+    protected function doSomething(AbstractObject $requestObject)
     {
         // get the value of $foo and process it
-        $foo = $RequestObject->get('foo');
+        $foo = $requestObject->get('foo');
 
         // ...
 
         // now generate the response
-        $Response = $this->createObject('othernamespace.v1/SomeResponseObject');
-        $Response->set("some", "value");
-        return $Response;
+        $response = $this->createObject('othernamespace.v1/SomeResponseObject');
+        $response->set("some", "value");
+        return $response;
     }
 }
 ```

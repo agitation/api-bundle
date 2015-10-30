@@ -28,12 +28,12 @@ abstract class AbstractEndpoint
     /**
      * @var service container instance.
      */
-    protected $Container;
+    protected $container;
 
     /**
      * @var MetaContainer instance.
      */
-    protected $Meta;
+    protected $meta;
 
     /**
      * @var shortcut to translation service.
@@ -48,12 +48,12 @@ abstract class AbstractEndpoint
     /**
      * @var list of messages, usually errors or warnings
      */
-    private $MessageList = [];
+    private $messageList = [];
 
     /**
      * @var Symfony's request object, only used for security checks
      */
-    private $HttpRequest;
+    private $httpRequest;
 
     /**
      * @var processed request data.
@@ -70,17 +70,17 @@ abstract class AbstractEndpoint
      */
     private $response;
 
-    public function __construct(ContainerInterface $Container, MetaContainer $Meta, Request $HttpRequest = null)
+    public function __construct(ContainerInterface $container, MetaContainer $meta, Request $httpRequest = null)
     {
-        $this->Container = $Container;
-        $this->Meta = $Meta;
-        $this->HttpRequest = $HttpRequest;
-        $this->translate = $Container->get('agit.intl.translate');
+        $this->container = $container;
+        $this->meta = $meta;
+        $this->httpRequest = $httpRequest;
+        $this->translate = $container->get('agit.intl.translate');
     }
 
     public function getMeta($name)
     {
-        return $this->Meta->get($name);
+        return $this->meta->get($name);
     }
 
     protected function setSuccess($success)
@@ -95,7 +95,7 @@ abstract class AbstractEndpoint
 
     protected function addMessage($type, $text, $code = null)
     {
-        $this->MessageList[] = $this->createObject(
+        $this->messageList[] = $this->createObject(
             'common.v1/Message',
             (object)['type' => $type, 'code' => $code, 'text' => $text]
         );
@@ -103,7 +103,7 @@ abstract class AbstractEndpoint
 
     public function getMessages()
     {
-        return $this->MessageList;
+        return $this->messageList;
     }
 
     public function getResponse()
@@ -122,14 +122,14 @@ abstract class AbstractEndpoint
             if (!$this->getMeta('Security')->get('allowCrossOrigin'))
                 $this->getService('agit.api.csrf')->checkToken($this->getCsrfToken());
 
-            if (!$this->HttpRequest)
+            if (!$this->httpRequest)
                 throw new InternalErrorException("The request object could not be created, as the actual request has not been passed to the endpoint.");
 
-            $request = json_decode($this->HttpRequest->get('request'));
+            $request = json_decode($this->httpRequest->get('request'));
 
             // allow literal strings without quotes
-            if (is_null($request) && strlen($this->HttpRequest->get('request')))
-                $request = $this->HttpRequest->get('request');
+            if (is_null($request) && strlen($this->httpRequest->get('request')))
+                $request = $this->httpRequest->get('request');
 
             $this->request = $this->getService('agit.api.object')
                 ->rawRequestToApiObject($request, $this->getMeta('Call')->get('request'));
@@ -183,12 +183,12 @@ abstract class AbstractEndpoint
 
         if ($reqCapibilty)
         {
-            $User = $this->getCurrentUser();
+            $user = $this->getCurrentUser();
 
-            if (!$User)
+            if (!$user)
                 throw new UnauthorizedException($this->translate->t('You must be logged in to perform this operation.'));
 
-            if (!$User->hasCapability($reqCapibilty))
+            if (!$user->hasCapability($reqCapibilty))
                 throw new UnauthorizedException($this->translate->t("You do not have sufficient permissions to perform this operation."));
         }
     }
@@ -198,18 +198,18 @@ abstract class AbstractEndpoint
 
     protected function getService($serviceName)
     {
-        return $this->Container->get($serviceName);
+        return $this->container->get($serviceName);
     }
 
     protected function getParameter($paramName)
     {
-        return $this->Container->getParameter($paramName);
+        return $this->container->getParameter($paramName);
     }
 
     protected function getCurrentUser()
     {
-        return $this->Container->has('agit.user')
-            ? $this->Container->get('agit.user')->getCurrentUser()
+        return $this->container->has('agit.user')
+            ? $this->container->get('agit.user')->getCurrentUser()
             : null;
     }
 
@@ -218,7 +218,7 @@ abstract class AbstractEndpoint
         if (strpos($name, '/') === false)
             $name = $this->getMeta('Call')->get('namespace') . "/$name";
 
-        return $this->Container->get('agit.api.object')->createObject($name, $data);
+        return $this->container->get('agit.api.object')->createObject($name, $data);
     }
 
     private function handleException(\Exception $e)

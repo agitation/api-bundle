@@ -15,12 +15,12 @@ abstract class AbstractApiService
 {
     protected function createMetaContainer($metaList)
     {
-        $MetaContainer = new MetaContainer();
+        $metaContainer = new MetaContainer();
 
         foreach ($metaList as $name => $meta)
-            $MetaContainer->set($name, $this->composeMeta($meta));
+            $metaContainer->set($name, $this->composeMeta($meta));
 
-        return $MetaContainer;
+        return $metaContainer;
     }
 
     // re-composing meta from class name and options.

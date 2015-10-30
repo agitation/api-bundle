@@ -60,14 +60,14 @@ abstract class AbstractType extends AbstractMeta
     // makes life easier when nullable===true
     private $_mustCheck = true;
 
-    public static function setValidationService($ValidationService)
+    public static function setValidationService($validationService)
     {
-        self::$_ValidationService = $ValidationService;
+        self::$_ValidationService = $validationService;
     }
 
-    public static function setTranslationService($TranslationService)
+    public static function setTranslationService($translationService)
     {
-        self::$_TranslationService = $TranslationService;
+        self::$_TranslationService = $translationService;
     }
 
     public function getSpecialFormatDesc($field)

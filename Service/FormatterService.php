@@ -20,37 +20,37 @@ class FormatterService
     /**
      * @var service container instance.
      */
-    protected $Container;
+    protected $container;
 
     /**
      * @var CacheLoader instance.
      */
-    protected $CacheLoader;
+    protected $cacheLoader;
 
     private $formats;
 
-    public function __construct(CacheLoader $CacheLoader, ContainerInterface $Container)
+    public function __construct(CacheLoader $cacheLoader, ContainerInterface $container)
     {
-        $this->CacheLoader = $CacheLoader;
-        $this->Container = $Container;
+        $this->cacheLoader = $cacheLoader;
+        $this->container = $container;
     }
 
     public function formatExists($format)
     {
         if (is_null($this->formats))
-            $this->formats = $this->CacheLoader->loadPlugins();
+            $this->formats = $this->cacheLoader->loadPlugins();
 
         return isset($this->formats[$format]);
     }
 
-    public function getFormatter($format, AbstractEndpoint $Endpoint, Request $Request)
+    public function getFormatter($format, AbstractEndpoint $endpoint, Request $request)
     {
         if (!$this->formatExists($format))
             throw new IncompatibleFormatterException("Unknown data format.");
 
         $formatterClassName = $this->formats[$format];
-        $Formatter = new $formatterClassName($this->Container, $Endpoint, $Request);
+        $formatter = new $formatterClassName($this->container, $endpoint, $request);
 
-        return $Formatter;
+        return $formatter;
     }
 }

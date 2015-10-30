@@ -21,7 +21,7 @@ use Agit\CoreBundle\Pluggable\Strategy\Cache\CacheRegistrationEvent;
  */
 class ApiPluginListener extends AbstractApiPluginListener
 {
-    private $ClassCollector;
+    private $classCollector;
 
     private $namespace;
 
@@ -33,12 +33,12 @@ class ApiPluginListener extends AbstractApiPluginListener
 
     private $priority;
 
-    private $RegistrationEvent;
+    private $registrationEvent;
 
-    public function __construct(Reader $AnnotationReader, ClassCollector $ClassCollector, $type, $parentClass, $namespace, $searchPath, $priority)
+    public function __construct(Reader $annotationReader, ClassCollector $classCollector, $type, $parentClass, $namespace, $searchPath, $priority)
     {
-        parent::__construct($AnnotationReader);
-        $this->ClassCollector = $ClassCollector;
+        parent::__construct($annotationReader);
+        $this->classCollector = $classCollector;
         $this->type = $type;
         $this->parentClass = $parentClass;
         $this->namespace = $namespace;
@@ -48,7 +48,7 @@ class ApiPluginListener extends AbstractApiPluginListener
 
     protected function getRegistrationEvent()
     {
-        return $this->RegistrationEvent;
+        return $this->registrationEvent;
     }
 
     protected function getNamespace()
@@ -64,23 +64,23 @@ class ApiPluginListener extends AbstractApiPluginListener
     /**
      * the event listener to be used in the service configuration
      */
-    public function onRegistration(CacheRegistrationEvent $RegistrationEvent)
+    public function onRegistration(CacheRegistrationEvent $registrationEvent)
     {
-        $this->RegistrationEvent = $RegistrationEvent;
+        $this->registrationEvent = $registrationEvent;
 
-        foreach ($this->ClassCollector->collect($this->searchPath) as $class)
+        foreach ($this->classCollector->collect($this->searchPath) as $class)
         {
-            $ClassRefl = new \ReflectionClass($class);
+            $classRefl = new \ReflectionClass($class);
 
-            if (!$ClassRefl->isSubclassOf($this->parentClass))
+            if (!$classRefl->isSubclassOf($this->parentClass))
                 continue;
 
             if ($this->type === 'endpoint')
-                $this->processEndpoint($ClassRefl);
+                $this->processEndpoint($classRefl);
             elseif ($this->type === 'object')
-                $this->processObject($ClassRefl);
+                $this->processObject($classRefl);
             elseif ($this->type === 'formatter')
-                $this->processFormatter($ClassRefl);
+                $this->processFormatter($classRefl);
             else
                 throw new InternalErrorException("Invalid API plugin type: {$this->type}.");
         }

@@ -24,7 +24,7 @@ abstract class AbstractObject implements \JsonSerializable
     /**
      * @var service container instance.
      */
-    protected $Container;
+    protected $container;
 
     /**
      * @var instance of translator.
@@ -34,25 +34,25 @@ abstract class AbstractObject implements \JsonSerializable
     /**
      * @var MetaContainer instance for the object.
      */
-    protected $ObjectMetaContainer;
+    protected $objectMetaContainer;
 
     /**
      * @var MetaContainer instance for the properties.
      */
-    protected $PropMetaContainerList = [];
+    protected $propMetaContainerList = [];
 
     /**
      * @var API object name with namespace prefix, e.g. `common.v1/SomeObject`
      */
     protected $objectName;
 
-    public function __construct(ContainerInterface $Container, MetaContainer $ObjectMetaContainer, array $PropMetaContainerList, $objectName)
+    public function __construct(ContainerInterface $container, MetaContainer $objectMetaContainer, array $propMetaContainerList, $objectName)
     {
-        $this->Container = $Container;
-        $this->ObjectMetaContainer = $ObjectMetaContainer;
-        $this->PropMetaContainerList = $PropMetaContainerList;
+        $this->container = $container;
+        $this->objectMetaContainer = $objectMetaContainer;
+        $this->propMetaContainerList = $propMetaContainerList;
         $this->objectName = $objectName;
-        $this->translate = $Container->get('agit.intl.translate');
+        $this->translate = $container->get('agit.intl.translate');
     }
 
     public function getObjectName()
@@ -62,7 +62,7 @@ abstract class AbstractObject implements \JsonSerializable
 
     public function hasProperty($key)
     {
-        return isset($this->PropMetaContainerList[$key]);
+        return isset($this->propMetaContainerList[$key]);
     }
 
     public function get($key)
@@ -75,7 +75,7 @@ abstract class AbstractObject implements \JsonSerializable
     {
         $values = [];
 
-        foreach ($this->PropMetaContainerList as $key => $Meta)
+        foreach ($this->propMetaContainerList as $key => $meta)
             $values[$key] = $this->$key;
 
         return $values;
@@ -91,9 +91,9 @@ abstract class AbstractObject implements \JsonSerializable
     public function add($key, $value)
     {
         $this->checkHasProperty($key);
-        $Type = $this->getPropertyMeta($key, 'Type');
+        $type = $this->getPropertyMeta($key, 'Type');
 
-        if ($Type->isListType())
+        if ($type->isListType())
         {
             $this->validateValue($key, [$value]);
 
@@ -102,7 +102,7 @@ abstract class AbstractObject implements \JsonSerializable
 
             array_push($this->$key, $value);
         }
-        elseif ($Type->getType() === 'number')
+        elseif ($type->getType() === 'number')
         {
             $this->validateValue($key, $value);
             $this->$key += $value;
@@ -114,19 +114,19 @@ abstract class AbstractObject implements \JsonSerializable
     }
     public function getMeta($name)
     {
-        return $this->Meta->get($name);
+        return $this->meta->get($name);
     }
 
     public function hasPropertyMeta($propKey, $metaName)
     {
         $this->checkHasProperty($propKey);
-        return $this->PropMetaContainerList[$propKey]->has($metaName);
+        return $this->propMetaContainerList[$propKey]->has($metaName);
     }
 
     public function getPropertyMeta($propKey, $metaName)
     {
         $this->checkHasProperty($propKey);
-        return $this->PropMetaContainerList[$propKey]->get($metaName);
+        return $this->propMetaContainerList[$propKey]->get($metaName);
     }
 
     protected function checkHasProperty($key)
@@ -146,7 +146,7 @@ abstract class AbstractObject implements \JsonSerializable
 
     public function validate()
     {
-        foreach ($this->PropMetaContainerList as $key => $MetaContainer)
+        foreach ($this->propMetaContainerList as $key => $metaContainer)
             $this->validateValue($key, $this->$key);
     }
     protected function validateValue($key, $value)

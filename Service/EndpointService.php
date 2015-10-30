@@ -20,42 +20,42 @@ class EndpointService extends AbstractApiService
     /**
      * @var service container instance.
      */
-    protected $Container;
+    protected $container;
 
     /**
      * @var CacheLoader instance.
      */
-    protected $CacheLoader;
+    protected $cacheLoader;
 
     private $endpoints;
 
-    public function __construct(CacheLoader $CacheLoader, ContainerInterface $Container)
+    public function __construct(CacheLoader $cacheLoader, ContainerInterface $container)
     {
-        $this->CacheLoader = $CacheLoader;
-        $this->Container = $Container;
+        $this->cacheLoader = $cacheLoader;
+        $this->container = $container;
     }
 
-    public function createEndpoint($endpointCall, Request $Request = null)
+    public function createEndpoint($endpointCall, Request $request = null)
     {
         if (is_null($this->endpoints))
-            $this->endpoints = $this->CacheLoader->loadPlugins();
+            $this->endpoints = $this->cacheLoader->loadPlugins();
 
         if (!isset($this->endpoints[$endpointCall]))
             throw new InvalidEndpointException("Invalid endpoint: $endpointCall");
 
 
-        $MetaContainer = $this->createMetaContainer($this->endpoints[$endpointCall]['meta']);
+        $metaContainer = $this->createMetaContainer($this->endpoints[$endpointCall]['meta']);
 
         $className = $this->endpoints[$endpointCall]['class'];
-        $Endpoint = new $className($this->Container, $MetaContainer, $Request);
+        $endpoint = new $className($this->container, $metaContainer, $request);
 
-        return $Endpoint;
+        return $endpoint;
     }
 
     public function getEndpointNames()
     {
         if (is_null($this->endpoints))
-            $this->endpoints = $this->CacheLoader->loadPlugins();
+            $this->endpoints = $this->cacheLoader->loadPlugins();
 
 
         return $this->endpoints;

@@ -14,12 +14,12 @@ use Agit\CoreBundle\Service\UrlService;
 
 class TwigExtension extends \Twig_Extension
 {
-    private $CsrfTokenService;
+    private $csrfTokenService;
 
-    public function __construct(UrlService $UrlService, CsrfTokenService $CsrfTokenService)
+    public function __construct(UrlService $urlService, CsrfTokenService $csrfTokenService)
     {
-        $this->UrlService = $UrlService;
-        $this->CsrfTokenService = $CsrfTokenService;
+        $this->urlService = $urlService;
+        $this->csrfTokenService = $csrfTokenService;
     }
 
     /**
@@ -43,11 +43,11 @@ class TwigExtension extends \Twig_Extension
 
     public function getCsrfToken()
     {
-        return $this->CsrfTokenService->getToken();
+        return $this->csrfTokenService->getToken();
     }
 
     public function getApiUrlBase()
     {
-        return $this->UrlService->createBackendUrl('/api');
+        return $this->urlService->createBackendUrl('/api');
     }
 }

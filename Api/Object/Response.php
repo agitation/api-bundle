@@ -34,7 +34,7 @@ class Response extends AbstractObject
      * In case there are messages which the user must take note of, they are
      * added to this list.
      */
-    public $MessageList = array();
+    public $messageList = array();
 
     /**
      * @Property\PolymorphicType
@@ -68,20 +68,20 @@ class Response extends AbstractObject
         $this->success = $value;
     }
 
-    public function setMessageList(array $MessageList)
+    public function setMessageList(array $messageList)
     {
-        foreach ($MessageList as $Message)
+        foreach ($messageList as $message)
         {
-            if (!is_object($Message) || !($Message instanceof Message))
+            if (!is_object($message) || !($message instanceof Message))
                 throw new InternalErrorException("Invalid message object.");
 
-            $this->MessageList[] = $Message;
+            $this->messageList[] = $message;
         }
     }
 
     public function addMessage(\stdClass $message)
     {
-        $this->MessageList[] = $message;
+        $this->messageList[] = $message;
     }
 
     public function setPayload($payload)
@@ -101,7 +101,7 @@ class Response extends AbstractObject
 
     public function getMessageList()
     {
-        return $this->MessageList;
+        return $this->messageList;
     }
 
     public function getPayload()

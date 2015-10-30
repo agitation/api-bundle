@@ -25,14 +25,14 @@ class ObjectService extends AbstractApiService
     /**
      * @var service container instance.
      */
-    protected $Container;
+    protected $container;
 
     /**
      * @var CacheLoader instance.
      */
-    protected $CacheLoader;
+    protected $cacheLoader;
 
-    private $EntityService;
+    private $entityService;
 
     private $objects;
 
@@ -41,13 +41,13 @@ class ObjectService extends AbstractApiService
 
     private $translate;
 
-    public function __construct(CacheLoader $CacheLoader, ContainerInterface $Container)
+    public function __construct(CacheLoader $cacheLoader, ContainerInterface $container)
     {
-        $this->CacheLoader = $CacheLoader;
-        $this->Container = $Container;
-        $this->translate = $Container->get('agit.intl.translate');
+        $this->cacheLoader = $cacheLoader;
+        $this->container = $container;
+        $this->translate = $container->get('agit.intl.translate');
 
-        AbstractType::setValidationService($Container->get('agit.validation'));
+        AbstractType::setValidationService($container->get('agit.validation'));
         AbstractType::setTranslationService($this->translate);
     }
 
@@ -77,9 +77,9 @@ class ObjectService extends AbstractApiService
 
                 // we fill the scalar object, but only to see if it passes validation.
                 // then we return the bare request
-                $Object = $this->createObject($expectedObject);
-                $Object->set('value', $rawRequest);
-                $Object->validate();
+                $object = $this->createObject($expectedObject);
+                $object->set('value', $rawRequest);
+                $object->validate();
 
                 $result = $rawRequest;
             }
@@ -99,27 +99,27 @@ class ObjectService extends AbstractApiService
 
         $meta = $this->getMeta($objectName);
 
-        $ObjectMetaContainer = $this->createMetaContainer($meta['objectMeta']);
-        $PropMetaContainerList = [];
+        $objectMetaContainer = $this->createMetaContainer($meta['objectMeta']);
+        $propMetaContainerList = [];
 
         foreach ($meta['propMetaList'] as $propName => $propMetaList)
-            $PropMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
+            $propMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
 
         $objectClass = $meta['class'];
-        $Object = new $objectClass($this->Container, $ObjectMetaContainer, $PropMetaContainerList, $objectName);
+        $object = new $objectClass($this->container, $objectMetaContainer, $propMetaContainerList, $objectName);
 
         // TODO: Don't pass $objectName as a parameter, instead there should be a Meta carring this
 
         if (is_object($data))
-            $this->fill($Object, $data);
+            $this->fill($object, $data);
 
-        return $Object;
+        return $object;
     }
 
     public function getMeta($objectName)
     {
         if (is_null($this->objects))
-            $this->objects = $this->CacheLoader->loadPlugins();
+            $this->objects = $this->cacheLoader->loadPlugins();
 
         if (!isset($this->objects[$objectName]))
             throw new InvalidObjectException("Invalid object: $objectName");
@@ -130,7 +130,7 @@ class ObjectService extends AbstractApiService
     public function getMetaList()
     {
         if (is_null($this->objects))
-            $this->objects = $this->CacheLoader->loadPlugins();
+            $this->objects = $this->cacheLoader->loadPlugins();
 
         return $this->objects;
     }
@@ -151,29 +151,29 @@ class ObjectService extends AbstractApiService
         return $this->classes[$class];
     }
 
-    public function fill(AbstractObject &$Object, $data)
+    public function fill(AbstractObject &$object, $data)
     {
         if (!is_object($data))
             throw new InternalErrorException("The 'data' parameter must be an object.");
 
-//         if ($this->EntityService->isEntity($data))
+//         if ($this->entityService->isEntity($data))
 //         {
-//             $this->fillFromEntity($Object, $data);
+//             $this->fillFromEntity($object, $data);
 //         }
 //         else
 //         {
             if ($data instanceof \stdClass)
             {
-                $values = get_object_vars($data) + $Object->getValues();
+                $values = get_object_vars($data) + $object->getValues();
 
                 foreach ($values as $key => $value)
                 {
-                    $Type = $Object->getPropertyMeta($key, 'Type');
-                    $Object->set($key, $this->createFieldValue($Type, $key, $value));
+                    $type = $object->getPropertyMeta($key, 'Type');
+                    $object->set($key, $this->createFieldValue($type, $key, $value));
                 }
             }
 
-            $Object->validate();
+            $object->validate();
 //         }
     }
 
@@ -181,10 +181,10 @@ class ObjectService extends AbstractApiService
      * NOTE: This method does only a rough pre-flight validation to avoid runtime errors.
      * Actual in-depth validation happens in the object itself.
      */
-    private function createFieldValue($Type, $key, $value)
+    private function createFieldValue($type, $key, $value)
     {
         $result = null;
-        $expectedType = $Type->getType();
+        $expectedType = $type->getType();
 
         if (is_scalar($value) || is_null($value) || $expectedType === 'polymorphic')
         {
@@ -192,7 +192,7 @@ class ObjectService extends AbstractApiService
         }
         elseif (is_array($value))
         {
-            if ($Type->isObjectType() && $Type->isListType())
+            if ($type->isObjectType() && $type->isListType())
             {
                 $result = [];
 
@@ -219,29 +219,29 @@ class ObjectService extends AbstractApiService
         return $result;
     }
 
-//     private function fillFromEntity(AbstractObject &$Object, AbstractEntity $Entity)
+//     private function fillFromEntity(AbstractObject &$object, AbstractEntity $entity)
 //     {
-//         foreach (array_keys($Object->getValues()) as $key)
+//         foreach (array_keys($object->getValues()) as $key)
 //         {
-//             $Type = $Object->getPropertyMeta($key, 'Type');
+//             $type = $object->getPropertyMeta($key, 'Type');
 //
-//             $methodName = ($Type && $Type->getOptions()->source)
-//                 ? $Type->getOptions()->source
+//             $methodName = ($type && $type->getOptions()->source)
+//                 ? $type->getOptions()->source
 //                 : 'get'.ucfirst($key);
 //
 //             /*
 //                 TODO: Use Type objects instead of guessing
 //             */
 //
-//             if (is_callable([$Entity, $methodName]))
+//             if (is_callable([$entity, $methodName]))
 //             {
-//                 $value = $Entity->$methodName();
+//                 $value = $entity->$methodName();
 //
 //                 if (is_scalar($value))
 //                 {
-//                     $Object->set($key, $value);
+//                     $object->set($key, $value);
 //                 }
-//                 elseif ($this->keyIndicatesObjectList($key) && $this->EntityService->isEntityCollection($value))
+//                 elseif ($this->keyIndicatesObjectList($key) && $this->entityService->isEntityCollection($value))
 //                 {
 //                     $list = [];
 //
@@ -255,14 +255,14 @@ class ObjectService extends AbstractApiService
 //                         $list[] = $this->createChildEntityObject($val, $propMeta->child);
 //                     }
 //
-//                     $Object->set($key, $list);
+//                     $object->set($key, $list);
 //                 }
-//                 elseif ($this->keyIndicatesObject($key) && $this->EntityService->isEntity($value))
+//                 elseif ($this->keyIndicatesObject($key) && $this->entityService->isEntity($value))
 //                 {
 //                     if (!$propMeta->child)
 //                         throw new InternalErrorException("Class for $key is not set.");
 //
-//                     $Object->set($key, $this->createChildEntityObject($value, $propMeta->child));
+//                     $object->set($key, $this->createChildEntityObject($value, $propMeta->child));
 //                 }
 //                 elseif (is_array($value))
 //                 {
@@ -272,23 +272,23 @@ class ObjectService extends AbstractApiService
 //                         if (is_scalar($val))
 //                             $list[] = $val;
 //
-//                     $Object->set($key, $list);
+//                     $object->set($key, $list);
 //                 }
 //                 elseif (is_object($value) && $propMeta->child)
 //                 {
-//                     $ObjectChild = $this->createObject($propMeta->child->class, $value);
-//                     $Object->set($key, $ObjectChild);
+//                     $objectChild = $this->createObject($propMeta->child->class, $value);
+//                     $object->set($key, $objectChild);
 //                 }
 //             }
 //         }
 //
-//         $Object->fill($Entity);
-//         $Object->validate();
+//         $object->fill($entity);
+//         $object->validate();
 //     }
 // 
-//     private function createChildEntityObject($Entity, $objClassName)
+//     private function createChildEntityObject($entity, $objClassName)
 //     {
-//         $entityName = $Entity->getEntityClass();
-//         return $this->createObject($objClassName->class, $Entity);
+//         $entityName = $entity->getEntityClass();
+//         return $this->createObject($objClassName->class, $entity);
 //     }
 }

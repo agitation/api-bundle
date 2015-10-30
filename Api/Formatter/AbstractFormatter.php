@@ -21,11 +21,11 @@ abstract class AbstractFormatter
 
     static protected $mimeType;
 
-    protected $Container;
+    protected $container;
 
-    protected $Endpoint;
+    protected $endpoint;
 
-    protected $Request;
+    protected $request;
 
     static public function getFormat()
     {
@@ -37,22 +37,22 @@ abstract class AbstractFormatter
         return static::$mimeType;
     }
 
-    public function __construct(ContainerInterface $Container, AbstractEndpoint $Endpoint, Request $Request)
+    public function __construct(ContainerInterface $container, AbstractEndpoint $endpoint, Request $request)
     {
         if (!static::$format || !static::$mimeType)
             throw new InternalErrorException("'format' and 'mimeType' must be set in the concrete formatter class.");
 
-        $this->Endpoint = $Endpoint;
-        $this->Container = $Container;
-        $this->Request = $Request;
+        $this->endpoint = $endpoint;
+        $this->container = $container;
+        $this->request = $request;
     }
 
     public function getResponse()
     {
-        $Response = new Response();
-        $Response->headers = $this->getHttpHeaders();
-        $Response->setContent($this->getHttpContent());
-        return $Response;
+        $response = new Response();
+        $response->headers = $this->getHttpHeaders();
+        $response->setContent($this->getHttpContent());
+        return $response;
     }
 
     abstract protected function getHttpHeaders();

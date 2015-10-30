@@ -17,22 +17,22 @@ use Doctrine\Common\Annotations\Reader;
  */
 class ApiPluginListenerFactory
 {
-    protected $AnnotationReader;
+    protected $annotationReader;
 
-    protected $ClassCollector;
+    protected $classCollector;
 
     protected $parentClass;
 
-    public function __construct(Reader $AnnotationReader, ClassCollector $ClassCollector, $type, $parentClass)
+    public function __construct(Reader $annotationReader, ClassCollector $classCollector, $type, $parentClass)
     {
-        $this->AnnotationReader = $AnnotationReader;
-        $this->ClassCollector = $ClassCollector;
+        $this->annotationReader = $annotationReader;
+        $this->classCollector = $classCollector;
         $this->type = $type;
         $this->parentClass = $parentClass;
     }
 
     public function create($namespace, $searchPath, $priority = 100)
     {
-        return new ApiPluginListener($this->AnnotationReader, $this->ClassCollector, $this->type, $this->parentClass, $namespace, $searchPath, $priority);
+        return new ApiPluginListener($this->annotationReader, $this->classCollector, $this->type, $this->parentClass, $namespace, $searchPath, $priority);
     }
 }
