@@ -37,7 +37,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
         $response->set('success', $this->endpoint->getSuccess());
 
         foreach ($this->endpoint->getMessages() as $message)
-            $response->add('MessageList', $message);
+            $response->add('messageList', $message);
 
         if ($this->endpoint->getSuccess())
             $response->set('payload', $this->endpoint->getResponse());
