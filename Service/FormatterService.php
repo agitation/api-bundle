@@ -38,7 +38,7 @@ class FormatterService
     public function formatExists($format)
     {
         if (is_null($this->formats))
-            $this->formats = $this->cacheLoader->loadPlugins();
+            $this->formats = $this->cacheLoader->load();
 
         return isset($this->formats[$format]);
     }

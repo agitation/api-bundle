@@ -119,7 +119,7 @@ class ObjectService extends AbstractApiService
     public function getMeta($objectName)
     {
         if (is_null($this->objects))
-            $this->objects = $this->cacheLoader->loadPlugins();
+            $this->objects = $this->cacheLoader->load();
 
         if (!isset($this->objects[$objectName]))
             throw new InvalidObjectException("Invalid object: $objectName");
@@ -130,7 +130,7 @@ class ObjectService extends AbstractApiService
     public function getMetaList()
     {
         if (is_null($this->objects))
-            $this->objects = $this->cacheLoader->loadPlugins();
+            $this->objects = $this->cacheLoader->load();
 
         return $this->objects;
     }

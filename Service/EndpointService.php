@@ -38,7 +38,7 @@ class EndpointService extends AbstractApiService
     public function createEndpoint($endpointCall, Request $request = null)
     {
         if (is_null($this->endpoints))
-            $this->endpoints = $this->cacheLoader->loadPlugins();
+            $this->endpoints = $this->cacheLoader->load();
 
         if (!isset($this->endpoints[$endpointCall]))
             throw new InvalidEndpointException("Invalid endpoint: $endpointCall");
@@ -55,7 +55,7 @@ class EndpointService extends AbstractApiService
     public function getEndpointNames()
     {
         if (is_null($this->endpoints))
-            $this->endpoints = $this->cacheLoader->loadPlugins();
+            $this->endpoints = $this->cacheLoader->load();
 
         return $this->endpoints;
     }
