@@ -6,7 +6,8 @@
         "php": ">=5.4.9",
         "symfony/symfony": "2.3.*",
         "agitation/intl": "dev-master",
-        "agitation/core": "dev-master"
+        "agitation/core": "dev-master",
+        "agitation/pluggable": "dev-master"
     },
     "suggest": {
         "agitation/user": "Required to check for user capabilities. Without it, all calls requiring a capability will fail."

@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Agit\CoreBundle\Exception\InternalErrorException;
-use Agit\CoreBundle\Pluggable\Strategy\Cache\CacheLoader;
+use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
 
 class EndpointService extends AbstractApiService
@@ -29,9 +29,9 @@ class EndpointService extends AbstractApiService
 
     private $endpoints;
 
-    public function __construct(CacheLoader $cacheLoader, ContainerInterface $container)
+    public function __construct(CacheLoaderFactory $CacheLoaderFactory, ContainerInterface $container)
     {
-        $this->cacheLoader = $cacheLoader;
+        $this->cacheLoader = $CacheLoaderFactory->create("agit.api.endpoint");
         $this->container = $container;
     }
 
@@ -56,7 +56,6 @@ class EndpointService extends AbstractApiService
     {
         if (is_null($this->endpoints))
             $this->endpoints = $this->cacheLoader->loadPlugins();
-
 
         return $this->endpoints;
     }

@@ -11,8 +11,8 @@ namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\CoreBundle\Entity\AbstractEntity;
-use Agit\CoreBundle\Pluggable\Strategy\Cache\CacheLoader;
 use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\ApiBundle\Api\Object\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
@@ -41,9 +41,9 @@ class ObjectService extends AbstractApiService
 
     private $translate;
 
-    public function __construct(CacheLoader $cacheLoader, ContainerInterface $container)
+    public function __construct(CacheLoaderFactory $CacheLoaderFactory, ContainerInterface $container)
     {
-        $this->cacheLoader = $cacheLoader;
+        $this->cacheLoader = $CacheLoaderFactory->create("agit.api.object");
         $this->container = $container;
         $this->translate = $container->get('agit.intl.translate');
 

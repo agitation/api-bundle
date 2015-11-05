@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Agit\CoreBundle\Pluggable\Strategy\Cache\CacheLoader;
+use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\ApiBundle\Api\Endpoint\AbstractEndpoint;
 use Agit\ApiBundle\Exception\IncompatibleFormatterException;
 
@@ -29,9 +29,9 @@ class FormatterService
 
     private $formats;
 
-    public function __construct(CacheLoader $cacheLoader, ContainerInterface $container)
+    public function __construct(CacheLoaderFactory $CacheLoaderFactory, ContainerInterface $container)
     {
-        $this->cacheLoader = $cacheLoader;
+        $this->cacheLoader = $CacheLoaderFactory->create("agit.api.formatter");
         $this->container = $container;
     }
 
