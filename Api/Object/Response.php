@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Api\Object;
 
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Api\Meta\Property;
 
 /**

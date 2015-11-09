@@ -10,8 +10,8 @@
 namespace Agit\ApiBundle\Api\Object;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Agit\CoreBundle\Helper\StringHelper;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Helper\StringHelper;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Api\Meta\MetaContainer;

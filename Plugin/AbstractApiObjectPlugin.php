@@ -10,13 +10,13 @@
 namespace Agit\ApiBundle\Plugin;
 
 use Doctrine\Common\Annotations\Reader;
-use Agit\CoreBundle\Helper\StringHelper;
+use Agit\CommonBundle\Helper\StringHelper;
 use Agit\ApiBundle\Api\Meta\AbstractMeta;
 use Agit\ApiBundle\Api\Meta\Object\Object;
 use Agit\ApiBundle\Api\Meta\Property\AbstractType;
 use Agit\ApiBundle\Api\Meta\Property\ObjectType;
 use Agit\ApiBundle\Api\Meta\Property\Name;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 
 abstract class AbstractApiObjectPlugin extends AbstractApiPlugin
 {

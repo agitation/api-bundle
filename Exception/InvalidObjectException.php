@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CoreBundle\Exception\AgitException;
+use Agit\CommonBundle\Exception\AgitException;
 
 /**
  * An non-existent object was requested or referenced.

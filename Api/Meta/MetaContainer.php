@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Api\Meta;
 
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 
 class MetaContainer
 {

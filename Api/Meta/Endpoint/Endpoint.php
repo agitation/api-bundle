@@ -7,7 +7,7 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\CoreBundle\Lib\Api\Endpoint\Meta;
+namespace Agit\CommonBundle\Lib\Api\Endpoint\Meta;
 
 /**
  * @Annotation

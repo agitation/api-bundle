@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Agit\CoreBundle\Command\AbstractCommand;
+use Agit\CommonBundle\Command\AbstractCommand;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ApiJsGeneratorCommand extends AbstractCommand
@@ -38,7 +38,7 @@ class ApiJsGeneratorCommand extends AbstractCommand
         $this->output = $output;
         $this->filesystem = new Filesystem();
 
-        $targetPath = $this->getContainer()->get('agit.core.filecollector')->resolve($input->getArgument('bundle'));
+        $targetPath = $this->getContainer()->get('agit.common.filecollector')->resolve($input->getArgument('bundle'));
 
         if (!$targetPath)
             throw new \Exception(sprintf("Invalid bundle: %s", $input->getArgument('bundle')));

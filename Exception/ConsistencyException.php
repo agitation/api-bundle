@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CoreBundle\Exception\AgitException;
+use Agit\CommonBundle\Exception\AgitException;
 
 /**
  * The request cannot be processed, because it would cause an inconsistency

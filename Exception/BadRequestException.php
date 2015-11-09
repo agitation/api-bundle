@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CoreBundle\Exception\AgitException;
+use Agit\CommonBundle\Exception\AgitException;
 
 /**
  * The request is utterly malformed and cannot be processed.

@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Api\Meta\Property;
 
 use Agit\ApiBundle\Api\Meta\AbstractMeta;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 
 abstract class AbstractType extends AbstractMeta
 {

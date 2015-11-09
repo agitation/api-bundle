@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Exception\CsrfException;
-use Agit\CoreBundle\Service\UrlService;
+use Agit\CommonBundle\Service\UrlService;
 
 class TwigExtension extends \Twig_Extension
 {

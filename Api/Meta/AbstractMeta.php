@@ -9,8 +9,8 @@
 
 namespace Agit\ApiBundle\Api\Meta;
 
-use Agit\CoreBundle\Annotation\AbstractAnnotation;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Annotation\AbstractAnnotation;
+use Agit\CommonBundle\Exception\InternalErrorException;
 
 abstract class AbstractMeta extends AbstractAnnotation
 {

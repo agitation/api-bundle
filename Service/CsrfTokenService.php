@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 use Agit\ApiBundle\Exception\CsrfException;
-use Agit\CoreBundle\Helper\StringHelper;
+use Agit\CommonBundle\Helper\StringHelper;
 
 class CsrfTokenService
 {

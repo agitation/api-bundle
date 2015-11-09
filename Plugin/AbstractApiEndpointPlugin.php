@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Plugin;
 
-use Agit\CoreBundle\Helper\StringHelper;
+use Agit\CommonBundle\Helper\StringHelper;
 use Agit\ApiBundle\Api\Meta\AbstractMeta;
 
 abstract class AbstractApiEndpointPlugin extends AbstractApiPlugin

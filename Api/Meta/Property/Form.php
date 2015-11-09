@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Api\Meta\Property;
 
 use Agit\ApiBundle\Api\Meta\AbstractMeta;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 
 /**
  * @Annotation

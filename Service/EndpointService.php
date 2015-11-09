@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
 

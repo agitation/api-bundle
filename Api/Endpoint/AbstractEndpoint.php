@@ -11,8 +11,8 @@ namespace Agit\ApiBundle\Api\Endpoint;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Agit\CoreBundle\Exception\AgitException;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\AgitException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Api\Meta\MetaContainer;
 use Agit\ApiBundle\Api\Object\AbstractObject;

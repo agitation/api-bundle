@@ -16,7 +16,7 @@ use Agit\PluggableBundle\Strategy\Cache\CachePluginInterface;
 use Agit\PluggableBundle\Strategy\Cache\CacheEntry;
 
 /**
- * @Depends({"annotation_reader", "agit.core.classcollector"})
+ * @Depends({"annotation_reader", "agit.common.classcollector"})
  */
 abstract class AbstractApiPlugin implements CachePluginInterface, ServiceAwarePluginInterface
 {
@@ -29,7 +29,7 @@ abstract class AbstractApiPlugin implements CachePluginInterface, ServiceAwarePl
         $this->entryList = [];
 
 
-        foreach ($this->getService("agit.core.classcollector")->collect($this->getSearchNamespace()) as $class)
+        foreach ($this->getService("agit.common.classcollector")->collect($this->getSearchNamespace()) as $class)
         {
             $classRefl = new \ReflectionClass($class);
 

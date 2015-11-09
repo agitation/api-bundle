@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Api\Formatter;
 
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 abstract class AbstractSerializableFormatter extends AbstractFormatter

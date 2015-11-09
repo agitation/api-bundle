@@ -10,8 +10,8 @@
 namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Agit\CoreBundle\Entity\AbstractEntity;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Entity\AbstractEntity;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Api\Object\AbstractObject;
