@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Api\Meta\Property;
 
 use Agit\CoreBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Service\Translate;
+use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Api\Meta\AbstractMeta;
 
 /**
@@ -32,7 +32,7 @@ class Name extends AbstractMeta
     public function getName()
     {
         return $this->context
-            ? Translate::getInstance()->x($this->value, $this->context)
-            : Translate::getInstance()->t($this->value);
+            ? Translate::x($this->value, $this->context)
+            : Translate::t($this->value);
     }
 }

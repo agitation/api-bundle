@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\CoreBundle\Entity\AbstractEntity;
 use Agit\CoreBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
+use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Api\Object\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
@@ -39,16 +40,12 @@ class ObjectService extends AbstractApiService
     // reverse mapping (class => object name)
     private $classes;
 
-    private $translate;
-
     public function __construct(CacheLoaderFactory $CacheLoaderFactory, ContainerInterface $container)
     {
         $this->cacheLoader = $CacheLoaderFactory->create("agit.api.object");
         $this->container = $container;
-        $this->translate = $container->get('agit.intl.translate');
 
         AbstractType::setValidationService($container->get('agit.validation'));
-        AbstractType::setTranslationService($this->translate);
     }
 
     public function rawRequestToApiObject($rawRequest, $expectedObject)
@@ -58,7 +55,7 @@ class ObjectService extends AbstractApiService
         if (substr($expectedObject, -2) === '[]')
         {
             if (!is_array($rawRequest))
-                throw new InvalidObjectException($this->translate->t("The request is expected to be an array."));
+                throw new InvalidObjectException(Translate::t("The request is expected to be an array."));
 
             $result = [];
 
@@ -73,7 +70,7 @@ class ObjectService extends AbstractApiService
             if ($expectsScalar)
             {
                 if (!is_scalar($rawRequest))
-                    throw new InvalidObjectException($this->translate->t("The request is expected to be a scalar value."));
+                    throw new InvalidObjectException(Translate::t("The request is expected to be a scalar value."));
 
                 // we fill the scalar object, but only to see if it passes validation.
                 // then we return the bare request
@@ -205,13 +202,13 @@ class ObjectService extends AbstractApiService
             }
             else
             {
-                throw new InvalidObjectValueException(sprintf($this->translate->t("Invalid value for the “%s” property."), $key));
+                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the “%s” property."), $key));
             }
         }
         elseif (is_object($value))
         {
             if (!$propMeta->child)
-                throw new InvalidObjectValueException(sprintf($this->translate->t("Invalid value for the “%s” property."), $key));
+                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the “%s” property."), $key));
 
             $result = $this->createObject($propMeta->child->class, $value);
         }

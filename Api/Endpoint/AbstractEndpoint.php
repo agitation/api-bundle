@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Agit\CoreBundle\Exception\AgitException;
 use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Api\Meta\MetaContainer;
 use Agit\ApiBundle\Api\Object\AbstractObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
@@ -34,11 +35,6 @@ abstract class AbstractEndpoint
      * @var MetaContainer instance.
      */
     protected $meta;
-
-    /**
-     * @var shortcut to translation service.
-     */
-    protected $translate;
 
     /**
      * @var indicates whether the call was successful or not.
@@ -75,7 +71,6 @@ abstract class AbstractEndpoint
         $this->container = $container;
         $this->meta = $meta;
         $this->httpRequest = $httpRequest;
-        $this->translate = $container->get('agit.intl.translate');
     }
 
     public function getMeta($name)
@@ -186,10 +181,10 @@ abstract class AbstractEndpoint
             $user = $this->getCurrentUser();
 
             if (!$user)
-                throw new UnauthorizedException($this->translate->t('You must be logged in to perform this operation.'));
+                throw new UnauthorizedException(Translate::t('You must be logged in to perform this operation.'));
 
             if (!$user->hasCapability($reqCapibilty))
-                throw new UnauthorizedException($this->translate->t("You do not have sufficient permissions to perform this operation."));
+                throw new UnauthorizedException(Translate::t("You do not have sufficient permissions to perform this operation."));
         }
     }
 

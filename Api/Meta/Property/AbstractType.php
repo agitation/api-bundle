@@ -17,8 +17,6 @@ abstract class AbstractType extends AbstractMeta
 {
     protected static $_ValidationService;
 
-    protected static $_TranslationService;
-
     /**
      * @var the annotated field may be `null` or unset
      */
@@ -63,11 +61,6 @@ abstract class AbstractType extends AbstractMeta
     public static function setValidationService($validationService)
     {
         self::$_ValidationService = $validationService;
-    }
-
-    public static function setTranslationService($translationService)
-    {
-        self::$_TranslationService = $translationService;
     }
 
     public function getSpecialFormatDesc($field)

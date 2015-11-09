@@ -27,11 +27,6 @@ abstract class AbstractObject implements \JsonSerializable
     protected $container;
 
     /**
-     * @var instance of translator.
-     */
-    protected $translate;
-
-    /**
      * @var MetaContainer instance for the object.
      */
     protected $objectMetaContainer;
@@ -52,7 +47,6 @@ abstract class AbstractObject implements \JsonSerializable
         $this->objectMetaContainer = $objectMetaContainer;
         $this->propMetaContainerList = $propMetaContainerList;
         $this->objectName = $objectName;
-        $this->translate = $container->get('agit.intl.translate');
     }
 
     public function getObjectName()
@@ -158,7 +152,7 @@ abstract class AbstractObject implements \JsonSerializable
         catch(\Exception $e)
         {
             throw new InvalidObjectValueException(sprintf(
-                $this->translate->t("Invalid value for “%s”: %s"),
+                Translate::t("Invalid value for “%s”: %s"),
                 $this->getPropertyMeta($key, 'Name')->getName(), $e->getMessage()));
         }
     }

@@ -10,6 +10,7 @@
 namespace Agit\ApiBundle\Api\Meta\Property;
 
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
+use Agit\IntlBundle\Translate;
 
 /**
  * @Annotation
@@ -47,7 +48,7 @@ class StringType extends AbstractType
 
                 foreach ($forbiddenCharacters as $char => $name)
                     if (strpos($value, $char))
-                        throw new InvalidObjectValueException(sprintf(static::$_TranslationService->t("The “%s” character must not be contained."), $name));
+                        throw new InvalidObjectValueException(sprintf(Translate::t("The “%s” character must not be contained."), $name));
             }
         }
     }
