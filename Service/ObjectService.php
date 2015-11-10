@@ -10,7 +10,6 @@
 namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Agit\CommonBundle\Entity\AbstractEntity;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\IntlBundle\Translate;
@@ -215,77 +214,4 @@ class ObjectService extends AbstractApiService
 
         return $result;
     }
-
-//     private function fillFromEntity(AbstractObject &$object, AbstractEntity $entity)
-//     {
-//         foreach (array_keys($object->getValues()) as $key)
-//         {
-//             $type = $object->getPropertyMeta($key, 'Type');
-//
-//             $methodName = ($type && $type->getOptions()->source)
-//                 ? $type->getOptions()->source
-//                 : 'get'.ucfirst($key);
-//
-//             /*
-//                 TODO: Use Type objects instead of guessing
-//             */
-//
-//             if (is_callable([$entity, $methodName]))
-//             {
-//                 $value = $entity->$methodName();
-//
-//                 if (is_scalar($value))
-//                 {
-//                     $object->set($key, $value);
-//                 }
-//                 elseif ($this->keyIndicatesObjectList($key) && $this->entityService->isEntityCollection($value))
-//                 {
-//                     $list = [];
-//
-//                     foreach ($value->getValues() as $val)
-//                     {
-//                         $objKey = $this->getObjectNameFromListKey($key);
-//
-//                         if (!$propMeta->child)
-//                             throw new InternalErrorException("Class for $objKey is not set.");
-//
-//                         $list[] = $this->createChildEntityObject($val, $propMeta->child);
-//                     }
-//
-//                     $object->set($key, $list);
-//                 }
-//                 elseif ($this->keyIndicatesObject($key) && $this->entityService->isEntity($value))
-//                 {
-//                     if (!$propMeta->child)
-//                         throw new InternalErrorException("Class for $key is not set.");
-//
-//                     $object->set($key, $this->createChildEntityObject($value, $propMeta->child));
-//                 }
-//                 elseif (is_array($value))
-//                 {
-//                     $list = [];
-//
-//                     foreach ($value as $val)
-//                         if (is_scalar($val))
-//                             $list[] = $val;
-//
-//                     $object->set($key, $list);
-//                 }
-//                 elseif (is_object($value) && $propMeta->child)
-//                 {
-//                     $objectChild = $this->createObject($propMeta->child->class, $value);
-//                     $object->set($key, $objectChild);
-//                 }
-//             }
-//         }
-//
-//         $object->fill($entity);
-//         $object->validate();
-//     }
-// 
-//     private function createChildEntityObject($entity, $objClassName)
-//     {
-//         $entityName = $entity->getEntityClass();
-//         return $this->createObject($objClassName->class, $entity);
-//     }
 }
