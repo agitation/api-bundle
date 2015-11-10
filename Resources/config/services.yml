@@ -27,5 +27,5 @@ services:
     # simple form builder for API objects
     agit.api.twig.formbuilder:
         class: Agit\ApiBundle\Twig\ApiFormBuilderExtension
-        arguments:  [ @twig, @agit.api.object ]
+        arguments:  [ @?twig, @agit.api.object ]
         tags: [{ name: twig.extension }]
