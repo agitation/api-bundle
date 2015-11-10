@@ -25,7 +25,7 @@ class ApiExtension extends \Twig_Extension
     /**
      * name of the extension
      */
-    public function getName()s
+    public function getName()
     {
         return 'agit.api';
     }
