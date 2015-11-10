@@ -20,6 +20,12 @@ services:
         arguments: [@session]
 
     agit.api.twig:
-        class: Agit\ApiBundle\Service\TwigExtension
+        class: Agit\ApiBundle\Twig\TwigExtension
         arguments:  [ @agit.common.url, @agit.api.csrf ]
+        tags: [{ name: twig.extension }]
+
+    # simple form builder for API objects
+    agit.api.twig.formbuilder:
+        class: Agit\ApiBundle\Twig\ApiFormBuilderExtension
+        arguments:  [ @twig, @agit.api.object ]
         tags: [{ name: twig.extension }]

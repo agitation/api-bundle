@@ -7,12 +7,12 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\ApiBundle\Service;
+namespace Agit\ApiBundle\Twig;
 
-use Agit\ApiBundle\Exception\CsrfException;
 use Agit\CommonBundle\Service\UrlService;
+use Agit\ApiBundle\Service\CsrfTokenService;
 
-class TwigExtension extends \Twig_Extension
+class ApiExtension extends \Twig_Extension
 {
     private $csrfTokenService;
 
@@ -25,7 +25,7 @@ class TwigExtension extends \Twig_Extension
     /**
      * name of the extension
      */
-    public function getName()
+    public function getName()s
     {
         return 'agit.api';
     }
