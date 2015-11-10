@@ -48,6 +48,6 @@ class TwigExtension extends \Twig_Extension
 
     public function getApiUrlBase()
     {
-        return $this->urlService->createBackendUrl('/api');
+        return $this->urlService->createAppUrl('/api');
     }
 }
