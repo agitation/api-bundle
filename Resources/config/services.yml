@@ -20,7 +20,7 @@ services:
         arguments: [@session]
 
     agit.api.twig:
-        class: Agit\ApiBundle\Twig\TwigExtension
+        class: Agit\ApiBundle\Twig\ApiExtension
         arguments:  [ @agit.common.url, @agit.api.csrf ]
         tags: [{ name: twig.extension }]
 
