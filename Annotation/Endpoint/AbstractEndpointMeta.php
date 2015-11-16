@@ -9,18 +9,14 @@
 
 namespace Agit\ApiBundle\Annotation\Endpoint;
 
+use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
+use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
+use Agit\PluggableBundle\Strategy\PluginInterface;
+
 /**
  * @Annotation
  */
-class Security extends AbstractEndpointMeta
+abstract class AbstractEndpointMeta implements SerializableAnnotationInterface, PluginInterface
 {
-    /**
-     * @var user capability required for this call.
-     */
-    protected $capability;
-
-    /**
-     * @var whether or not to allow cross-origin requests without a CSRF token.
-     */
-    protected $allowCrossOrigin = false;
+    use SerializableAnnotationTrait;
 }

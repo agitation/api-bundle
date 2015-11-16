@@ -9,17 +9,13 @@
 
 namespace Agit\ApiBundle\Annotation\Endpoint;
 
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
-use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
 use Agit\PluggableBundle\Strategy\PluginInterface;
 
 /**
  * @Annotation
  */
-class EndpointClass implements SerializableAnnotationInterface, PluginInterface
+class EndpointClass extends AbstractEndpointMeta implements PluginInterface
 {
-    use SerializableAnnotationTrait;
-
     /**
      * @var the API namespace, such as `common.v1`
      */

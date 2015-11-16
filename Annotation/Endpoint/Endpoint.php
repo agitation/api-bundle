@@ -9,16 +9,11 @@
 
 namespace Agit\ApiBundle\Annotation\Endpoint;
 
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
-use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
-
 /**
  * @Annotation
  */
-class Endpoint implements SerializableAnnotationInterface
+class Endpoint extends AbstractEndpointMeta
 {
-    use SerializableAnnotationTrait;
-
     /**
      * @var root request object namespace/name
      */
