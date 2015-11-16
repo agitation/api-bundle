@@ -26,7 +26,7 @@ class Response extends AbstractObject
      * request will always be considered successful, even if no results were
      * found.
      */
-    public $success = null;
+    protected $success = null;
 
     /**
      * @Property\ObjectListType(class="Message")
@@ -34,14 +34,14 @@ class Response extends AbstractObject
      * In case there are messages which the user must take note of, they are
      * added to this list.
      */
-    public $messageList = array();
+    protected $messageList = [];
 
     /**
      * @Property\PolymorphicType
      *
      * The actual response object, as specified in the endpoint call.
      */
-    public $payload = null;
+    protected $payload = null;
 
     /**
      * @Property\PolymorphicType
@@ -58,7 +58,7 @@ class Response extends AbstractObject
      * Sample code for unfolding this structure can be found in various places
      * in the `examples` section of the SDK.
      */
-    public $entityList = array();
+    protected $entityList = [];
 
     public function setSuccess($value)
     {
@@ -71,15 +71,10 @@ class Response extends AbstractObject
     public function setMessageList(array $messageList)
     {
         foreach ($messageList as $message)
-        {
-            if (!is_object($message) || !($message instanceof Message))
-                throw new InternalErrorException("Invalid message object.");
-
-            $this->messageList[] = $message;
-        }
+            $this->addMessage($message);
     }
 
-    public function addMessage(\stdClass $message)
+    public function addMessage(Message $message)
     {
         $this->messageList[] = $message;
     }
