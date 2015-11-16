@@ -16,16 +16,4 @@ use Agit\PluggableBundle\Strategy\PluginInterface;
  */
 class EndpointClass extends AbstractEndpointMeta implements PluginInterface
 {
-    /**
-     * @var the API namespace, such as `common.v1`
-     */
-    protected $namespace;
-
-    /**
-     * @var use calls from a parent endpoint
-     *
-     * By default, only calls from an endpoint class itself will be registered.
-     * But if a parent class provides additional calls, they may be inherited.
-     */
-    protected $inherits = [];
 }
