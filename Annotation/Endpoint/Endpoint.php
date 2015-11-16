@@ -23,36 +23,4 @@ class Endpoint extends AbstractEndpointMeta
      * @var root response object namespace/name
      */
     protected $response;
-
-    /**
-     * @var if the result is an array of objects, the object type can be passed for automatic filling
-     */
-    protected $listobject;
-
-    /**
-     * @var can be set to `true` if an endpoint provided by a parent class should be skipped.
-     */
-    protected $inactive;
-
-    /**
-     * @var the API namespace. Set by the EndpointService.
-     */
-    protected $namespace;
-
-    /**
-     * @var the API endpoint class. Set by the EndpointService.
-     */
-    protected $class;
-
-    /**
-     * @var the endpoint method.
-     */
-    protected $endpoint;
-
-    public function setReference($namespace, $class, $endpoint)
-    {
-        $this->namespace = $namespace;
-        $this->class = $class;
-        $this->endpoint = $endpoint;
-    }
 }
