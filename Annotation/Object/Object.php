@@ -9,18 +9,13 @@
 
 namespace Agit\ApiBundle\Annotation\Object;
 
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
-use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
-
 /**
  * @Annotation
  */
-class Object implements SerializableAnnotationInterface
+class Object extends AbstractObjectMeta
 {
-    use SerializableAnnotationTrait;
-
     /**
-     * @var the full name of the object with namespace prefix, e.g. `common.v1/SomeObject`.
+     * @var full object name with namespace prefix, e.g. `common.v1/SomeObject`. Do not set, will be filled automatically.
      */
     protected $objectName;
 
