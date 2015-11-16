@@ -12,6 +12,7 @@ namespace Agit\ApiBundle\Api\Object;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\CommonBundle\Helper\StringHelper;
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Api\Meta\MetaContainer;
