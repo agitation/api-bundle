@@ -7,15 +7,18 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\ApiBundle\Annotation\Call;
+namespace Agit\ApiBundle\Annotation\Endpoint;
 
-use Agit\ApiBundle\Annotation\AbstractMeta;
+use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
+use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
 
 /**
  * @Annotation
  */
-class Security extends AbstractMeta
+class Security implements SerializableAnnotationInterface
 {
+    use SerializableAnnotationTrait;
+
     /**
      * @var user capability required for this call.
      */

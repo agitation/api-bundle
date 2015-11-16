@@ -10,6 +10,7 @@
 namespace Agit\ApiBundle\Annotation;
 
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
 
 class MetaContainer
 {
@@ -20,7 +21,7 @@ class MetaContainer
         return isset($this->metaList[$name]);
     }
 
-    public function set($name, AbstractMeta $meta)
+    public function set($name, SerializableAnnotationInterface $meta)
     {
         $this->metaList[$name] = $meta;
     }

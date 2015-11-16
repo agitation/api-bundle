@@ -24,7 +24,7 @@ use Agit\ApiBundle\Exception\UnauthorizedException;
  * Generic Endpoint handler. To be inherited by an API version specific
  * handler, which again is inherited by the actual Endpoint.
  */
-abstract class AbstractEndpoint
+abstract class AbstractEndpointClass
 {
     /**
      * @var service container instance.

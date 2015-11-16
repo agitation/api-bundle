@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Service;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
-use Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpoint;
+use Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpointClass;
 use Agit\ApiBundle\Exception\IncompatibleFormatterException;
 
 class FormatterService
@@ -43,13 +43,13 @@ class FormatterService
         return isset($this->formats[$format]);
     }
 
-    public function getFormatter($format, AbstractEndpoint $endpoint, Request $request)
+    public function getFormatter($format, AbstractEndpointClass $endpointClass, Request $request)
     {
         if (!$this->formatExists($format))
             throw new IncompatibleFormatterException("Unknown data format.");
 
         $formatterClassName = $this->formats[$format];
-        $formatter = new $formatterClassName($this->container, $endpoint, $request);
+        $formatter = new $formatterClassName($this->container, $endpointClass, $request);
 
         return $formatter;
     }

@@ -7,26 +7,28 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\ApiBundle\Annotation\Property;
+namespace Agit\ApiBundle\Annotation\Endpoint;
 
 use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
 use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
-use Agit\CommonBundle\Exception\InternalErrorException;
 
 /**
  * @Annotation
  */
-class Form implements SerializableAnnotationInterface
+class EndpointClass implements SerializableAnnotationInterface
 {
     use SerializableAnnotationTrait;
 
     /**
-     * @var element type, one of the common HTML form elements
+     * @var the API namespace, such as `common.v1`
      */
-    protected $type;
+    protected $namespace;
 
     /**
-     * @var if the form element accepts a fixed set of values, this property should contain a hashmap (key => name) of them.
+     * @var use calls from a parent endpoint
+     *
+     * By default, only calls from an endpoint class itself will be registered.
+     * But if a parent class provides additional calls, they may be inherited.
      */
-    protected $values;
+    protected $inherits = [];
 }

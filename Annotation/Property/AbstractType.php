@@ -9,12 +9,15 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\ApiBundle\Annotation\AbstractMeta;
-use Agit\ApiBundle\Exception\InvalidObjectValueException;
+use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
+use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\ApiBundle\Exception\InvalidObjectValueException;
 
-abstract class AbstractType extends AbstractMeta
+abstract class AbstractType implements SerializableAnnotationInterface
 {
+    use SerializableAnnotationTrait;
+
     protected static $_ValidationService;
 
     /**

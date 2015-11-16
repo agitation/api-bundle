@@ -24,7 +24,7 @@ abstract class AbstractApiEndpointPlugin extends AbstractApiPlugin
 
     final protected function getBaseClass()
     {
-        return 'Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpoint';
+        return 'Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpointClass';
     }
 
     final protected function process(\ReflectionClass $classRefl)

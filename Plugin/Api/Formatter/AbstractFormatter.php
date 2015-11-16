@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Plugin\Api\Formatter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpoint;
+use Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpointClass;
 use Agit\CommonBundle\Exception\InternalErrorException;
 
 abstract class AbstractFormatter
@@ -23,7 +23,7 @@ abstract class AbstractFormatter
 
     protected $container;
 
-    protected $endpoint;
+    protected $endpointClass;
 
     protected $request;
 
@@ -37,12 +37,12 @@ abstract class AbstractFormatter
         return static::$mimeType;
     }
 
-    public function __construct(ContainerInterface $container, AbstractEndpoint $endpoint, Request $request)
+    public function __construct(ContainerInterface $container, AbstractEndpointClass $endpointClass, Request $request)
     {
         if (!static::$format || !static::$mimeType)
             throw new InternalErrorException("'format' and 'mimeType' must be set in the concrete formatter class.");
 
-        $this->endpoint = $endpoint;
+        $this->endpointClass = $endpointClass;
         $this->container = $container;
         $this->request = $request;
     }
