@@ -7,7 +7,7 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\ApiBundle\Plugin\Api\Object;
+namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\CommonBundle\Helper\StringHelper;

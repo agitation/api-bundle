@@ -7,12 +7,15 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\ApiBundle\Plugin\Api\Object;
+namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
 
 /**
+ * @Object\Object
+ *
  * This is a special object that serves as a collector of uniform items.
  */
 class ObjectList extends AbstractObject
