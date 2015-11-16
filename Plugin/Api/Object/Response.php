@@ -10,9 +10,12 @@
 namespace Agit\ApiBundle\Plugin\Api\Object;
 
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
 
 /**
+ * @Object\Object
+ *
  * The root response object. The response object you'll see in an endpoint
  * call's documentation is actually the `payload` field of this object.
  */

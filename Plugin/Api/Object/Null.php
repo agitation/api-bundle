@@ -9,7 +9,11 @@
 
 namespace Agit\ApiBundle\Plugin\Api\Object;
 
+use Agit\ApiBundle\Annotation\Object;
+
 /**
+ * @Object\Object
+ *
  * Just an empty response payload container. If a call has this object as its
  * response object, you should simple rely on the `Response.status` field to see
  * if your call was successful.
