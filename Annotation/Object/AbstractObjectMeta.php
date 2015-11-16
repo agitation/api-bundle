@@ -11,12 +11,11 @@ namespace Agit\ApiBundle\Annotation\Object;
 
 use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
 use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
-use Agit\PluggableBundle\Strategy\PluginInterface;
 
 /**
  * @Annotation
  */
-abstract class AbstractObjectMeta implements SerializableAnnotationInterface, PluginInterface
+abstract class AbstractObjectMeta implements SerializableAnnotationInterface
 {
     use SerializableAnnotationTrait;
 }

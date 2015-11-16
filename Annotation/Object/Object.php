@@ -9,10 +9,12 @@
 
 namespace Agit\ApiBundle\Annotation\Object;
 
+use Agit\PluggableBundle\Strategy\PluginInterface;
+
 /**
  * @Annotation
  */
-class Object extends AbstractObjectMeta
+class Object extends AbstractObjectMeta implements PluginInterface
 {
     /**
      * @var full object name with namespace prefix, e.g. `common.v1/SomeObject`. Do not set, will be filled automatically.
