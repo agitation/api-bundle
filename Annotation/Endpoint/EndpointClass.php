@@ -11,11 +11,12 @@ namespace Agit\ApiBundle\Annotation\Endpoint;
 
 use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
 use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
+use Agit\PluggableBundle\Strategy\PluginInterface;
 
 /**
  * @Annotation
  */
-class EndpointClass implements SerializableAnnotationInterface
+class EndpointClass implements SerializableAnnotationInterface, PluginInterface
 {
     use SerializableAnnotationTrait;
 
