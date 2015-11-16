@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\ApiBundle\Api\Meta\MetaContainer;
+use Agit\ApiBundle\Annotation\MetaContainer;
 
 abstract class AbstractApiService
 {

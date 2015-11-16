@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Twig;
 
 use Agit\CommonBundle\Helper\StringHelper;
 use Agit\ApiBundle\Service\ObjectService;
-use Agit\ApiBundle\Api\Meta\Property\Name;
+use Agit\ApiBundle\Annotation\Property\Name;
 
 class ApiFormBuilderExtension extends \Twig_Extension
 {

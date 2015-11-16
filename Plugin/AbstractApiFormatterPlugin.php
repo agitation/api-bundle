@@ -18,7 +18,7 @@ abstract class AbstractApiFormatterPlugin extends AbstractApiPlugin
 
     final protected function getBaseClass()
     {
-        return 'Agit\ApiBundle\Api\Formatter\AbstractFormatter';
+        return 'Agit\ApiBundle\Plugin\Api\Formatter\AbstractFormatter';
     }
 
     final protected function process(\ReflectionClass $classRefl)

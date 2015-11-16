@@ -13,12 +13,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\IntlBundle\Translate;
-use Agit\ApiBundle\Api\Object\AbstractObject;
+use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
-use Agit\ApiBundle\Api\Meta\MetaContainer;
-use Agit\ApiBundle\Api\Meta\Property\AbstractType;
-use Agit\ApiBundle\Api\Meta\Property\Name;
+use Agit\ApiBundle\Annotation\MetaContainer;
+use Agit\ApiBundle\Annotation\Property\AbstractType;
+use Agit\ApiBundle\Annotation\Property\Name;
 
 class ObjectService extends AbstractApiService
 {

@@ -18,6 +18,6 @@ class ApiFormatterPlugin extends AbstractApiFormatterPlugin
 {
     protected function getSearchNamespace()
     {
-        return "Agit\ApiBundle\Api\Formatter";
+        return "Agit\ApiBundle\Plugin\Api\Formatter";
     }
 }

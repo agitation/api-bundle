@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Plugin;
 
 use Agit\CommonBundle\Helper\StringHelper;
-use Agit\ApiBundle\Api\Meta\AbstractMeta;
+use Agit\ApiBundle\Annotation\AbstractMeta;
 
 abstract class AbstractApiEndpointPlugin extends AbstractApiPlugin
 {
@@ -24,7 +24,7 @@ abstract class AbstractApiEndpointPlugin extends AbstractApiPlugin
 
     final protected function getBaseClass()
     {
-        return 'Agit\ApiBundle\Api\Endpoint\AbstractEndpoint';
+        return 'Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpoint';
     }
 
     final protected function process(\ReflectionClass $classRefl)

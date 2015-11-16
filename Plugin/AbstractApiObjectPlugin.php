@@ -11,11 +11,11 @@ namespace Agit\ApiBundle\Plugin;
 
 use Doctrine\Common\Annotations\Reader;
 use Agit\CommonBundle\Helper\StringHelper;
-use Agit\ApiBundle\Api\Meta\AbstractMeta;
-use Agit\ApiBundle\Api\Meta\Object\Object;
-use Agit\ApiBundle\Api\Meta\Property\AbstractType;
-use Agit\ApiBundle\Api\Meta\Property\ObjectType;
-use Agit\ApiBundle\Api\Meta\Property\Name;
+use Agit\ApiBundle\Annotation\AbstractMeta;
+use Agit\ApiBundle\Annotation\Object\Object;
+use Agit\ApiBundle\Annotation\Property\AbstractType;
+use Agit\ApiBundle\Annotation\Property\ObjectType;
+use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\CommonBundle\Exception\InternalErrorException;
 
 abstract class AbstractApiObjectPlugin extends AbstractApiPlugin
@@ -30,7 +30,7 @@ abstract class AbstractApiObjectPlugin extends AbstractApiPlugin
 
     final protected function getBaseClass()
     {
-        return 'Agit\ApiBundle\Api\Object\AbstractObject';
+        return 'Agit\ApiBundle\Plugin\Api\Object\AbstractObject';
     }
 
     final protected function process(\ReflectionClass $classRefl)

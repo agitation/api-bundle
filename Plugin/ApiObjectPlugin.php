@@ -18,7 +18,7 @@ class ApiObjectPlugin extends AbstractApiObjectPlugin
 {
     protected function getSearchNamespace()
     {
-        return "Agit\ApiBundle\Api\Object";
+        return "Agit\ApiBundle\Plugin\Api\Object";
     }
 
     protected function getApiNamespace()

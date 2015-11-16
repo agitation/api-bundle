@@ -43,9 +43,9 @@ An example endpoint looks like this:
 
 namespace Acme\DemoBundle\Api\v1\Endpoint;
 
-use Agit\ApiBundle\Api\Meta;
-use Agit\ApiBundle\Api\Endpoint\AbstractEndpoint;
-use Agit\ApiBundle\Api\Object\AbstractObject;
+use Agit\ApiBundle\Annotation;
+use Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpoint;
+use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
 
 /**
  * The class name is also the endpoint name.
@@ -82,8 +82,8 @@ An example object looks like this:
 
 namespace Acme\DemoBundle\Api\v1\Object;
 
-use Agit\ApiBundle\Api\Object\AbstractObject;
-use Agit\ApiBundle\Api\Meta\Property;
+use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
+use Agit\ApiBundle\Annotation\Property;
 
 /**
  * The class name is the API object name.
