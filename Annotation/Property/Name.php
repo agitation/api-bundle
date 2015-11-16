@@ -9,18 +9,13 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
-use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
-use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 
 /**
  * @Annotation
  */
-class Name implements SerializableAnnotationInterface
+class Name extends AbstractPropertyMeta
 {
-    use SerializableAnnotationTrait;
-
     /**
      * @var human readable name of the annotated property
      */

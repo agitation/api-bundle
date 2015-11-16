@@ -9,15 +9,11 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
-use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 
-abstract class AbstractType implements SerializableAnnotationInterface
+abstract class AbstractType extends AbstractPropertyMeta
 {
-    use SerializableAnnotationTrait;
-
     protected static $_ValidationService;
 
     /**
@@ -34,21 +30,6 @@ abstract class AbstractType implements SerializableAnnotationInterface
      * @var the annotated field must not be set in a request object
      */
     protected $readonly = false;
-
-    /**
-     * @var namespace of the referenced object
-     */
-    protected $objNamespace;
-
-    /**
-     * @var class name of the referenced object
-     */
-    protected $objClass;
-
-    /**
-     * @var referenced property
-     */
-    protected $objProperty;
 
     protected $_isScalarType = false;
 
@@ -75,13 +56,6 @@ abstract class AbstractType implements SerializableAnnotationInterface
             throw new InternalErrorException("The field $field doesn't exist for this type.");
 
         return $this->_specialFormats[$field];
-    }
-
-    public function setReference($namespace, $class, $property)
-    {
-        $this->objNamespace = $namespace;
-        $this->objClass = $class;
-        $this->objProperty = $property;
     }
 
     public function getType()

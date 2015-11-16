@@ -9,17 +9,11 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
-use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
-use Agit\CommonBundle\Exception\InternalErrorException;
-
 /**
  * @Annotation
  */
-class Form implements SerializableAnnotationInterface
+class Form extends AbstractPropertyMeta
 {
-    use SerializableAnnotationTrait;
-
     /**
      * @var element type, one of the common HTML form elements
      */
