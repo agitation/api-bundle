@@ -3,17 +3,41 @@ services:
     agit.api.endpoint:
         class: Agit\ApiBundle\Service\EndpointService
         arguments: [ @agit.pluggable.cache.loader_factory, @service_container ]
-        tags: [{ name: agit.pluggable, type: cache, tag: agit.api.endpoint, baseClass: Agit\ApiBundle\Plugin\AbstractApiEndpointPlugin }]
+        tags: [{ name: agit.pluggable, type: api.endpoint }]
 
     agit.api.object:
         class: Agit\ApiBundle\Service\ObjectService
         arguments: [ @agit.pluggable.cache.loader_factory, @service_container ]
-        tags: [{ name: agit.pluggable, type: cache, tag: agit.api.object, baseClass: Agit\ApiBundle\Plugin\AbstractApiObjectPlugin }]
+        tags: [{ name: agit.pluggable, type: api.object }]
 
     agit.api.formatter:
         class: Agit\ApiBundle\Service\FormatterService
         arguments: [ @agit.pluggable.cache.loader_factory, @service_container ]
-        tags: [{ name: agit.pluggable, type: cache, tag: agit.api.formatter, baseClass: Agit\ApiBundle\Plugin\AbstractApiFormatterPlugin }]
+        tags: [{ name: agit.pluggable, type: api.formatter }]
+
+
+    # Processor factories for pluggable API services
+
+    agit.api.pluggable.processor_factory.endpoint:
+        private: true
+        class: Agit\ApiBundle\Pluggable\EndpointProcessorFactory
+        arguments: [ @annotation_reader, @agit.common.cache.persistent ]
+        tags: [{ name: agit.pluggable.processor_factory, type: api.endpoint }]
+
+    agit.api.pluggable.processor_factory.object:
+        private: true
+        class: Agit\ApiBundle\Pluggable\ObjectProcessorFactory
+        arguments: [ @annotation_reader, @agit.common.cache.persistent ]
+        tags: [{ name: agit.pluggable.processor_factory, type: api.object }]
+
+    agit.api.pluggable.processor_factory.formatter:
+        private: true
+        class: Agit\ApiBundle\Pluggable\FormatterProcessorFactory
+        arguments: [ @annotation_reader, @agit.common.cache.persistent ]
+        tags: [{ name: agit.pluggable.processor_factory, type: api.formatter }]
+
+
+    # various other services
 
     agit.api.csrf:
         class: Agit\ApiBundle\Service\CsrfTokenService
