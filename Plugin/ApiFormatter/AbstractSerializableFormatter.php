@@ -9,15 +9,15 @@
 
 namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
-use Agit\CommonBundle\Exception\InternalErrorException;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Agit\CommonBundle\Exception\InternalErrorException;
 
 abstract class AbstractSerializableFormatter extends AbstractFormatter
 {
     protected function getHttpHeaders()
     {
         $headers = new ResponseHeaderBag();
-        $headers->set('Content-Type', static::$mimeType);
+        $headers->set('Content-Type', $this->meta->get('Formatter')->get('mimeType'));
 
         return $headers;
     }
@@ -28,7 +28,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
         $this->compactEntities($response->getPayload());
         $response->setPayload($this->getCompactPayload());
         $response->setEntityList($this->getCompactEntityList());
-        return $this->getEncoder()->encode($response, static::$format);
+        return $this->getEncoder()->encode($response, $this->meta->get('Formatter')->get('format'));
     }
 
     private function createContent()

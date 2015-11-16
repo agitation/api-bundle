@@ -10,13 +10,13 @@
 namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Agit\ApiBundle\Annotation\Formatter\Formatter;
 
+/**
+ * @Formatter(mimeType="application/json", format="json")
+ */
 class JsonFormatter extends AbstractSerializableFormatter
 {
-    static protected $mimeType = 'application/json';
-
-    static protected $format = 'json';
-
     protected function getEncoder()
     {
         return new JsonEncoder();

@@ -10,13 +10,13 @@
 namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
 use Agit\ApiBundle\Exception\IncompatibleFormatterException;
+use Agit\ApiBundle\Annotation\Formatter\Formatter;
 
+/**
+ * @Formatter(mimeType="application/javascript", format="jsonp")
+ */
 class JsonpFormatter extends JsonFormatter
 {
-    static protected $mimeType = 'application/javascript';
-
-    static protected $format = 'jsonp';
-
     protected function getHttpHeaders()
     {
         // extra check to prevent SOP circumvention
