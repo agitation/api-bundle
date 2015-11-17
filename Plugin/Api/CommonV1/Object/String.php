@@ -12,6 +12,7 @@ namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
+use Agit\ApiBundle\Common\AbstractObject;
 
 /**
  * @Object\Object(isScalar=true)
