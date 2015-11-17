@@ -22,6 +22,11 @@ class Object extends AbstractObjectMeta implements PluginInterface
     protected $objectName;
 
     /**
+     * @var service dependencies
+     */
+    public $depends = [];
+
+    /**
      * @var this is a scalar "object", i.e. a dummy object that carries a scalar value.
      */
     protected $isScalar = false;
