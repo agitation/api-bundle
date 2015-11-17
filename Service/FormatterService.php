@@ -14,9 +14,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\ApiBundle\Common\AbstractEndpointClass;
 use Agit\ApiBundle\Exception\IncompatibleFormatterException;
+use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
 
-class FormatterService
+class FormatterService extends AbstractApiService
 {
+    use ServiceInjectorTrait;
+
     /**
      * @var service container instance.
      */
@@ -29,18 +32,16 @@ class FormatterService
 
     private $formats;
 
-    public function __construct(CacheLoaderFactory $CacheLoaderFactory, ContainerInterface $container)
+    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ContainerInterface $container)
     {
-        $this->cacheLoader = $CacheLoaderFactory->create("agit.api.formatter");
+        $this->cacheLoader = $cacheLoaderFactory->create("agit.api.formatter");
         $this->container = $container;
     }
 
     public function formatExists($format)
     {
-        if (is_null($this->formats))
-            $this->formats = $this->cacheLoader->load();
-
-        return isset($this->formats[$format]);
+        $this->loadFormats();
+        return (is_array($this->formats) && isset($this->formats[$format]));
     }
 
     public function getFormatter($format, AbstractEndpointClass $endpointClass, Request $request)
@@ -48,9 +49,25 @@ class FormatterService
         if (!$this->formatExists($format))
             throw new IncompatibleFormatterException("Unknown data format.");
 
-        $formatterClassName = $this->formats[$format];
-        $formatter = new $formatterClassName($this->container, $endpointClass, $request);
+        $class = $this->formats[$format]['class'];
+        $meta = $this->formats[$format]['meta'];
+
+        $metaContainer = $this->createMetaContainer(["Formatter" => $meta]);
+        $formatter = new $class($metaContainer, $endpointClass, $request);
+
+        $this->injectServices($formatter, $metaContainer->get('Formatter')->get('depends'));
 
         return $formatter;
+    }
+
+    protected function getContainer()
+    {
+        return $this->container;
+    }
+
+    private function loadFormats()
+    {
+        if (is_null($this->formats))
+            $this->formats = $this->cacheLoader->load();
     }
 }
