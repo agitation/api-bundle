@@ -104,7 +104,7 @@ abstract class AbstractObject implements \JsonSerializable
         }
         else
         {
-            throw new InternalErrorException("Cannot use 'add' with this property type.");
+            throw new InternalErrorException("Cannot use `add` with this property type.");
         }
     }
     public function getMeta($name)
@@ -128,7 +128,7 @@ abstract class AbstractObject implements \JsonSerializable
     {
         if (!$this->hasProperty($key))
             throw new InvalidObjectException(sprintf(
-                "The “%s” object does not have a “%s” property.",
+                Translate::t("The `%s` object does not have a `%s` property."),
                 $this->getObjectName(),
                 $key
             ));
@@ -153,7 +153,7 @@ abstract class AbstractObject implements \JsonSerializable
         catch(\Exception $e)
         {
             throw new InvalidObjectValueException(sprintf(
-                Translate::t("Invalid value for “%s”: %s"),
+                Translate::t("Invalid value for `%s`: %s"),
                 $this->getPropertyMeta($key, 'Name')->getName(), $e->getMessage()));
         }
     }
