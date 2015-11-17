@@ -93,9 +93,6 @@ class ObjectService extends AbstractApiService
 
     public function createObject($objectName, $data = null)
     {
-        if (is_string($data))
-            throw new InternalErrorException("ATTENTION: New method signature.");
-
         $meta = $this->getMeta($objectName);
 
         $objectMetaContainer = $this->createMetaContainer($meta['objectMeta']);
