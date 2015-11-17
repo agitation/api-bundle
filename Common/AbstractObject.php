@@ -23,31 +23,25 @@ use Agit\ApiBundle\Annotation\Property\Name;
 abstract class AbstractObject implements \JsonSerializable
 {
     /**
-     * @var service container instance.
-     */
-    protected $container;
-
-    /**
      * @var MetaContainer instance for the object.
      */
-    protected $objectMetaContainer;
+    protected $objectMeta;
 
     /**
      * @var MetaContainer instance for the properties.
      */
-    protected $propMetaContainerList = [];
+    protected $propMetaList = [];
 
     /**
      * @var API object name with namespace prefix, e.g. `common.v1/SomeObject`
      */
     protected $objectName;
 
-    public function __construct(ContainerInterface $container, MetaContainer $objectMetaContainer, array $propMetaContainerList, $objectName)
+    public function __construct(MetaContainer $objectMeta, array $propMetaList)
     {
-        $this->container = $container;
-        $this->objectMetaContainer = $objectMetaContainer;
-        $this->propMetaContainerList = $propMetaContainerList;
-        $this->objectName = $objectName;
+        $this->objectMeta = $objectMeta;
+        $this->propMetaList = $propMetaList;
+        $this->objectName = $objectMeta->get('Object')->get('objectName');
     }
 
     public function getObjectName()
@@ -57,7 +51,7 @@ abstract class AbstractObject implements \JsonSerializable
 
     public function hasProperty($key)
     {
-        return isset($this->propMetaContainerList[$key]);
+        return isset($this->propMetaList[$key]);
     }
 
     public function get($key)
@@ -70,7 +64,7 @@ abstract class AbstractObject implements \JsonSerializable
     {
         $values = [];
 
-        foreach ($this->propMetaContainerList as $key => $meta)
+        foreach ($this->propMetaList as $key => $meta)
             $values[$key] = $this->$key;
 
         return $values;
@@ -115,13 +109,13 @@ abstract class AbstractObject implements \JsonSerializable
     public function hasPropertyMeta($propKey, $metaName)
     {
         $this->checkHasProperty($propKey);
-        return $this->propMetaContainerList[$propKey]->has($metaName);
+        return $this->propMetaList[$propKey]->has($metaName);
     }
 
     public function getPropertyMeta($propKey, $metaName)
     {
         $this->checkHasProperty($propKey);
-        return $this->propMetaContainerList[$propKey]->get($metaName);
+        return $this->propMetaList[$propKey]->get($metaName);
     }
 
     protected function checkHasProperty($key)
@@ -141,7 +135,7 @@ abstract class AbstractObject implements \JsonSerializable
 
     public function validate()
     {
-        foreach ($this->propMetaContainerList as $key => $metaContainer)
+        foreach ($this->propMetaList as $key => $metaContainer)
             $this->validateValue($key, $this->$key);
     }
     protected function validateValue($key, $value)

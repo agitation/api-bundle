@@ -12,6 +12,7 @@ namespace Agit\ApiBundle\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
+use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
@@ -22,6 +23,8 @@ use Agit\ApiBundle\Annotation\Property\Name;
 
 class ObjectService extends AbstractApiService
 {
+    use ServiceInjectorTrait;
+
     /**
      * @var service container instance.
      */
@@ -102,9 +105,9 @@ class ObjectService extends AbstractApiService
             $propMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
 
         $objectClass = $meta['class'];
-        $object = new $objectClass($this->container, $objectMetaContainer, $propMetaContainerList, $objectName);
+        $object = new $objectClass($objectMetaContainer, $propMetaContainerList);
 
-        // TODO: Don't pass $objectName as a parameter, instead there should be a Meta carring this
+        $this->injectServices($object, $objectMetaContainer->get('Object')->get('depends'));
 
         if (is_object($data))
             $this->fill($object, $data);
@@ -171,6 +174,11 @@ class ObjectService extends AbstractApiService
 
             $object->validate();
 //         }
+    }
+
+    protected function getContainer()
+    {
+        return $this->container;
     }
 
     /**
