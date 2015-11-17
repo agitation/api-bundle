@@ -17,7 +17,7 @@ use Agit\ApiBundle\Exception\BadRequestException;
 
 class ApiController extends Controller
 {
-    public function callAction($namespace, $endpoint, $call, $_format)
+    public function callAction($namespace, $class, $method, $_format)
     {
         $request = $this->getRequest();
         $response = new Response();
@@ -33,7 +33,11 @@ class ApiController extends Controller
             if (!$formatterService->formatExists($_format))
                 throw new BadRequestException("Invalid format.");
 
-            $endpoint = $endpointService->createEndpoint("$namespace/$endpoint.$call", $request);
+            $endpoint = $endpointService->createEndpoint("$namespace/$class.$method", $request);
+
+            if (!$endpoint->getMeta('Security')->get('allowCrossOrigin'))
+                $this->container->get('agit.api.csrf')->checkToken($this->getCsrfToken());
+
             $endpoint->setupEnvironment();
 
             if ($request->getMethod() !== 'OPTIONS')
@@ -82,5 +86,17 @@ class ApiController extends Controller
             : 'en_GB';
 
         $localeService->setLocale($locale);
+    }
+
+    private function getCsrfToken()
+    {
+        $submittedCsrfToken = '';
+
+        if (isset($_SERVER['HTTP_X_TOKEN']))
+            $submittedCsrfToken = $_SERVER['HTTP_X_TOKEN'];
+        elseif (isset($_REQUEST['token']))
+            $submittedCsrfToken = $_REQUEST['token'];
+
+        return (string)$submittedCsrfToken;
     }
 }

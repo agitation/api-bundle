@@ -9,27 +9,42 @@
 
 namespace Agit\ApiBundle\Common;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Agit\CommonBundle\Exception\AgitException;
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\PluggableBundle\Strategy\ServiceAwarePluginInterface;
+use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Annotation\MetaContainer;
+use Agit\ApiBundle\Service\ObjectService;
 use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Exception\BadRequestException;
-use Agit\ApiBundle\Exception\UnauthorizedException;
 
 /**
  * Generic Endpoint handler. To be inherited by an API version specific
  * handler, which again is inherited by the actual Endpoint.
  */
-abstract class AbstractEndpointClass
+abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
 {
+    // including the service-aware features here, because almost all endpoints
+    // have service dependencies.
+    use ServiceAwarePluginTrait;
+
     /**
-     * @var service container instance.
+     * @var full endpoint name, e.g. `foobar.v1/foo.bar`.
      */
-    protected $container;
+    protected $name;
+
+    /**
+     * @var API namespace.
+     */
+    protected $apiNamespace;
+
+    /**
+     * @var method to execute.
+     */
+    protected $method;
 
     /**
      * @var MetaContainer instance.
@@ -66,10 +81,12 @@ abstract class AbstractEndpointClass
      */
     private $response;
 
-    public function __construct(ContainerInterface $container, MetaContainer $meta, Request $httpRequest = null)
+    public function __construct($name, MetaContainer $meta, ObjectService $objectService, Request $httpRequest = null)
     {
-        $this->container = $container;
+        $this->method = substr(strrchr($name, '.'), 1);
+        $this->apiNamespace = strstr($name, '/', true);
         $this->meta = $meta;
+        $this->objectService = $objectService;
         $this->httpRequest = $httpRequest;
     }
 
@@ -112,11 +129,6 @@ abstract class AbstractEndpointClass
     {
         try
         {
-            $this->checkAuthorisation();
-
-            if (!$this->getMeta('Security')->get('allowCrossOrigin'))
-                $this->getService('agit.api.csrf')->checkToken($this->getCsrfToken());
-
             if (!$this->httpRequest)
                 throw new InternalErrorException("The request object could not be created, as the actual request has not been passed to the endpoint.");
 
@@ -126,8 +138,8 @@ abstract class AbstractEndpointClass
             if (is_null($request) && strlen($this->httpRequest->get('request')))
                 $request = $this->httpRequest->get('request');
 
-            $this->request = $this->getService('agit.api.object')
-                ->rawRequestToApiObject($request, $this->getMeta('Call')->get('request'));
+            $this->request = $this->objectService
+                ->rawRequestToApiObject($request, $this->getMeta('Endpoint')->get('request'));
 
             $this->haveProcessedRequest = true;
         }
@@ -135,18 +147,6 @@ abstract class AbstractEndpointClass
         {
             $this->handleException($e);
         }
-    }
-
-    private function getCsrfToken()
-    {
-        $submittedCsrfToken = '';
-
-        if (isset($_SERVER['HTTP_X_TOKEN']))
-            $submittedCsrfToken = $_SERVER['HTTP_X_TOKEN'];
-        elseif (isset($_REQUEST['token']))
-            $submittedCsrfToken = $_REQUEST['token'];
-
-        return (string)$submittedCsrfToken;
     }
 
     public function executeCall()
@@ -158,7 +158,7 @@ abstract class AbstractEndpointClass
                 if (!$this->haveProcessedRequest)
                     throw new InternalErrorException("The request object must be set before executing the call.");
 
-                $this->response = call_user_func([$this, $this->getMeta('Call')->get('method')], $this->request);
+                $this->response = call_user_func([$this, $this->method], $this->request);
 
                 $this->setSuccess(true);
             }
@@ -169,51 +169,12 @@ abstract class AbstractEndpointClass
         }
     }
 
-    private function checkAuthorisation()
-    {
-        $reqCapibilty = $this->getMeta('Security')->get('capability');
-
-        if (is_null($reqCapibilty))
-            throw new InternalErrorException("The endpoint call must specify the required capabilities.");
-
-        if ($reqCapibilty)
-        {
-            $user = $this->getCurrentUser();
-
-            if (!$user)
-                throw new UnauthorizedException(Translate::t('You must be logged in to perform this operation.'));
-
-            if (!$user->hasCapability($reqCapibilty))
-                throw new UnauthorizedException(Translate::t("You do not have sufficient permissions to perform this operation."));
-        }
-    }
-
-
-    // some helpers
-
-    protected function getService($serviceName)
-    {
-        return $this->container->get($serviceName);
-    }
-
-    protected function getParameter($paramName)
-    {
-        return $this->container->getParameter($paramName);
-    }
-
-    protected function getCurrentUser()
-    {
-        return $this->container->has('agit.user')
-            ? $this->container->get('agit.user')->getCurrentUser()
-            : null;
-    }
-
     protected function createObject($name, $data = null)
     {
         if (strpos($name, '/') === false)
-            $name = $this->getMeta('Call')->get('namespace') . "/$name";
+            $name = "{$this->apiNamespace}/$name";
 
-        return $this->container->get('agit.api.object')->createObject($name, $data);
+        return $this->objectService->createObject($name, $data);
     }
 
     private function handleException(\Exception $e)
