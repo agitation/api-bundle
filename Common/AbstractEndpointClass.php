@@ -7,7 +7,7 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\ApiBundle\Plugin\Api\CommonV1\Endpoint;
+namespace Agit\ApiBundle\Common;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +15,7 @@ use Agit\CommonBundle\Exception\AgitException;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Annotation\MetaContainer;
-use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
+use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\ApiBundle\Exception\UnauthorizedException;

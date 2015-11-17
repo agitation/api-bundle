@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Agit\ApiBundle\Plugin\Api\CommonV1\Endpoint\AbstractEndpointClass;
+use Agit\ApiBundle\Common\AbstractEndpointClass;
 use Agit\ApiBundle\Annotation\MetaContainer;
 
 abstract class AbstractFormatter

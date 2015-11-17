@@ -45,7 +45,7 @@ namespace Acme\DemoBundle\Api\v1\Endpoint;
 
 use Agit\ApiBundle\Annotation;
 use Agit\ApiBundle\Plugin\Api\Endpoint\AbstractEndpoint;
-use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
+use Agit\ApiBundle\Common\AbstractObject;
 
 /**
  * The class name is also the endpoint name.
@@ -82,7 +82,7 @@ An example object looks like this:
 
 namespace Acme\DemoBundle\Api\v1\Object;
 
-use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
+use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Annotation\Property;
 
 /**

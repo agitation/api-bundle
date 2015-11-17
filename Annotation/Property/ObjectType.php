@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Annotation\Property;
 
 use Agit\ApiBundle\Service\ObjectService;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
-use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
+use Agit\ApiBundle\Common\AbstractObject;
 
 /**
  * @Annotation

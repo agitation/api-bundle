@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\IntlBundle\Translate;
-use Agit\ApiBundle\Plugin\Api\Object\AbstractObject;
+use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Annotation\MetaContainer;
