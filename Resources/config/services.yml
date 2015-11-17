@@ -2,7 +2,7 @@ services:
 
     agit.api.endpoint:
         class: Agit\ApiBundle\Service\EndpointService
-        arguments: [ @agit.pluggable.cache.loader_factory, @service_container ]
+        arguments: [ @agit.pluggable.cache.loader_factory, @?agit.user, @service_container ]
         tags: [{ name: agit.pluggable, type: api.endpoint }]
 
     agit.api.object:
