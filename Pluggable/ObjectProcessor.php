@@ -19,6 +19,7 @@ use Agit\PluggableBundle\Strategy\PluginInterface;
 use Agit\ApiBundle\Annotation\Object\AbstractObjectMeta;
 use Agit\ApiBundle\Annotation\Property\AbstractPropertyMeta;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
+use Agit\ApiBundle\Annotation\Property\ObjectType;
 use Agit\ApiBundle\Annotation\Property\Name;
 
 class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
