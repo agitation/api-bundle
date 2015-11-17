@@ -25,4 +25,9 @@ class Formatter extends AbstractFormatterMeta implements PluginInterface
      * @var format name, also file extension
      */
     protected $format;
+
+    /**
+     * @var service dependencies
+     */
+    protected $depends = [];
 }

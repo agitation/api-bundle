@@ -23,4 +23,9 @@ class Endpoint extends AbstractEndpointMeta
      * @var root response object namespace/name
      */
     protected $response;
+
+    /**
+     * @var Do not set deps here, as they are not caught. Instead, this field will be filled automatically.
+     */
+    public $depends = [];
 }
