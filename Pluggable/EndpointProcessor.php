@@ -16,6 +16,7 @@ use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\ProcessorInterface;
 use Agit\PluggableBundle\Strategy\PluggableServiceInterface;
 use Agit\PluggableBundle\Strategy\PluginInterface;
+use Agit\PluggableBundle\Strategy\Depends;
 use Agit\ApiBundle\Annotation\Endpoint\AbstractEndpointMeta;
 use Agit\ApiBundle\Annotation\Endpoint\Security;
 
@@ -46,9 +47,13 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
         {
             $annotationList = $this->annotationReader->getMethodAnnotations($methodRefl);
             $endpointMeta = [];
+            $depends = [];
 
             foreach ($annotationList as $annotation)
             {
+                if ($annotation instanceof Depends)
+                    $depends = array_merge($depends, (array)$annotation->get('value'));
+
                 if (!($annotation instanceof AbstractEndpointMeta))
                     continue;
 
@@ -58,6 +63,9 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
 
             if (!isset($endpointMeta['Endpoint']) || !isset($endpointMeta['Security']))
                 continue;
+
+            $depends = array_merge($depends, (array)$endpointMeta['Endpoint']->get('depends'));
+            $endpointMeta['Endpoint']->set('depends', $depends);
 
             // fix implicit namespaces in request and response
             $endpointMeta['Endpoint']->set('request', $this->fixObjectName($namespace, $endpointMeta['Endpoint']->get('request')));
@@ -70,6 +78,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
 
             $this->addEntry($endpoint, [
                 'class' => $class,
+                'method' => $methodRefl->getName(),
                 'meta' => $this->dissectMetaList($endpointMeta)
             ]);
         }
