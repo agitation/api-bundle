@@ -13,7 +13,7 @@ use Agit\ApiBundle\Annotation\MetaContainer;
 
 abstract class AbstractApiService
 {
-    protected function createMetaContainer($metaList)
+    protected function createMetaContainer(array $metaList)
     {
         $metaContainer = new MetaContainer();
 
