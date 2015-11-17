@@ -11,9 +11,17 @@ namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\PluggableBundle\Strategy\ServiceAwarePluginInterface;
+use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
+use Agit\PluggableBundle\Strategy\Depends;
 
-abstract class AbstractSerializableFormatter extends AbstractFormatter
+/**
+ * @Depends({"agit.api.object"})
+ */
+abstract class AbstractSerializableFormatter extends AbstractFormatter implements ServiceAwarePluginInterface
 {
+    use ServiceAwarePluginTrait;
+
     protected function getHttpHeaders()
     {
         $headers = new ResponseHeaderBag();
@@ -33,14 +41,14 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     private function createContent()
     {
-        $response = $this->container->get('agit.api.object')->createObject('common.v1/Response');
-        $response->set('success', $this->endpoint->getSuccess());
+        $response = $this->getService('agit.api.object')->createObject('common.v1/Response');
+        $response->set('success', $this->endpointClass->getSuccess());
 
-        foreach ($this->endpoint->getMessages() as $message)
+        foreach ($this->endpointClass->getMessages() as $message)
             $response->add('messageList', $message);
 
-        if ($this->endpoint->getSuccess())
-            $response->set('payload', $this->endpoint->getResponse());
+        if ($this->endpointClass->getSuccess())
+            $response->set('payload', $this->endpointClass->getResponse());
 
         return $response;
     }
