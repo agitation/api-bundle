@@ -29,9 +29,9 @@ class EndpointService extends AbstractApiService
 
     private $endpoints;
 
-    public function __construct(CacheLoaderFactory $CacheLoaderFactory, ContainerInterface $container)
+    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ContainerInterface $container)
     {
-        $this->cacheLoader = $CacheLoaderFactory->create("agit.api.endpoint");
+        $this->cacheLoader = $cacheLoaderFactory->create("agit.api.endpoint");
         $this->container = $container;
     }
 

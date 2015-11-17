@@ -39,9 +39,9 @@ class ObjectService extends AbstractApiService
     // reverse mapping (class => object name)
     private $classes;
 
-    public function __construct(CacheLoaderFactory $CacheLoaderFactory, ContainerInterface $container)
+    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ContainerInterface $container)
     {
-        $this->cacheLoader = $CacheLoaderFactory->create("agit.api.object");
+        $this->cacheLoader = $cacheLoaderFactory->create("agit.api.object");
         $this->container = $container;
 
         AbstractType::setValidationService($container->get('agit.validation'));
