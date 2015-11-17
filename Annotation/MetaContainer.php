@@ -29,7 +29,7 @@ class MetaContainer
     public function get($name)
     {
         if (!isset($this->metaList[$name]))
-            throw new InternalErrorException("No meta named '$name' found.");
+            throw new InternalErrorException("No meta named `$name` found.");
 
         return $this->metaList[$name];
     }
