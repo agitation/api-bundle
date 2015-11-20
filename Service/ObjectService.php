@@ -112,6 +112,14 @@ class ObjectService extends AbstractApiService
         return $object;
     }
 
+    public function getObjectNames()
+    {
+        if (is_null($this->objects))
+            $this->objects = $this->cacheLoader->load();
+
+        return array_keys($this->objects);
+    }
+
     public function getMeta($objectName)
     {
         if (is_null($this->objects))
