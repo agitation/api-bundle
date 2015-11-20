@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ApiJsGeneratorCommand extends AbstractCommand
 {
-    private $relJsPath = 'Resources/public/js/api';
+    private $relJsPath = 'Resources/public/js';
 
     private $output;
 
@@ -38,96 +38,85 @@ class ApiJsGeneratorCommand extends AbstractCommand
         $this->output = $output;
         $this->filesystem = new Filesystem();
 
-        $targetPath = $this->getContainer()->get('agit.common.filecollector')->resolve($input->getArgument('bundle'));
+        $bundle = $this->getContainer()->get('kernel')->getBundle($input->getArgument('bundle'));
+        $bundleNamespace = $bundle->getNamespace();
 
-        if (!$targetPath)
-            throw new \Exception(sprintf("Invalid bundle: %s", $input->getArgument('bundle')));
+        $bundlePath = $bundle->getPath();
+        $targetPath = "$bundlePath/{$this->relJsPath}";
 
-        $targetPath .= $this->relJsPath;
+        $endpoints = $this->generateEndpointsFiles($bundleNamespace);
+        $objects = $this->generateObjectsFiles($bundleNamespace);
+
+        if (!$endpoints && !$objects)
+            return;
 
         if (!is_dir($targetPath))
             $this->filesystem->mkdir($targetPath);
 
-        $endpointJsList = $this->generateEndpointsFiles();
-        $objectJsList = $this->generateObjectsFiles();
-
-        $this->createJsFiles($targetPath, 'endpoint', 'ApiEndpoints', $endpointJsList);
-        $this->createJsFiles($targetPath, 'object', 'ApiObjects', $objectJsList);
+        $this->createJsFiles($targetPath, $endpoints, $objects);
 
         $this->output->writeln('Finished successfully.');
     }
 
-    private function generateEndpointsFiles()
+    private function generateEndpointsFiles($bundleNamespace)
     {
-        $annotationReader = $this->getContainer()->get('annotation_reader');
         $endpointService = $this->getContainer()->get('agit.api.endpoint');
-        $endpointList = $endpointService->getEndpointNames();
-
-        $jsLists = [];
-        $count = 0;
+        $endpointNames = $endpointService->getEndpointNames();
+        $list = [];
 
         $this->output->write("Processing endpoints ");
 
-        foreach ($endpointList as $endpointName => $details)
+        foreach ($endpointNames as $endpointName)
         {
-            $namespace = strstr($endpointName, '/', true);
-            $endpoint = $endpointService->createEndpoint($endpointName, null);
-            $requestObjectName = $endpoint->getMeta('Call')->get('request');
+            $endpoint = $endpointService->createEndpoint($endpointName);
 
-            if ($requestObjectName)
-            {
-                if (!isset($jsLists[$namespace]))
-                    $jsLists[$namespace] = [];
+            if (strpos(get_class($endpoint), $bundleNamespace) !== 0) continue;
 
-                $jsLists[$namespace][$endpointName] = $requestObjectName;
-                $this->output->write('.');
-                ++$count;
-            }
+            $list[$endpointName] = $endpoint->getMeta('Endpoint')->get('request');
+            $this->output->write('.');
         }
 
-        $this->output->writeln(" $count endpoints processed.");
+        $this->output->writeln(sprintf(" %s found.", count($list)));
 
-        return $jsLists;
+        return $list;
     }
 
-    private function generateObjectsFiles()
+    private function generateObjectsFiles($bundleNamespace)
     {
-        $objectMetaList = $this->getContainer()->get('agit.api.object')->getMetaList();
-        $jsLists = [];
-        $count = 0;
+        $objectService = $this->getContainer()->get('agit.api.object');
+        $objectNames = $objectService->getObjectNames();
+        $list = [];
 
         $this->output->write("Processing objects ");
 
-        foreach ($objectMetaList as $objectName => $details)
+        foreach ($objectNames as $objectName)
         {
-            $namespace = strstr($objectName, '/', true);
-            $reflObj = new \ReflectionClass($details['class']);
-            $defaultValues = $reflObj->getDefaultProperties();
-            $values = [];
+            $object = $objectService->createObject($objectName);
 
-            if (!isset($jsLists[$namespace]))
-                $jsLists[$namespace] = [];
+            if (strpos(get_class($object), $bundleNamespace) !== 0) continue;
 
-            foreach ($details['propMetaList'] as $propName => $meta)
+            $objData = $object->getValues();
+            $objProps = [];
+
+            foreach ($objData as $key => $value)
             {
-                $values[$propName] = [
-                    'name' => $meta['Name']['options']['value'],
-                    'default' => (isset($defaultValues[$propName])) ? $defaultValues[$propName] : null
+                $propMetas = $object->getPropertyMetas($key);
+
+                $objProps[$key] = [
+                    'name' => $propMetas->get('Name')->get('value'),
+                    'default' => $value
                 ];
 
-                if ($form = $this->getFormConfig($meta))
-                    $values[$propName]['form'] = $form;
+                if ($propMetas->has('Form') && $form = $this->getFormConfig($propMetas->get('Form')))
+                    $objProps[$key]['form'] = $form;
 
-                $this->output->write('.');
+                $list[$objectName] = $objProps;
             }
-
-            $jsLists[$namespace][$objectName] = $values;
-            ++$count;
         }
 
-        $this->output->writeln(" $count object processed.");
+        $this->output->writeln(sprintf(" %s found.", count($list)));
 
-        return $jsLists;
+        return $list;
     }
 
     private function getFormConfig($meta)
@@ -162,14 +151,15 @@ class ApiJsGeneratorCommand extends AbstractCommand
         return $form;
     }
 
-    private function createJsFiles($path, $type, $propName, $jsLists)
+    private function createJsFiles($path, $endpoints, $objects)
     {
-        foreach ($jsLists as $namespace => $elements)
-        {
-            $jsFile  = "/*jslint white: true */\n/*global Agit */\n\n";
-            $jsFile .= "Agit.$propName = Agit.$propName || {};\n\n";
-            $jsFile .= sprintf("Agit.%s['%s'] = %s;\n",$propName, $namespace, json_encode($elements, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            file_put_contents("$path/{$type}s-$namespace.js", $jsFile);
-        }
+        $endpointsJson = json_encode($endpoints, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $objectsJson = json_encode($objects, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        $file = "/*jslint white: true */\n/*global Agit */\n\n" .
+            "Agit.Endpoint.registerList($endpointsJson);\n" .
+            "Agit.Object.registerList($objectsJson);";
+
+        file_put_contents("$path/api.js", $file);
     }
 }
