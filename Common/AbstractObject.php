@@ -112,6 +112,12 @@ abstract class AbstractObject implements \JsonSerializable
         return $this->propMetaList[$propKey]->has($metaName);
     }
 
+    public function getPropertyMetas($propKey)
+    {
+        $this->checkHasProperty($propKey);
+        return $this->propMetaList[$propKey];
+    }
+
     public function getPropertyMeta($propKey, $metaName)
     {
         $this->checkHasProperty($propKey);
