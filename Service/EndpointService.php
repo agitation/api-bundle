@@ -62,7 +62,7 @@ class EndpointService extends AbstractApiService
         if (is_null($this->endpoints))
             $this->endpoints = $this->cacheLoader->load();
 
-        return $this->endpoints;
+        return array_keys($this->endpoints);
     }
 
     protected function getContainer()
