@@ -120,16 +120,14 @@ class ApiJsGeneratorCommand extends AbstractCommand
     private function getPropMeta($propMetas)
     {
         $typeMeta = $propMetas->get("Type");
-
         $meta = ["type" => $typeMeta->getType()];
+
+        $keywords = ["minLength", "nullable", "readonly", "maxLength", "minValue",
+            "maxValue", "positive", "allowFloat", "allowLineBreaks", "class"];
 
         foreach ($typeMeta->getOptions() as $key => $value)
         {
-            if (in_array($key, ["minLength", "maxLength", "minValue", "maxValue", "positive", "allowFloat", "class"]) && $value !== null)
-            {
-                $meta[$key] = $value;
-            }
-            elseif (in_array($key, ["nullable", "readonly"]) && $value)
+            if (in_array($key, $keywords) && $value !== null && $value !== false)
             {
                 $meta[$key] = $value;
             }
