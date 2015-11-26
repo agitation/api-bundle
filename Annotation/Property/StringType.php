@@ -40,16 +40,20 @@ class StringType extends AbstractType
             elseif ($this->minLength || $value !== '')
             {
                 static::$_ValidationService->validate('string', $value, $this->minLength, $this->maxLength, !$this->allowLineBreaks);
-
-                $forbiddenCharacters = [
-                    "<" => "<",
-                    "\0" => "null byte"
-                ];
-
-                foreach ($forbiddenCharacters as $char => $name)
-                    if (strpos($value, $char))
-                        throw new InvalidObjectValueException(sprintf(Translate::t("The “%s” character must not be contained."), $name));
+                $this->checkForbiddenCharacters();
             }
         }
+    }
+
+    protected function checkForbiddenCharacters($value)
+    {
+        $forbiddenCharacters = [
+            "<" => "<",
+            "\0" => "null byte"
+        ];
+
+        foreach ($forbiddenCharacters as $char => $name)
+            if (strpos($value, $char))
+                throw new InvalidObjectValueException(sprintf(Translate::t("The “%s” character must not be contained."), $name));
     }
 }
