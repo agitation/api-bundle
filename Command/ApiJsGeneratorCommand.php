@@ -98,6 +98,8 @@ class ApiJsGeneratorCommand extends AbstractCommand
             $objData = $object->getValues();
             $objProps = [];
 
+            $objRefl = new \ReflectionClass(get_class($object));
+
             foreach ($objData as $key => $value)
             {
                 $propMetas = $object->getPropertyMetas($key);
@@ -121,9 +123,6 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
         $meta = ["type" => $typeMeta->getType()];
 
-//         if ($typeMeta->isReadonly())
-//             $meta["readonly"] = true;
-
         foreach ($typeMeta->getOptions() as $key => $value)
         {
             if (in_array($key, ["minLength", "maxLength", "minValue", "maxValue", "positive", "allowFloat", "class"]) && $value !== null)
@@ -134,7 +133,7 @@ class ApiJsGeneratorCommand extends AbstractCommand
             {
                 $meta[$key] = $value;
             }
-            elseif ($key === "allowedValues" && !isset($form["values"]))
+            elseif ($key === "allowedValues" && $value !== null)
             {
                 $meta["values"] = $value;
             }
