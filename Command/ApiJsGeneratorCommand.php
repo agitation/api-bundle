@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ApiJsGeneratorCommand extends AbstractCommand
 {
-    private $relJsPath = 'Resources/public/js';
+    private $relJsPath = "Resources/public/js";
 
     private $output;
 
@@ -26,9 +26,9 @@ class ApiJsGeneratorCommand extends AbstractCommand
     protected function configure()
     {
         $this
-            ->setName('agit:api:generate:js')
-            ->setDescription('Generate JS lists of a bundle’s endpoints and objects.')
-            ->addArgument('bundle', InputArgument::REQUIRED, 'bundle for which the JS should be generated (e.g. FooBarBundle).');
+            ->setName("agit:api:generate:js")
+            ->setDescription("Generate JS lists of a bundle’s endpoints and objects.")
+            ->addArgument("bundle", InputArgument::REQUIRED, "bundle for which the JS should be generated (e.g. FooBarBundle).");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -38,7 +38,7 @@ class ApiJsGeneratorCommand extends AbstractCommand
         $this->output = $output;
         $this->filesystem = new Filesystem();
 
-        $bundle = $this->getContainer()->get('kernel')->getBundle($input->getArgument('bundle'));
+        $bundle = $this->getContainer()->get("kernel")->getBundle($input->getArgument("bundle"));
         $bundleNamespace = $bundle->getNamespace();
 
         $bundlePath = $bundle->getPath();
@@ -55,12 +55,12 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
         $this->createJsFiles($targetPath, $endpoints, $objects);
 
-        $this->output->writeln('Finished successfully.');
+        $this->output->writeln("Finished successfully.");
     }
 
     private function generateEndpointsFiles($bundleNamespace)
     {
-        $endpointService = $this->getContainer()->get('agit.api.endpoint');
+        $endpointService = $this->getContainer()->get("agit.api.endpoint");
         $endpointNames = $endpointService->getEndpointNames();
         $list = [];
 
@@ -72,8 +72,8 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
             if (strpos(get_class($endpoint), $bundleNamespace) !== 0) continue;
 
-            $list[$endpointName] = $endpoint->getMeta('Endpoint')->get('request');
-            $this->output->write('.');
+            $list[$endpointName] = $endpoint->getMeta("Endpoint")->get("request");
+            $this->output->write(".");
         }
 
         $this->output->writeln(sprintf(" %s found.", count($list)));
@@ -83,7 +83,7 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
     private function generateObjectsFiles($bundleNamespace)
     {
-        $objectService = $this->getContainer()->get('agit.api.object');
+        $objectService = $this->getContainer()->get("agit.api.object");
         $objectNames = $objectService->getObjectNames();
         $list = [];
 
@@ -102,13 +102,9 @@ class ApiJsGeneratorCommand extends AbstractCommand
             {
                 $propMetas = $object->getPropertyMetas($key);
 
-                $objProps[$key] = [
-                    'name' => $propMetas->get('Name')->get('value'),
-                    'default' => $value
-                ];
-
-                if ($propMetas->has('Form') && $form = $this->getFormConfig($propMetas->get('Form')))
-                    $objProps[$key]['form'] = $form;
+                $objProps[$key] = $this->getPropMeta($propMetas);
+                $objProps[$key]["name"] = $propMetas->get("Name")->get("value");
+                $objProps[$key]["default"] = $value;
 
                 $list[$objectName] = $objProps;
             }
@@ -119,36 +115,32 @@ class ApiJsGeneratorCommand extends AbstractCommand
         return $list;
     }
 
-    private function getFormConfig($meta)
+    private function getPropMeta($propMetas)
     {
-        $form = null;
+        $typeMeta = $propMetas->get("Type");
 
-        if (isset($meta['Form']))
+        $meta = ["type" => $typeMeta->getType()];
+
+//         if ($typeMeta->isReadonly())
+//             $meta["readonly"] = true;
+
+        foreach ($typeMeta->getOptions() as $key => $value)
         {
-            $form = [];
-            $form['type'] = $meta['Form']['options']['type'];
-
-            if (is_array($meta['Form']['options']['values']))
-                $form['values'] = $meta['Form']['options']['values'];
-
-            foreach ($meta['Type']['options'] as $key => $value)
+            if (in_array($key, ["minLength", "maxLength", "minValue", "maxValue", "positive", "allowFloat", "class"]) && $value !== null)
             {
-                if (in_array($key, ['minLength', 'maxLength', 'minValue', 'maxValue', 'positive', 'allowFloat', 'class']) && $value !== null)
-                {
-                    $form[$key] = $value;
-                }
-                elseif (in_array($key, ['nullable', 'readonly']) && $value)
-                {
-                    $form[$key] = $value;
-                }
-                elseif ($key === 'allowedValues' && !isset($form['values']))
-                {
-                    $form['values'] = $value;
-                }
+                $meta[$key] = $value;
+            }
+            elseif (in_array($key, ["nullable", "readonly"]) && $value)
+            {
+                $meta[$key] = $value;
+            }
+            elseif ($key === "allowedValues" && !isset($form["values"]))
+            {
+                $meta["values"] = $value;
             }
         }
 
-        return $form;
+        return $meta;
     }
 
     private function createJsFiles($path, $endpoints, $objects)
