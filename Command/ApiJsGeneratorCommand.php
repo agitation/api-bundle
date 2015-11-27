@@ -106,7 +106,9 @@ class ApiJsGeneratorCommand extends AbstractCommand
 
                 $objProps[$key] = $this->getPropMeta($propMetas);
                 $objProps[$key]["name"] = $propMetas->get("Name")->get("value");
-                $objProps[$key]["default"] = $value;
+
+                if ($value !== null)
+                    $objProps[$key]["default"] = $value;
 
                 $list[$objectName] = $objProps;
             }
