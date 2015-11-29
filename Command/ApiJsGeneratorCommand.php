@@ -12,11 +12,13 @@ namespace Agit\ApiBundle\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Agit\CommonBundle\Command\AbstractCommand;
 use Symfony\Component\Filesystem\Filesystem;
+use Agit\CommonBundle\Command\SingletonCommandTrait;
 
-class ApiJsGeneratorCommand extends AbstractCommand
+class ApiJsGeneratorCommand
 {
+    use SingletonCommandTrait;
+
     private $relJsPath = "Resources/public/js";
 
     private $output;
