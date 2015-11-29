@@ -1,5 +1,5 @@
 {
-    "name": "agitation/api",
+    "name": "agitation/api-bundle",
     "type": "symfony-bundle",
     "minimum-stability": "dev",
     "require": {
