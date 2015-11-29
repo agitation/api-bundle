@@ -5,12 +5,12 @@
     "require": {
         "php": ">=5.4.9",
         "symfony/symfony": "2.3.*",
-        "agitation/intl": "dev-master",
-        "agitation/common": "dev-master",
-        "agitation/pluggable": "dev-master"
+        "agitation/common-bundle": "dev-master",
+        "agitation/intl-bundle": "dev-master",
+        "agitation/pluggable-bundle": "dev-master"
     },
     "suggest": {
-        "agitation/user": "Required to check for user capabilities. Without it, all calls requiring a capability will fail."
+        "agitation/user-bundle": "Required to check for user capabilities. Without it, all calls requiring a capability will fail."
     },
     "autoload": {
         "psr-4": {
@@ -23,17 +23,5 @@
             "name": "AGITsol GmbH",
             "homepage": "http://www.agitsol.com/"
         }
-    ],
-    "description": "API service for Agitation, provides security and type safety through annotated API endpoints and objects.",
-    "keywords": [
-        "agit",
-        "agitation",
-        "tixys",
-        "api",
-        "json",
-        "authentication",
-        "authorization",
-        "valdation",
-        "pluggable"
     ]
 }
