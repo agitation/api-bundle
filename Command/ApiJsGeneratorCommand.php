@@ -9,13 +9,14 @@
 
 namespace Agit\ApiBundle\Command;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
 use Agit\CommonBundle\Command\SingletonCommandTrait;
 
-class ApiJsGeneratorCommand
+class ApiJsGeneratorCommand extends ContainerAwareCommand
 {
     use SingletonCommandTrait;
 
