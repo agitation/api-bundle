@@ -64,18 +64,18 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
     private function generateEndpointsFiles($bundleNamespace)
     {
         $endpointService = $this->getContainer()->get("agit.api.endpoint");
-        $endpointNames = $endpointService->getEndpointNames();
+        $names = $endpointService->getEndpointNames();
         $list = [];
 
         $this->output->write("Processing endpoints ");
 
-        foreach ($endpointNames as $endpointName)
+        foreach ($names as $name)
         {
-            $endpoint = $endpointService->createEndpoint($endpointName);
+            $metaContainer = $endpointService->getEndpointMetaContainer($name);
 
-            if (strpos(get_class($endpoint), $bundleNamespace) !== 0) continue;
+            if (strpos($endpointService->getEndpointClass($name), $bundleNamespace) !== 0) continue;
 
-            $list[$endpointName] = $endpoint->getMeta("Endpoint")->get("request");
+            $list[$name] = $metaContainer->get("Endpoint")->get("request");
             $this->output->write(".");
         }
 
