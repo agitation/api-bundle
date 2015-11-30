@@ -18,6 +18,7 @@ use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\ApiBundle\Exception\UnauthorizedException;
 use Agit\UserBundle\Service\UserService;
 use Agit\IntlBundle\Translate;
+use Agit\ApiBundle\Common\AbstractEndpointClass;
 
 class EndpointService extends AbstractApiService
 {
@@ -71,7 +72,7 @@ class EndpointService extends AbstractApiService
         return $this->container;
     }
 
-    private function checkAuthorisation($endpoint)
+    private function checkAuthorisation(AbstractEndpointClass $endpoint)
     {
         $reqCapibilty = $endpoint->getMeta('Security')->get('capability');
 
