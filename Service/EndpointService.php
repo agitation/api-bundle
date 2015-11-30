@@ -41,8 +41,7 @@ class EndpointService extends AbstractApiService
 
     public function createEndpoint($name, Request $request = null)
     {
-        if (is_null($this->endpoints))
-            $this->endpoints = $this->cacheLoader->load();
+        $this->loadEndpoints();
 
         if (!isset($this->endpoints[$name]))
             throw new InvalidEndpointException("Invalid endpoint: $name");
@@ -61,10 +60,34 @@ class EndpointService extends AbstractApiService
 
     public function getEndpointNames()
     {
+        $this->loadEndpoints();
+        return array_keys($this->endpoints);
+    }
+
+    public function getEndpointClass($name)
+    {
+        $this->loadEndpoints();
+
+        if (!isset($this->endpoints[$name]))
+            throw new InternalErrorException("This endpoint does not exist.");
+
+        return $this->endpoints[$name]['class'];
+    }
+
+    public function getEndpointMetaContainer($name)
+    {
+        $this->loadEndpoints();
+
+        if (!isset($this->endpoints[$name]))
+            throw new InternalErrorException("This endpoint does not exist.");
+
+        return $this->createMetaContainer($this->endpoints[$name]['meta']);
+    }
+
+    protected function loadEndpoints()
+    {
         if (is_null($this->endpoints))
             $this->endpoints = $this->cacheLoader->load();
-
-        return array_keys($this->endpoints);
     }
 
     protected function getContainer()
