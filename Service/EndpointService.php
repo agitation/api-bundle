@@ -11,12 +11,13 @@ namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Agit\UserBundle\Service\UserService;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\ApiBundle\Exception\UnauthorizedException;
+use Agit\UserBundle\Service\UserService;
+use Agit\IntlBundle\Translate;
 
 class EndpointService extends AbstractApiService
 {
