@@ -9,7 +9,7 @@ msgstr ""
 
 #: @AgitApiBundle/Api/Endpoint/AbstractEndpoint.php:189
 msgid "You must be logged in to perform this operation."
-msgstr "Sie müssen eingeloggt sein, um "
+msgstr "Sie müssen eingeloggt sein, um diese Aktion auszuführen."
 
 #: @AgitApiBundle/Api/Endpoint/AbstractEndpoint.php:192
 msgid "You do not have sufficient permissions to perform this operation."
