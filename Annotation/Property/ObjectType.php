@@ -25,6 +25,11 @@ class ObjectType extends AbstractType
 
     protected $_isObjectType = true;
 
+    public function getTargetClass()
+    {
+        return $this->class;
+    }
+
     public function check($value)
     {
         $this->init($value);
@@ -38,6 +43,6 @@ class ObjectType extends AbstractType
         static::$_ValidationService->validate('object', $value);
 
         if (!($value instanceof AbstractObject) || $value->getObjectName() !== $this->class)
-            throw new InvalidObjectValueException(sprintf("The value must be a '%s' object.", $value->getObjectName()));
+            throw new InvalidObjectValueException(sprintf("The value must be a `%s` object.", $value->getObjectName()));
     }
 }
