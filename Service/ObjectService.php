@@ -10,6 +10,9 @@
 namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Proxy\Proxy;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
@@ -25,26 +28,24 @@ class ObjectService extends AbstractApiService
 {
     use ServiceInjectorTrait;
 
-    /**
-     * @var service container instance.
-     */
     protected $container;
 
-    /**
-     * @var CacheLoader instance.
-     */
     protected $cacheLoader;
 
-    private $entityService;
+    private $entityManager;
 
     private $objects;
 
     // reverse mapping (class => object name)
     private $classes;
 
-    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ContainerInterface $container)
+    // list of entity classes
+    private $entities;
+
+    public function __construct(CacheLoaderFactory $cacheLoaderFactory, EntityManager $entityManager, ContainerInterface $container = null)
     {
         $this->cacheLoader = $cacheLoaderFactory->create("agit.api.object");
+        $this->entityManager = $entityManager;
         $this->container = $container;
 
         AbstractType::setValidationService($container->get('agit.validation'));
@@ -150,22 +151,22 @@ class ObjectService extends AbstractApiService
         }
 
         if (!isset($this->classes[$class]))
-            throw new InternalErrorException("Class '$class' has not been registered.");
+            throw new InternalErrorException("Class `$class` has not been registered.");
 
         return $this->classes[$class];
     }
 
-    public function fill(AbstractObject &$object, $data)
+    public function fill(AbstractObject $object, $data)
     {
         if (!is_object($data))
-            throw new InternalErrorException("The 'data' parameter must be an object.");
+            throw new InternalErrorException("The `data` parameter must be an object.");
 
-//         if ($this->entityService->isEntity($data))
-//         {
-//             $this->fillFromEntity($object, $data);
-//         }
-//         else
-//         {
+        if ($this->isEntity($data))
+        {
+            $this->fillFromEntity($object, $data);
+        }
+        else
+        {
             if ($data instanceof \stdClass)
             {
                 $values = get_object_vars($data) + $object->getValues();
@@ -178,12 +179,75 @@ class ObjectService extends AbstractApiService
             }
 
             $object->validate();
-//         }
+        }
+    }
+
+    protected function fillFromEntity($object, $entity)
+    {
+        $metadata = $this->entityManager->getClassMetadata(get_class($entity));
+
+        if ($entity instanceof Proxy)
+            $entity->__load();
+
+        foreach (array_keys($object->getValues()) as $prop)
+        {
+            $getter = "get".ucfirst($prop);
+            $value = null;
+
+            // check if a getter exists, otherwise access value through metadata
+            if (is_callable([$entity, $getter]))
+                $value = $entity->$getter();
+            elseif ($metadata->hasField($prop) || $metadata->hasAssociation($prop))
+                $value = $metadata->getFieldValue($entity, $prop);
+
+            if ($metadata->hasField($prop))
+            {
+                $object->set($prop, $value);
+            }
+            elseif ($metadata->hasAssociation($prop))
+            {
+                $mapping = $metadata->getAssociationMapping($prop);
+                $propType = $object->getPropertyMeta($prop, 'Type');
+
+                if (!$propType->isObjectType())
+                    throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be an object type.", $prop, $object->getObjectName()));
+
+                if ($mapping["type"] & ClassMetadataInfo::TO_ONE)
+                {
+                    $object->set($prop, $this->createObject($propType->getTargetClass(), $value));
+                }
+                elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY)
+                {
+                    // TODO
+                }
+            }
+        }
     }
 
     protected function getContainer()
     {
         return $this->container;
+    }
+
+    protected function isEntity($data)
+    {
+        $isEntity = false;
+
+        if (is_object($data))
+        {
+            if (!$this->entities)
+                $this->entities = $this->entityManager->getConfiguration()
+                    ->getMetadataDriverImpl()->getAllClassNames();
+
+            $className = get_class($data);
+
+            if ($data instanceof Proxy)
+                $className = get_parent_class($data);
+
+            $isEntity = in_array($className, $this->entities);
+        }
+
+        return $isEntity;
     }
 
     /**

@@ -7,7 +7,7 @@ services:
 
     agit.api.object:
         class: Agit\ApiBundle\Service\ObjectService
-        arguments: [ @agit.pluggable.cache.loader_factory, @service_container ]
+        arguments: [ @agit.pluggable.cache.loader_factory, @doctrine.orm.entity_manager, @?service_container ]
         tags: [{ name: agit.pluggable, type: api.object }]
 
     agit.api.formatter:
