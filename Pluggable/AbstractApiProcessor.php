@@ -61,7 +61,7 @@ abstract class AbstractApiProcessor implements ProcessorInterface
 
     protected function fixObjectName($namespace, $name)
     {
-        return (preg_match("|^[a-z0-9]+\.v\d+/[a-z0-9\.]+$|i", $name))
+        return (preg_match("|^[a-z0-9]+\.v\d+/[a-z0-9\.]+(\[\])?$|i", $name))
             ? $name
             : "$namespace/$name";
     }
