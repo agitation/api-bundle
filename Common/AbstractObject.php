@@ -153,8 +153,8 @@ abstract class AbstractObject implements \JsonSerializable
         catch(\Exception $e)
         {
             throw new InvalidObjectValueException(sprintf(
-                Translate::t("Invalid value for `%s`: %s"),
-                $this->getPropertyMeta($key, 'Name')->getName(), $e->getMessage()));
+                Translate::t("Invalid value in object `%s` for property `%s`: %s"),
+                $this->getObjectName(), $this->getPropertyMeta($key, 'Name')->getName(), $e->getMessage()));
         }
     }
 }
