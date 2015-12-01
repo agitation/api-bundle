@@ -112,9 +112,9 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
                 if ($value !== null)
                     $objProps[$key]["default"] = $value;
-
-                $list[$objectName] = $objProps;
             }
+
+            $list[$objectName] = $objProps;
         }
 
         $this->output->writeln(sprintf(" %s found.", count($list)));
