@@ -147,8 +147,8 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
     private function createJsFiles($path, $endpoints, $objects)
     {
-        $endpointsJson = json_encode($endpoints, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        $objectsJson = json_encode($objects, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $endpointsJson = json_encode($endpoints, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
+        $objectsJson = json_encode($objects, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
 
         $file = "/*jslint white: true */\n/*global Agit */\n\n" .
             "Agit.Endpoint.registerList($endpointsJson);\n" .
