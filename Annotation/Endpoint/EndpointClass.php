@@ -16,4 +16,8 @@ use Agit\PluggableBundle\Strategy\PluginInterface;
  */
 class EndpointClass extends AbstractEndpointMeta implements PluginInterface
 {
+    /**
+     * @var service dependencies
+     */
+    public $depends = [];
 }

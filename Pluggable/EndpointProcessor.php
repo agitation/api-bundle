@@ -47,7 +47,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
         {
             $annotationList = $this->annotationReader->getMethodAnnotations($methodRefl);
             $endpointMeta = [];
-            $depends = [];
+            $depends = $plugin->get("depends");
 
             foreach ($annotationList as $annotation)
             {
