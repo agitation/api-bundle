@@ -278,15 +278,15 @@ class ObjectService extends AbstractApiService
             }
             else
             {
-                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the “%s” property."), $key));
+                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the `%s` property."), $key));
             }
         }
         elseif (is_object($value))
         {
-            if (!$propMeta->child)
-                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the “%s” property."), $key));
+            if (!$type->isObjectType())
+                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the `%s` property."), $key));
 
-            $result = $this->createObject($propMeta->child->class, $value);
+            $result = $this->createObject($type->getTargetClass(), $value);
         }
 
         return $result;
