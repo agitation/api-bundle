@@ -92,8 +92,8 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
             $propMetaList[$propName] = $this->dissectMetaList($propMeta);
         }
 
-        if ($objectMeta['Object']->get('isScalar') && (count($propMetaList) !== 1 || !isset($propMetaList['value'])))
-            throw new InternalErrorException("Scalar objects must contain only a 'value' property.");
+        if ($objectMeta['Object']->get('isScalar') && (count($propMetaList) !== 1 || !isset($propMetaList['_'])))
+            throw new InternalErrorException("Scalar objects must contain only a `_` property.");
 
         $this->addEntry($objectName, [
             'class' => $classRefl->getName(),
