@@ -66,8 +66,8 @@ class ObjectService extends AbstractApiService
         }
         else
         {
-            $meta = $this->getMeta($expectedObject);
-            $expectsScalar = $this->composeMeta($meta["objectMeta"]["Object"])->get("isScalar");
+            $meta = $this->getObjectMeta($expectedObject);
+            $expectsScalar = $meta->get("Object")->get("isScalar");
 
             if ($expectsScalar)
             {
