@@ -24,5 +24,5 @@ class String extends AbstractObject
     /**
      * @Property\StringType
      */
-    public $value;
+    public $_;
 }

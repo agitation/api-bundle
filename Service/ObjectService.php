@@ -47,14 +47,14 @@ class ObjectService extends AbstractApiService
         $this->entityManager = $entityManager;
         $this->container = $container;
 
-        AbstractType::setValidationService($container->get('agit.validation'));
+        AbstractType::setValidationService($container->get("agit.validation"));
     }
 
     public function rawRequestToApiObject($rawRequest, $expectedObject)
     {
         $result = null;
 
-        if (substr($expectedObject, -2) === '[]')
+        if (substr($expectedObject, -2) === "[]")
         {
             if (!is_array($rawRequest))
                 throw new InvalidObjectException(Translate::t("The request is expected to be an array."));
@@ -67,7 +67,7 @@ class ObjectService extends AbstractApiService
         else
         {
             $meta = $this->getMeta($expectedObject);
-            $expectsScalar = $this->composeMeta($meta['objectMeta']['Object'])->get('isScalar');
+            $expectsScalar = $this->composeMeta($meta["objectMeta"]["Object"])->get("isScalar");
 
             if ($expectsScalar)
             {
@@ -77,7 +77,7 @@ class ObjectService extends AbstractApiService
                 // we fill the scalar object, but only to see if it passes validation.
                 // then we return the bare request
                 $object = $this->createObject($expectedObject);
-                $object->set('value', $rawRequest);
+                $object->set("_", $rawRequest);
                 $object->validate();
 
                 $result = $rawRequest;
@@ -101,7 +101,7 @@ class ObjectService extends AbstractApiService
         $objectClass = $this->objects[$objectName]["class"];
         $object = new $objectClass($objectMeta, $propMetaContainerList);
 
-        $this->injectServices($object, $objectMeta->get('Object')->get('depends'));
+        $this->injectServices($object, $objectMeta->get("Object")->get("depends"));
 
         if (is_object($data))
             $this->fill($object, $data);
@@ -147,7 +147,7 @@ class ObjectService extends AbstractApiService
             $this->classes = [];
 
             foreach ($this->getAllMeta() as $objectName => $data)
-                $this->classes[$data['class']] = $objectName;
+                $this->classes[$data["class"]] = $objectName;
         }
 
         if (!isset($this->classes[$class]))
@@ -173,7 +173,7 @@ class ObjectService extends AbstractApiService
 
                 foreach ($values as $key => $value)
                 {
-                    $type = $object->getPropertyMeta($key, 'Type');
+                    $type = $object->getPropertyMeta($key, "Type");
                     $object->set($key, $this->createFieldValue($type, $key, $value));
                 }
             }
@@ -219,7 +219,7 @@ class ObjectService extends AbstractApiService
             elseif ($metadata->hasAssociation($prop))
             {
                 $mapping = $metadata->getAssociationMapping($prop);
-                $propType = $object->getPropertyMeta($prop, 'Type');
+                $propType = $object->getPropertyMeta($prop, "Type");
 
                 if (!$propType->isObjectType())
                     throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be an object type.", $prop, $object->getObjectName()));
@@ -271,7 +271,7 @@ class ObjectService extends AbstractApiService
         $result = null;
         $expectedType = $type->getType();
 
-        if (is_scalar($value) || is_null($value) || $expectedType === 'polymorphic')
+        if (is_scalar($value) || is_null($value) || $expectedType === "polymorphic")
         {
             $result = $value;
         }
@@ -284,7 +284,7 @@ class ObjectService extends AbstractApiService
                 foreach ($value as $listValue)
                     $result[] = $this->createFieldValue($propMeta, $key, $listValue);
             }
-            elseif (in_array($expectedType, ['array', 'map', 'entity', 'entitylist']))
+            elseif (in_array($expectedType, ["array", "map", "entity", "entitylist"]))
             {
                 $result = $value;
             }

@@ -24,5 +24,5 @@ class Integer extends AbstractObject
     /**
      * @Property\NumberType(allowFloat=false)
      */
-    public $value;
+    public $_;
 }

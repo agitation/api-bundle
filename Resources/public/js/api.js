@@ -1,71 +1,60 @@
 /*jslint white: true */
 /*global Agit */
 
-Agit.Endpoint.registerList({});
 Agit.Object.registerList({
-    "common.v1/Null": {},
+    "common.v1/Null": [],
     "common.v1/ObjectList": {
         "itemList": {
             "type": "polymorphic",
             "nullable": true,
-            "name": "itemList",
-            "default": {}
+            "default": []
         }
     },
     "common.v1/String": {
-        "value": {
-            "type": "string",
-            "name": "value"
+        "_": {
+            "type": "string"
         }
     },
     "common.v1/Response": {
         "success": {
-            "type": "boolean",
-            "name": "success"
+            "type": "boolean"
         },
         "messageList": {
             "type": "objectlist",
             "class": "common.v1/Message",
-            "name": "messageList",
-            "default": {}
+            "default": []
         },
         "payload": {
             "type": "polymorphic",
-            "nullable": true,
-            "name": "payload"
+            "nullable": true
         },
         "entityList": {
             "type": "polymorphic",
             "nullable": true,
-            "name": "entityList",
-            "default": {}
+            "default": []
         }
     },
     "common.v1/Message": {
         "type": {
             "type": "string",
-            "values": {
-                "0": "info",
-                "1": "success",
-                "2": "warning",
-                "3": "error"
-            },
-            "name": "type"
+            "values": [
+                "info",
+                "success",
+                "warning",
+                "error"
+            ]
         },
         "code": {
             "type": "string",
-            "nullable": true,
-            "name": "code"
+            "nullable": true
         },
         "text": {
-            "type": "string",
-            "name": "Message Text"
+            "type": "string"
         }
     },
     "common.v1/Integer": {
-        "value": {
-            "type": "number",
-            "name": "value"
+        "_": {
+            "type": "number"
         }
     }
 });
