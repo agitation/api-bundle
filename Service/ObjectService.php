@@ -20,7 +20,6 @@ use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
-use Agit\ApiBundle\Annotation\MetaContainer;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\ApiBundle\Annotation\Property\Name;
 
@@ -94,18 +93,15 @@ class ObjectService extends AbstractApiService
 
     public function createObject($objectName, $data = null)
     {
-        $meta = $this->getMeta($objectName);
+        $this->load();
 
-        $objectMetaContainer = $this->createMetaContainer($meta['objectMeta']);
-        $propMetaContainerList = [];
+        $objectMeta = $this->getObjectMeta($objectName);
+        $propMetaContainerList = $this->getPropertyMeta($objectName);
 
-        foreach ($meta['propMetaList'] as $propName => $propMetaList)
-            $propMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
+        $objectClass = $this->objects[$objectName]["class"];
+        $object = new $objectClass($objectMeta, $propMetaContainerList);
 
-        $objectClass = $meta['class'];
-        $object = new $objectClass($objectMetaContainer, $propMetaContainerList);
-
-        $this->injectServices($object, $objectMetaContainer->get('Object')->get('depends'));
+        $this->injectServices($object, $objectMeta->get('Object')->get('depends'));
 
         if (is_object($data))
             $this->fill($object, $data);
@@ -115,29 +111,33 @@ class ObjectService extends AbstractApiService
 
     public function getObjectNames()
     {
-        if (is_null($this->objects))
-            $this->objects = $this->cacheLoader->load();
-
+        $this->load();
         return array_keys($this->objects);
     }
 
-    public function getMeta($objectName)
+    public function getObjectMeta($objectName)
     {
-        if (is_null($this->objects))
-            $this->objects = $this->cacheLoader->load();
+        $this->load();
 
         if (!isset($this->objects[$objectName]))
             throw new InvalidObjectException("Invalid object: $objectName");
 
-        return $this->objects[$objectName];
+        return $this->createMetaContainer($this->objects[$objectName]["objectMeta"]);
     }
 
-    public function getMetaList()
+    public function getPropertyMeta($objectName)
     {
-        if (is_null($this->objects))
-            $this->objects = $this->cacheLoader->load();
+        $this->load();
 
-        return $this->objects;
+        if (!isset($this->objects[$objectName]))
+            throw new InvalidObjectException("Invalid object: $objectName");
+
+        $metas = [];
+
+        foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList)
+            $metas[$propName] = $this->createMetaContainer($propMetaList);
+
+        return $metas;
     }
 
     public function getObjectNameFromClass($class)
@@ -146,7 +146,7 @@ class ObjectService extends AbstractApiService
         {
             $this->classes = [];
 
-            foreach ($this->getMetaList() as $objectName => $data)
+            foreach ($this->getAllMeta() as $objectName => $data)
                 $this->classes[$data['class']] = $objectName;
         }
 
@@ -180,6 +180,18 @@ class ObjectService extends AbstractApiService
 
             $object->validate();
         }
+    }
+
+    protected function load()
+    {
+        if (is_null($this->objects))
+            $this->objects = $this->cacheLoader->load();
+    }
+
+    protected function getAllMeta()
+    {
+        $this->load();
+        return $this->objects;
     }
 
     protected function fillFromEntity($object, $entity)
