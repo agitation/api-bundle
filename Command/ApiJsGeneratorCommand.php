@@ -75,7 +75,11 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
             if (strpos($endpointService->getEndpointClass($name), $bundleNamespace) !== 0) continue;
 
-            $list[$name] = $metaContainer->get("Endpoint")->get("request");
+            $list[$name] = [
+                $metaContainer->get("Endpoint")->get("request"),
+                $metaContainer->get("Endpoint")->get("response")
+            ];
+
             $this->output->write(".");
         }
 
@@ -108,7 +112,6 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
                 $propMetas = $object->getPropertyMetas($key);
 
                 $objProps[$key] = $this->getPropMeta($propMetas);
-                $objProps[$key]["name"] = $propMetas->get("Name")->get("value");
 
                 if ($value !== null)
                     $objProps[$key]["default"] = $value;
