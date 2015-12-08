@@ -49,7 +49,13 @@ abstract class AbstractObject implements \JsonSerializable
         return $this->objectName;
     }
 
+    // DEPRECATED, use has()
     public function hasProperty($key)
+    {
+        return isset($this->propMetaList[$key]);
+    }
+
+    public function has($key)
     {
         return isset($this->propMetaList[$key]);
     }
