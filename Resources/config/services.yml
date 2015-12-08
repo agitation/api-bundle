@@ -15,6 +15,10 @@ services:
         arguments: [ @agit.pluggable.cache.loader_factory, @service_container ]
         tags: [{ name: agit.pluggable, type: api.formatter }]
 
+    agit.api.persistence:
+        class: Agit\ApiBundle\Service\PersistenceService
+        arguments: [ @doctrine.orm.entity_manager, @agit.api.object ]
+
 
     # Processor factories for pluggable API services
 
