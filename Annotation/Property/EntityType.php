@@ -14,23 +14,18 @@ namespace Agit\ApiBundle\Annotation\Property;
  */
 class EntityType extends ObjectType
 {
-    protected $class = null;
+    protected $keytype = "integer";
 
-    public function isObjectType()
-    {
-        return ($this->_direction === 'out');
-    }
+    protected $class;
+
+    // only relevant for validation, therefore `false`
+    protected $_isObjectType = false;
 
     public function check($value)
     {
         $this->init($value);
 
         if ($this->mustCheck())
-        {
-            if ($this->_direction === 'in')
-                static::$_ValidationService->validate('integer', $value, 1);
-            else
-                parent::check($value);
-        }
+            static::$_ValidationService->validate($this->keytype, $value, 1);
     }
 }

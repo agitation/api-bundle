@@ -12,18 +12,13 @@ namespace Agit\ApiBundle\Annotation\Property;
 /**
  * @Annotation
  */
-class EntityListType extends ObjectListType
+class EntityListType extends EntityType
 {
-    protected $class = null;
-
     protected $minLength = null;
 
     protected $maxLength = null;
 
-    public function isObjectType()
-    {
-        return ($this->_direction === 'out');
-    }
+    protected $_isListType = true;
 
     public function check($value)
     {
@@ -31,17 +26,10 @@ class EntityListType extends ObjectListType
 
         if ($this->mustCheck())
         {
-            if ($this->_direction === 'in')
-            {
-                static::$_ValidationService->validate('array', $value);
+            static::$_ValidationService->validate('array', $value);
 
-                foreach ($value as $val)
-                    static::$_ValidationService->validate('integer', $val, 1);
-            }
-            else
-            {
-                parent::check($value);
-            }
+            foreach ($value as $val)
+                static::$_ValidationService->validate($this->keytype, $value, 1);
         }
     }
 }
