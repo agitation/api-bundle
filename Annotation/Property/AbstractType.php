@@ -47,17 +47,6 @@ abstract class AbstractType extends AbstractPropertyMeta
         self::$_ValidationService = $validationService;
     }
 
-    public function getSpecialFormatDesc($field)
-    {
-        if (!isset($this->_specialFormats))
-            throw new InternalErrorException("special formats don't exist for this type.");
-
-        if (!isset($this->_specialFormats[$field]))
-            throw new InternalErrorException("The field $field doesn't exist for this type.");
-
-        return $this->_specialFormats[$field];
-    }
-
     public function getType()
     {
         return strtolower(substr(strrchr(get_class($this), "\\"), 1, -4));
@@ -85,11 +74,11 @@ abstract class AbstractType extends AbstractPropertyMeta
 
         if ($this->readonly)
         {
+            if (isset($value))
+                throw new InvalidObjectValueException("The value is read-only and hence must not be set in a request.");
+
             // readonly implies nullable
             $this->nullable = true;
-
-//             if ($this->_direction === 'in' && isset($value))
-//                 throw new InvalidObjectValueException("The value is read-only and hence must not be set in a request.");
         }
 
         if (!$this->nullable)
