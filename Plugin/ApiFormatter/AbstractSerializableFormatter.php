@@ -123,8 +123,8 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
     private function isEntityObject($value)
     {
-        return (is_callable(array($value, 'hasProperty')) &&
-            $value->hasProperty('id') &&
+        return (is_callable([$value, 'has']) &&
+            $value->has('id') &&
             $value->get('id'));
     }
 

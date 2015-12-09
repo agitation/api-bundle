@@ -49,12 +49,6 @@ abstract class AbstractObject implements \JsonSerializable
         return $this->objectName;
     }
 
-    // DEPRECATED, use has()
-    public function hasProperty($key)
-    {
-        return isset($this->propMetaList[$key]);
-    }
-
     public function has($key)
     {
         return isset($this->propMetaList[$key]);
@@ -132,7 +126,7 @@ abstract class AbstractObject implements \JsonSerializable
 
     protected function checkHasProperty($key)
     {
-        if (!$this->hasProperty($key))
+        if (!$this->has($key))
             throw new InvalidObjectException(sprintf(
                 Translate::t("The `%s` object does not have a `%s` property."),
                 $this->getObjectName(),
