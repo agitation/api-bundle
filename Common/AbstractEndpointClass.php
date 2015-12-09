@@ -182,8 +182,6 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
         $this->setSuccess(false);
 
         $code = ($e instanceof AgitException) ? $e->getErrorCode() : null;
-        $message = ($e instanceof AgitException) ? $e->getMessage() : "Internal Error.";
-//         $message = $e->getMessage();
-        $this->addMessage('error', $message, $code);
+        $this->addMessage('error', $e->getMessage(), $code);
     }
 }
