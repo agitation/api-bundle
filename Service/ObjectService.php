@@ -221,8 +221,8 @@ class ObjectService extends AbstractApiService
                 $mapping = $metadata->getAssociationMapping($prop);
                 $propType = $object->getPropertyMeta($prop, "Type");
 
-                if (!$propType->isObjectType())
-                    throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be an object type.", $prop, $object->getObjectName()));
+                if (!$propType->isObjectType() && !$propType->isEntityType())
+                    throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be an object/entity type.", $prop, $object->getObjectName()));
 
                 if ($mapping["type"] & ClassMetadataInfo::TO_ONE)
                 {
@@ -230,7 +230,11 @@ class ObjectService extends AbstractApiService
                 }
                 elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY)
                 {
-                    // TODO
+                    if (!$propType->isListType())
+                        throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be a list type.", $prop, $object->getObjectName()));
+
+                    foreach ($value->getValues() as $val)
+                        $object->add($prop, $this->createObject($propType->getTargetClass(), $val));
                 }
             }
         }
