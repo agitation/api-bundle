@@ -37,6 +37,8 @@ abstract class AbstractType extends AbstractPropertyMeta
 
     protected $_isObjectType = false;
 
+    protected $_isEntityType = false;
+
     protected $_validate;
 
     // makes life easier when nullable===true
@@ -65,6 +67,11 @@ abstract class AbstractType extends AbstractPropertyMeta
     public function isObjectType()
     {
         return $this->_isObjectType;
+    }
+
+    public function isEntityType()
+    {
+        return $this->_isEntityType;
     }
 
     protected function init($value)

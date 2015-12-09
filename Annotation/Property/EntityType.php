@@ -18,7 +18,8 @@ class EntityType extends ObjectType
 
     protected $class;
 
-    // only relevant for validation, therefore `false`
+    protected $_isEntityType = true;
+
     protected $_isObjectType = false;
 
     public function check($value)
