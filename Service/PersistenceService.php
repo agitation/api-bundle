@@ -14,25 +14,24 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Common\Collections\Collection;
 use Agit\CommonBundle\Exception\InternalErrorException;
-use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\AbstractPersistableObject;
 
 class PersistenceService
 {
     protected $entityManager;
 
-    public function __construct(EntityManager $entityManager, ObjectService $objectService)
+    public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->objectService = $objectService;
     }
 
-    public function saveEntity($entity, AbstractObject $object)
+    public function saveEntity($entity, \stdClass $data)
     {
         try
         {
             $this->entityManager->beginTransaction();
 
-            $this->fillEntity($entity, $object);
+            $this->fillEntity($entity, $data);
 
             $this->entityManager->flush();
             $this->entityManager->commit();
@@ -46,7 +45,7 @@ class PersistenceService
         }
     }
 
-    private function fillEntity($entity, AbstractObject $object)
+    private function fillEntity($entity, \stdClass $data)
     {
         if ($entity instanceof Proxy)
             $entity->__load();
@@ -57,16 +56,14 @@ class PersistenceService
 
         foreach ($allFields as $prop)
         {
-            if (!$object->has($prop) || $entityMeta->isIdentifier($prop))
+            if (!isset($data->$prop) || $entityMeta->isIdentifier($prop))
                 continue;
 
-            $type = $object->getPropertyMeta($prop, "Type");
+            $value = $data->$prop;
             $setter = "set" . ucfirst($prop);
 
-            if ($type->get("readonly") || !is_callable([$entity, $setter]))
+            if (!is_callable([$entity, $setter]))
                 continue;
-
-            $value = $object->get($prop);
 
             if (!in_array($prop, $assoc))
             {
@@ -80,11 +77,6 @@ class PersistenceService
 
                 if ($mapping["type"] & ClassMetadataInfo::TO_ONE)
                 {
-                    // TODO: If is not owning: create a new entity and pass it to the setter
-
-                    if ($type->isListType())
-                        throw new InternalErrorException("Mismatch between object and entity: The `$prop` property is a list, while the entity field is a xToOne relation.");
-
                     if ($isOwning)
                     {
                         // ONE_TO_ONE or MANY_TO_ONE
@@ -110,7 +102,7 @@ class PersistenceService
                 }
                 elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY)
                 {
-                    if (!$type->isListType() || !is_array($value))
+                    if (!is_array($value))
                         throw new InternalErrorException("Mismatch between object and entity: The `$prop` property is a single object reference, while the entity field is a xToMany relation.");
 
                     $adder = "add" . ucfirst($prop);
@@ -119,14 +111,11 @@ class PersistenceService
                     if (!($children instanceof Collection))
                         throw new InternalErrorException("Bad entity: The `$prop` property is expected to be a Doctrine collection.");
 
-                    // re-assign as (indexed) array. Of course, we could search directly in the collection,
-                    // but we need to keep track of obsolete children anyway, and this is easier with an array
-                    $children = $children->toArray();
+                    // needed to keep track of children
+                    $childrenArray = $children->toArray();
 
                     foreach ($value as $val)
                     {
-                        // TODO: Remove obsolete children, or better: keep track of new/updated/removed children
-
                         if ($isOwning)
                         {
                             // MANY_TO_MANY
@@ -140,23 +129,24 @@ class PersistenceService
 
                             $id = $value->get("id");
 
-                            if (isset($children[$id]))
+                            if (isset($childrenArray[$id]))
                             {
-                                $childEntity = $children[$id];
-                                unset($children[$id]);
+                                $child = $childrenArray[$id];
+                                unset($childrenArray[$id]);
                             }
                             else
                             {
-                                $childEntity = $this->entityManager->getClassMetadata($targetEntity)->newInstance();
+                                $child = $this->entityManager->getClassMetadata($targetEntity)->newInstance();
                             }
 
-                            $this->fillEntity($childEntity, $value);
+                            $this->fillEntity($child, $value);
+                            $children->add($child);
                         }
                     }
 
                     // remove obsolete children
                     if ($mapping["type"] & ClassMetadataInfo::ONE_TO_MANY)
-                        foreach ($children as $child)
+                        foreach ($childrenArray as $child)
                             $this->entityManager->remove($child);
                 }
             }
