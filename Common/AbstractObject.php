@@ -9,8 +9,6 @@
 
 namespace Agit\ApiBundle\Common;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Agit\CommonBundle\Helper\StringHelper;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Exception\InvalidObjectException;
