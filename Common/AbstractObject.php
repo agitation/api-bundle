@@ -71,7 +71,6 @@ abstract class AbstractObject implements \JsonSerializable
     public function set($key, $value)
     {
         $this->checkHasProperty($key);
-        $this->validateValue($key, $value);
         $this->$key = $value;
     }
 
@@ -82,8 +81,6 @@ abstract class AbstractObject implements \JsonSerializable
 
         if ($type->isListType())
         {
-            $this->validateValue($key, [$value]);
-
             if (!is_array($this->$key))
                 $this->$key = [];
 
@@ -91,7 +88,6 @@ abstract class AbstractObject implements \JsonSerializable
         }
         elseif ($type->getType() === 'number')
         {
-            $this->validateValue($key, $value);
             $this->$key += $value;
         }
         else
