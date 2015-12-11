@@ -41,7 +41,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
-    protected function updateEntity(AbstractObject $requestObject)
+    protected function update(AbstractObject $requestObject)
     {
         $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
         $entity = $this->saveEntity($entity, $requestObject);
