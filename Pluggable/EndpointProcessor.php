@@ -21,7 +21,7 @@ use Agit\PluggableBundle\Strategy\Depends;
 use Agit\ApiBundle\Annotation\Endpoint\AbstractEndpointMeta;
 use Agit\ApiBundle\Annotation\Endpoint\EntityEndpointClass;
 use Agit\ApiBundle\Annotation\Endpoint\Security;
-use Agit\ApiBundle\Annotation\Endpoint\Endpoint;
+use Agit\ApiBundle\Annotation\Endpoint\EntityEndpoint;
 
 class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterface
 {
@@ -112,8 +112,11 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
                 continue;
 
             $endpointMeta = [];
-            $endpointMeta["Endpoint"] = new Endpoint(["depends" => $plugin->get("depends")]);
             $endpointMeta["Security"] = new Security();
+            $endpointMeta["Endpoint"] = new EntityEndpoint([
+                "depends" => $plugin->get("depends"),
+                "entity" => $plugin->get("entity")
+            ]);
 
             if ($method === "get")
             {
