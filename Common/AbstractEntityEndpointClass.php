@@ -26,25 +26,30 @@ use Agit\ApiBundle\Common\AbstractObject;
  */
 abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
 {
-    protected function getEntity($id)
+    protected function get($id)
     {
-        return $this->retrieveEntity($this->getEntityClass(), $id);
+        $entity = $this->retrieveEntity($this->getEntityClass(), $id);
+        return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
-    protected function createEntity(AbstractObject $requestObject)
+    protected function create(AbstractObject $requestObject)
     {
         $em = $this->getService("doctrine.orm.entity_manager");
         $entity = $em->getClassMetadata($this->getEntityClass())->newInstance();
-        return $this->saveEntity($entity, $requestObject);
+        $entity = $this->saveEntity($entity, $requestObject);
+
+        return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
     protected function updateEntity(AbstractObject $requestObject)
     {
         $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
-        return $this->saveEntity($entity, $requestObject);
+        $entity = $this->saveEntity($entity, $requestObject);
+
+        return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
-    protected function deleteEntity($id, $completeRemove = true)
+    protected function delete($id, $completeRemove = true)
     {
         try
         {
@@ -92,16 +97,34 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
             if (!$deleted)
                 throw new InternalErrorException(sprintf("Failed deleting an object of type %s, possibly because of dependencies and lack of the setStatus() method.", $this->getEntityClass()));
         }
+
+        return true;
     }
 
-    protected function searchEntities(AbstractObject $requestObject)
+    protected function search(AbstractObject $requestObject)
     {
         $query = $this->createSearchQuery($requestObject);
-        return $query->getQuery()->getResult();
+        $result = [];
+
+        foreach ($query->getQuery()->getResult() as $entity)
+            $result[] = $this->createObject($this->getResponseObjectApiClass(), $entity);
+
+        return $result;
     }
 
     protected function getEntityClass()
     {
+        return $this->getMeta("Endpoint")->get("entity");
+    }
+
+    protected function getResponseObjectApiClass()
+    {
+        $apiClass = $this->getMeta("Endpoint")->get("response");
+
+        if (substr($apiClass, -2) === "[]")
+            $apiClass = substr($apiClass, 0, -2);
+
+        return $apiClass;
     }
 
     protected function createSearchQuery(AbstractObject $requestObject)
