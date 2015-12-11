@@ -18,11 +18,14 @@ use Agit\ApiBundle\Common\AbstractObject;
  * @Depends({"doctrine.orm.entity_manager", "agit.api.persistence"});
  *
  * Endpoint class providing CRUD operations for entities.
+ *
+ * NOTE: The `get`, `create`, `update`, `delete` and `search` methods can be used
+ * as endpoints – even though they don’t have annotations on them. The actual
+ * endpoint class can tell through the EntityEndpointClass annotation which of
+ * these methods it wants to provide. It is also possible to override them.
  */
 abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
 {
-    abstract protected function getEntityClass();
-
     protected function getEntity($id)
     {
         return $this->retrieveEntity($this->getEntityClass(), $id);
@@ -95,6 +98,10 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
     {
         $query = $this->createSearchQuery($requestObject);
         return $query->getQuery()->getResult();
+    }
+
+    protected function getEntityClass()
+    {
     }
 
     protected function createSearchQuery(AbstractObject $requestObject)

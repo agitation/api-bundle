@@ -11,6 +11,7 @@ namespace Agit\ApiBundle\Pluggable;
 
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\ORM\EntityManager;
 use Agit\PluggableBundle\Strategy\ProcessorFactoryInterface;
 
 abstract class AbstractApiProcessorFactory implements ProcessorFactoryInterface
@@ -19,9 +20,12 @@ abstract class AbstractApiProcessorFactory implements ProcessorFactoryInterface
 
     protected $annotationReader;
 
-    public function __construct(Reader $annotationReader, CacheProvider $cacheProvider)
+    protected $entityManager;
+
+    public function __construct(Reader $annotationReader, CacheProvider $cacheProvider, EntityManager $entityManager = null)
     {
         $this->annotationReader = $annotationReader;
         $this->cacheProvider = $cacheProvider;
+        $this->entityManager = $entityManager;
     }
 }

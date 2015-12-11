@@ -20,6 +20,6 @@ class EndpointProcessorFactory extends AbstractApiProcessorFactory
 
     public function createProcessor(PluggableServiceInterface $pluggableService)
     {
-        return new EndpointProcessor($this->annotationReader, $this->cacheProvider, $pluggableService);
+        return new EndpointProcessor($this->annotationReader, $this->cacheProvider, $this->entityManager, $pluggableService);
     }
 }

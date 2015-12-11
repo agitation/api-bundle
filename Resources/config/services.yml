@@ -25,7 +25,7 @@ services:
     agit.api.pluggable.processor_factory.endpoint:
         private: true
         class: Agit\ApiBundle\Pluggable\EndpointProcessorFactory
-        arguments: [ @annotation_reader, @agit.common.cache.persistent ]
+        arguments: [ @annotation_reader, @agit.common.cache.persistent, @doctrine.orm.entity_manager ]
         tags: [{ name: agit.pluggable.processor_factory, type: api.endpoint }]
 
     agit.api.pluggable.processor_factory.object:

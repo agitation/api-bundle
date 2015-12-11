@@ -11,6 +11,7 @@ namespace Agit\ApiBundle\Pluggable;
 
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\ORM\EntityManager;
 use Agit\CommonBundle\Helper\StringHelper;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\ProcessorInterface;
@@ -18,7 +19,9 @@ use Agit\PluggableBundle\Strategy\PluggableServiceInterface;
 use Agit\PluggableBundle\Strategy\PluginInterface;
 use Agit\PluggableBundle\Strategy\Depends;
 use Agit\ApiBundle\Annotation\Endpoint\AbstractEndpointMeta;
+use Agit\ApiBundle\Annotation\Endpoint\EntityEndpointClass;
 use Agit\ApiBundle\Annotation\Endpoint\Security;
+use Agit\ApiBundle\Annotation\Endpoint\Endpoint;
 
 class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterface
 {
@@ -26,22 +29,29 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
 
     private $annotationReader;
 
+    private $entityManager;
+
     private $entryList = [];
 
-    public function __construct(Reader $annotationReader, CacheProvider $cacheProvider, PluggableServiceInterface $pluggableService)
+    public function __construct(Reader $annotationReader, CacheProvider $cacheProvider, EntityManager $entityManager, PluggableServiceInterface $pluggableService)
     {
         if (!($pluggableService instanceof EndpointService))
             throw new InternalErrorException("Pluggable service must be an instance of EndpointService.");
 
         $this->cacheProvider = $cacheProvider;
+        $this->entityManager = $entityManager;
         $this->annotationReader = $annotationReader;
     }
 
     public function addPlugin($class, PluginInterface $plugin)
     {
         $classRefl = new \ReflectionClass($class);
-        $className = $this->translateName($classRefl);
-        $namespace = strstr($className, '/', true);
+        $endpointClass = $this->translateName($classRefl);
+        $namespace = strstr($endpointClass, "/", true);
+
+        // if this is an entity endpoint, there may be inherited endpoints
+        if ($plugin instanceof EntityEndpointClass)
+            $this->processEntityEndpointClass($plugin, $class, $endpointClass);
 
         foreach ($classRefl->getMethods() as $methodRefl)
         {
@@ -52,7 +62,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
             foreach ($annotationList as $annotation)
             {
                 if ($annotation instanceof Depends)
-                    $depends = array_merge($depends, (array)$annotation->get('value'));
+                    $depends = array_merge($depends, (array)$annotation->get("value"));
 
                 if (!($annotation instanceof AbstractEndpointMeta))
                     continue;
@@ -61,25 +71,25 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
                 $endpointMeta[$endpointMetaName] = $annotation;
             }
 
-            if (!isset($endpointMeta['Endpoint']) || !isset($endpointMeta['Security']))
+            if (!isset($endpointMeta["Endpoint"]) || !isset($endpointMeta["Security"]))
                 continue;
 
-            $depends = array_merge($depends, (array)$endpointMeta['Endpoint']->get('depends'));
-            $endpointMeta['Endpoint']->set('depends', $depends);
+            $depends = array_merge($depends, (array)$endpointMeta["Endpoint"]->get("depends"));
+            $endpointMeta["Endpoint"]->set("depends", $depends);
 
             // fix implicit namespaces in request and response
-            $endpointMeta['Endpoint']->set('request', $this->fixObjectName($namespace, $endpointMeta['Endpoint']->get('request')));
-            $endpointMeta['Endpoint']->set('response', $this->fixObjectName($namespace, $endpointMeta['Endpoint']->get('response')));
+            $endpointMeta["Endpoint"]->set("request", $this->fixObjectName($namespace, $endpointMeta["Endpoint"]->get("request")));
+            $endpointMeta["Endpoint"]->set("response", $this->fixObjectName($namespace, $endpointMeta["Endpoint"]->get("response")));
 
             $endpoint = sprintf(
                 "%s.%s",
-                $className,
+                $endpointClass,
                 $methodRefl->getName());
 
             $this->addEntry($endpoint, [
-                'class' => $class,
-                'method' => $methodRefl->getName(),
-                'meta' => $this->dissectMetaList($endpointMeta)
+                "class" => $class,
+                "method" => $methodRefl->getName(),
+                "meta" => $this->dissectMetaList($endpointMeta)
             ]);
         }
     }
@@ -87,5 +97,60 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
     public function process()
     {
         $this->cacheProvider->save("agit.api.endpoint", $this->getEntries());
+    }
+
+    protected function processEntityEndpointClass($plugin, $class, $endpointClass)
+    {
+        $capPrefix = $plugin->get("cap");
+        $entityMeta = $this->entityManager->getClassMetadata($plugin->get("entity"));
+        $entityIdFieldMeta = $entityMeta->getFieldMapping($entityMeta->getSingleIdentifierFieldName());
+        $idObject = ($entityIdFieldMeta["type"] === "integer") ? "common.v1/Integer" : "common.v1/String";
+
+        foreach ($plugin->get("endpoints") as $method)
+        {
+            if (!in_array($method, ["get", "create", "update", "delete", "search"]))
+                continue;
+
+            $endpointMeta = [];
+            $endpointMeta["Endpoint"] = new Endpoint(["depends" => $plugin->get("depends")]);
+            $endpointMeta["Security"] = new Security();
+
+            if ($method === "get")
+            {
+                $endpointMeta["Security"]->set("capability", "$capPrefix.read");
+                $endpointMeta["Endpoint"]->set("request", $idObject);
+                $endpointMeta["Endpoint"]->set("response", $endpointClass);
+            }
+            elseif ($method === "search")
+            {
+                $endpointMeta["Security"]->set("capability", "$capPrefix.read");
+                $endpointMeta["Endpoint"]->set("request",  "{$endpointClass}Search");
+                $endpointMeta["Endpoint"]->set("response", "{$endpointClass}[]");
+            }
+            elseif ($method === "create")
+            {
+                $endpointMeta["Security"]->set("capability", "$capPrefix.write");
+                $endpointMeta["Endpoint"]->set("request", $endpointClass);
+                $endpointMeta["Endpoint"]->set("response", $endpointClass);
+            }
+            elseif ($method === "update")
+            {
+                $endpointMeta["Security"]->set("capability", "$capPrefix.write");
+                $endpointMeta["Endpoint"]->set("request", $endpointClass);
+                $endpointMeta["Endpoint"]->set("response", $endpointClass);
+            }
+            elseif ($method === "delete")
+            {
+                $endpointMeta["Security"]->set("capability", "$capPrefix.write");
+                $endpointMeta["Endpoint"]->set("request", $idObject);
+                $endpointMeta["Endpoint"]->set("response", "common.v1/Null");
+            }
+
+            $this->addEntry("$endpointClass.$method", [
+                "class" => $class,
+                "method" => $method,
+                "meta" => $this->dissectMetaList($endpointMeta)
+            ]);
+        }
     }
 }
