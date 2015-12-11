@@ -156,7 +156,7 @@ class ObjectService extends AbstractApiService
         return $this->classes[$class];
     }
 
-    public function fill(AbstractObject $object, $data)
+    protected function fill(AbstractObject $object, $data)
     {
         if (!is_object($data))
             throw new InternalErrorException("The `data` parameter must be an object.");
