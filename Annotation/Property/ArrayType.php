@@ -33,7 +33,7 @@ class ArrayType extends AbstractType
             static::$_ValidationService->validate('array', $value, $this->minLength, $this->maxLength);
 
             if (is_array($this->allowedValues))
-                static::$_ValidationService->validate('multiSelection', $value, array_keys($this->allowedValues));
+                static::$_ValidationService->validate('multiSelection', $value, $this->allowedValues);
 
             foreach ($value as $k => $val)
             {
