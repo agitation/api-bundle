@@ -62,9 +62,6 @@ class PersistenceService
             $value = $data->$prop;
             $setter = "set" . ucfirst($prop);
 
-            if (!is_callable([$entity, $setter]))
-                continue;
-
             if (!in_array($prop, $assoc))
             {
                 $entity->$setter($value);
