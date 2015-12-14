@@ -50,7 +50,8 @@ class PersistenceService
         if ($entity instanceof Proxy)
             $entity->__load();
 
-        $entityMeta = $this->entityManager->getClassMetadata(get_class($entity));
+        $entityClassName = get_class($entity);
+        $entityMeta = $this->entityManager->getClassMetadata($entityClassName);
         $assoc = $entityMeta->getAssociationNames();
         $allFields = array_merge($assoc, $entityMeta->getFieldNames());
 
@@ -111,20 +112,23 @@ class PersistenceService
                     // needed to keep track of children
                     $childrenArray = $children->toArray();
 
-                    foreach ($value as $val)
+                    foreach ($value as $childValue)
                     {
                         if ($isOwning)
                         {
                             // MANY_TO_MANY
 
-                            $ref = $this->entityManager->getReference($targetEntity, $val);
+                            $ref = $this->entityManager->getReference($targetEntity, $childValue);
                             $entity->$adder($ref);
                         }
                         else
                         {
                             // ONE_TO_MANY or MANY_TO_MANY
 
-                            $id = $value->get("id");
+                            if (!is_object($childValue) || !property_exists($childValue, "id"))
+                                throw new InternalErrorException("Bad child entity: expecting an object with an ID.");
+
+                            $id = $childValue->id;
 
                             if (isset($childrenArray[$id]))
                             {
@@ -133,10 +137,27 @@ class PersistenceService
                             }
                             else
                             {
-                                $child = $this->entityManager->getClassMetadata($targetEntity)->newInstance();
+                                $childMeta = $this->entityManager->getClassMetadata($targetEntity);
+                                $childClassName = $childMeta->getName();
+                                $child = new $childClassName();
+                                $parentField = null;
+
+                                foreach ($childMeta->getAssociationMappings() as $field => $childFieldMapping)
+                                {
+                                    if ($childFieldMapping["targetEntity"] === $entityClassName)
+                                    {
+                                        $parentField = $field;
+                                        break;
+                                    }
+                                }
+
+                                if (!$parentField)
+                                    throw new InternalErrorException("Bad child entity: the child entity class is missing a relation to the parent.");
+
+                                $childMeta->setFieldValue($child, $field, $entity);
                             }
 
-                            $this->fillEntity($child, $value);
+                            $this->fillEntity($child, $childValue);
                             $children->add($child);
                         }
                     }
