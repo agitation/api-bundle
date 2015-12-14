@@ -35,8 +35,8 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
     protected function create(AbstractObject $requestObject)
     {
         $em = $this->getService("doctrine.orm.entity_manager");
-        $entity = $em->getClassMetadata($this->getEntityClass())->newInstance();
-        $entity = $this->saveEntity($entity, $requestObject);
+        $className = $em->getClassMetadata($this->getEntityClass())->getName();
+        $entity = $this->saveEntity(new $className(), $requestObject);
 
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
