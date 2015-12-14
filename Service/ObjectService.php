@@ -286,7 +286,7 @@ class ObjectService extends AbstractApiService
                 $result = [];
 
                 foreach ($value as $listValue)
-                    $result[] = $this->createFieldValue($propMeta, $key, $listValue);
+                    $result[] = $this->createObject($type->getTargetClass(), $listValue);
             }
             elseif (in_array($expectedType, ["array", "map", "entity", "entitylist"]))
             {
