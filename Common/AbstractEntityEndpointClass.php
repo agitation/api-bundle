@@ -13,6 +13,7 @@ use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\PluggableBundle\Strategy\Depends;
 use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Exception\ObjectNotFoundException;
 
 /**
  * @Depends({"doctrine.orm.entity_manager", "agit.api.persistence"});
