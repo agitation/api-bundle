@@ -84,7 +84,14 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
                 continue;
 
             if ($propMeta['Type'] instanceof ObjectType)
-                $propMeta['Type']->set('class', $this->fixObjectName($namespace, $propMeta['Type']->get('class')));
+            {
+                $targetClass = $propMeta['Type']->get('class');
+
+                if (is_null($targetClass))
+                    throw new InternalErrorException("Error in $objectName, property $propName: The target class must be specified.");
+
+                $propMeta['Type']->set('class', $this->fixObjectName($namespace, $targetClass));
+            }
 
             if (!isset($propMeta['Name']) || !$propMeta['Name']->get('value'))
                 $propMeta['Name'] = new Name(['value' => $propName]);
