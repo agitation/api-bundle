@@ -164,8 +164,13 @@ class PersistenceService
 
                     // remove obsolete children
                     if ($mapping["type"] & ClassMetadataInfo::ONE_TO_MANY)
+                    {
                         foreach ($childrenArray as $child)
-                            $this->entityManager->remove($child);
+                        {
+                            $children->removeElement($child);
+                            $this->entityManager->remove($child); // necessary?
+                        }
+                    }
                 }
             }
         }
