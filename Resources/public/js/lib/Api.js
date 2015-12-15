@@ -2,12 +2,14 @@
 
 Agit.Api = (function($){
     var
-        normalizePayload = function(payload, entityList)
+        normalizePayload = function(responseObjectName, payload, entityList)
         {
+            responseObjectName.substr(-2) === "[]" && (responseObjectName = responseObjectName.substr(0, responseObjectName.length - 2));
+
             var
                 pattern = /#e#:[0-9]+/,
 
-                expand = function(value)
+                expand = function(value, objName)
                 {
                     var newValue = value;
 
@@ -16,26 +18,38 @@ Agit.Api = (function($){
                         newValue = [];
 
                         $.each(value, function(k, v){
-                            newValue.push(expand(v));
+                            newValue.push(expand(v, objName));
                         });
                     }
                     else if (value instanceof Object)
                     {
-                        newValue = {};
+                        if (objName)
+                        {
+                            newValue = new Agit.Object(objName);
 
-                        $.each(value, function(k, v){
-                            newValue[k] =  expand(v);
-                        });
+                            $.each(value, function(prop, val){
+                                var meta = newValue.getPropMeta(prop);
+                                newValue[prop] = expand(val, meta["class"] || null);
+                            });
+                        }
+                        else
+                        {
+                            newValue = {};
+
+                            $.each(value, function(k, v){
+                                newValue[k] = expand(v);
+                            });
+                        }
                     }
                     else if (typeof(value) === "string" && value.match(pattern))
                     {
-                        newValue = expand(entityList[value]);
+                        newValue = expand(entityList[value], objName);
                     }
 
                     return newValue;
                 };
 
-            return expand(payload);
+            return expand(payload, responseObjectName);
         },
 
         // this is to make sure that, in the event of an error, we have a "proper" response.
@@ -63,8 +77,7 @@ Agit.Api = (function($){
             {
                 params = params || {};
 
-                if (endpoint instanceof Agit.Endpoint)
-                    endpoint = endpoint.getName();
+                typeof(endpoint) === "string" && (endpoint = new Agit.Endpoint(endpoint));
 
                 var
                     self = this,
@@ -83,14 +96,14 @@ Agit.Api = (function($){
                                 ));
                             });
 
-                            response.payload = normalizePayload(response.payload, response.entityList);
+                            response.payload = normalizePayload(endpoint.getResponse(), response.payload, response.entityList);
                             callback(params.fullResponse ? response : response.payload);
                         });
                     },
 
                     ajaxOpts = {
                         type         : "POST",
-                        url          : Agit.apiBaseUrl + "/" + endpoint,
+                        url          : Agit.apiBaseUrl + "/" + endpoint.getName(),
                         data         : "request=" + JSON.stringify(request).replace(/\+/g, "%2b").replace(/&/g, "%26"),
                         success      : callbackWrapper,
                         error        : callbackWrapper,
