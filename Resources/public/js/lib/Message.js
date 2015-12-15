@@ -1,11 +1,10 @@
 /*jslint eqeq: true, nomen: true, plusplus: true, sloppy: true, white: true, browser: true, devel: false, maxerr: 500 */
 /*global Tx, $, jQuery, OpenLayers, JSON */
 
-Agit.Message = function(text, _type, _category)
+Agit.Message = function(text, type, category)
 {
-    var
-        type = _type || 'info',
-        category = _category || '';
+    type = type || 'info';
+    category = category || '';
 
     this.getType = function()
     {
