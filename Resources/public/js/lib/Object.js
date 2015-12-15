@@ -15,6 +15,11 @@ Agit.Object = (function() {
             getPropMeta : function(propName)
             {
                 return this._meta[propName];
+            },
+
+            isScalar : function()
+            {
+                return this._meta._ && Object.keys(this._meta).length === 1;
             }
         };
 
@@ -26,6 +31,9 @@ Agit.Object = (function() {
             objectMeta = Agit.Object.list[objectName],
             values = {},
             object = Object.create(factoryProto);
+
+        if (objectMeta === undefined)
+            throw new ApiError("Object `" + objectName + "` does not exist.");
 
         Object.keys(objectMeta).forEach(function(prop){
             values[prop] = (defaultValues[prop] !== undefined)
