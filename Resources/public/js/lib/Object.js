@@ -54,3 +54,8 @@ Agit.Object.register = function(objects)
         Agit.Object.list[key] = objects[key];
     });
 };
+
+Agit.Object.exists = function(objectName)
+{
+    return !!Agit.Object.list[objectName];
+};
