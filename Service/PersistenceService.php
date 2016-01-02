@@ -103,14 +103,16 @@ class PersistenceService
                     if (!is_array($value))
                         throw new InternalErrorException("Mismatch between object and entity: The `$prop` property is a single object reference, while the entity field is a xToMany relation.");
 
-                    $adder = "add" . ucfirst($prop);
                     $children = $entityMeta->getFieldValue($entity, $prop);
 
                     if (!($children instanceof Collection))
                         throw new InternalErrorException("Bad entity: The `$prop` property is expected to be a Doctrine collection.");
 
-                    // needed to keep track of children
-                    $childrenArray = $children->toArray();
+                    $childrenArray = [];
+
+                    // can't use the toArray() method, because we want the array to be indexed by the childrens' keys
+                    foreach ($children as $child)
+                        $childrenArray[$child->getId()] = $child;
 
                     foreach ($value as $childValue)
                     {
@@ -118,8 +120,16 @@ class PersistenceService
                         {
                             // MANY_TO_MANY
 
-                            $ref = $this->entityManager->getReference($targetEntity, $childValue);
-                            $entity->$adder($ref);
+                            if (!isset($childrenArray[$childValue]))
+                            {
+                                $ref = $this->entityManager->getReference($targetEntity, $childValue);
+                                $children->add($ref);
+                            }
+                            else
+                            {
+                                // no action needed, just make sure it doesn't get deleted
+                                unset($childrenArray[$childValue]);
+                            }
                         }
                         else
                         {
@@ -129,6 +139,9 @@ class PersistenceService
                                 throw new InternalErrorException("Bad child entity: expecting an object with an ID.");
 
                             $id = $childValue->id;
+
+                            if (!is_null($id) && !isset($childrenArray[$id]))
+                                throw new InternalErrorException("A child entity of $prop with ID $id doesn’t exist.");
 
                             if (isset($childrenArray[$id]))
                             {
@@ -163,14 +176,8 @@ class PersistenceService
                     }
 
                     // remove obsolete children
-                    if ($mapping["type"] & ClassMetadataInfo::ONE_TO_MANY)
-                    {
-                        foreach ($childrenArray as $child)
-                        {
-                            $children->removeElement($child);
-                            $this->entityManager->remove($child); // necessary?
-                        }
-                    }
+                    foreach ($childrenArray as $child)
+                        $children->removeElement($child);
                 }
             }
         }
