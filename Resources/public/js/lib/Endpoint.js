@@ -1,9 +1,10 @@
 Agit.Endpoint = function(endpointName)
 {
     var
-        endpointMeta = Agit.Endpoint.list[endpointName],
-        expectedRequest = endpointMeta[0],
-        expectedResponse = endpointMeta[1];
+        endpointMeta = Agit.Endpoint.list[endpointName];
+
+    if (!endpointMeta)
+        throw new Agit.ApiError("No meta was loaded for " + endpointName);
 
     this.getName = function()
     {
