@@ -29,7 +29,7 @@ class EntityListType extends EntityType
             static::$_ValidationService->validate('array', $value);
 
             foreach ($value as $val)
-                static::$_ValidationService->validate($this->keytype, $value, 1);
+                static::$_ValidationService->validate($this->keytype, $val, 1);
         }
     }
 }
