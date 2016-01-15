@@ -38,7 +38,9 @@ Agit.Object = (function() {
         Object.keys(objectMeta).forEach(function(prop){
             values[prop] = (defaultValues[prop] !== undefined)
                 ? defaultValues[prop]
-                : objectMeta[prop].default || null;
+                : objectMeta[prop].default !== undefined
+                    ? objectMeta[prop].default
+                    : null;
 
             Object.defineProperty(object, prop, {
                 get: function() { return values[prop]; },
