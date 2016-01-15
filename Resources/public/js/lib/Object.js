@@ -33,7 +33,7 @@ Agit.Object = (function() {
             object = Object.create(factoryProto);
 
         if (objectMeta === undefined)
-            throw new ApiError("Object `" + objectName + "` does not exist.");
+            throw new Agit.ApiError("Object `" + objectName + "` does not exist.");
 
         Object.keys(objectMeta).forEach(function(prop){
             values[prop] = (defaultValues[prop] !== undefined)
