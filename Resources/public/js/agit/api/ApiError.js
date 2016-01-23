@@ -1,3 +1,5 @@
+agit.ns("agit.api");
+
 (function(){
     var
         err = function(message)
@@ -9,5 +11,5 @@
     err.prototype = Object.create(Error.prototype);
     err.prototype.constructor = err;
 
-    Agit.ApiError = err;
+    agit.api.ApiError = err;
 })();

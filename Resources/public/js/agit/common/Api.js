@@ -1,6 +1,7 @@
-/*global Agit, jQuery */
+agit.ns("agit.common");
 
-Agit.Api = (function($){
+
+agit.common.Api = (function($){
     var
         normalizePayload = function(responseObjectName, payload, entityList)
         {
@@ -25,7 +26,7 @@ Agit.Api = (function($){
                     {
                         if (objName)
                         {
-                            newValue = new Agit.Object(objName);
+                            newValue = new agit.api.Object(objName);
 
                             $.each(value, function(prop, val){
                                 var meta = newValue.getPropMeta(prop);
@@ -77,7 +78,7 @@ Agit.Api = (function($){
             {
                 params = params || {};
 
-                typeof(endpoint) === "string" && (endpoint = new Agit.Endpoint(endpoint));
+                typeof(endpoint) === "string" && (endpoint = new agit.api.Endpoint(endpoint));
 
                 var
                     self = this,
@@ -89,7 +90,7 @@ Agit.Api = (function($){
                             self.msgH.clear("agit.api");
 
                             response.messageList.forEach(function(message){
-                                self.msgH.showMessage(new Agit.Message(
+                                self.msgH.showMessage(new agit.common.Message(
                                     message.text,
                                     message.type,
                                     "agit.api"
@@ -130,8 +131,8 @@ Agit.Api = (function($){
     return function(ind, msgH)
     {
         return Object.create(apiProto, {
-            ind : { value : ind || new Agit.Indicator() },
-            msgH : { value : msgH || new Agit.MessageHandlerAlert() }
+            ind : { value : ind || new agit.widget.Indicator() },
+            msgH : { value : msgH || new agit.msgh.protoAlert() }
         });
     };
 })(jQuery);

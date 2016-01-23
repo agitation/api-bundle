@@ -1,4 +1,6 @@
-Agit.Indicator = function()
+agit.ns("agit.api");
+
+agit.api.Indicator = function()
 {
     this.start = function() {};
 
