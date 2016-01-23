@@ -45,7 +45,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         $bundleNamespace = $bundle->getNamespace();
 
         $bundlePath = $bundle->getPath();
-        $targetPath = "$bundlePath/{$this->relJsPath}";
+        $targetPath = "$bundlePath/{$this->relJsPath}/var";
 
         $endpoints = $this->generateEndpointsFiles($bundleNamespace);
         $objects = $this->generateObjectsFiles($bundleNamespace);
@@ -150,18 +150,18 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
     private function createJsFiles($path, $endpoints, $objects)
     {
-        $file = "/*jslint white: true */\n/*global Agit */\n\n";
+        $file = "";
 
         if ($endpoints)
         {
             $endpointsJson = json_encode($endpoints, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-            $file .= "Agit.Endpoint.register($endpointsJson);\n";
+            $file .= "agit.api.Endpoint.register($endpointsJson);\n";
         }
 
         if ($objects)
         {
             $objectsJson = json_encode($objects, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-            $file .= "Agit.Object.register($objectsJson);\n";
+            $file .= "agit.api.Object.register($objectsJson);\n";
         }
 
         file_put_contents("$path/api.js", $file);

@@ -1,7 +1,4 @@
-/*jslint white: true */
-/*global Agit */
-
-Agit.Object.register({
+agit.api.Object.register({
     "common.v1/Null": [],
     "common.v1/ObjectList": {
         "itemList": {
