@@ -46,7 +46,7 @@ agit.common.Preloader = function()
 
     this.run = function(callback)
     {
-        var apiService = agit.common.Service.get("api");
+        var apiService = agit.srv("api");
 
         finishCallback = callback;
 

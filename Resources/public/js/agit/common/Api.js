@@ -1,6 +1,5 @@
 agit.ns("agit.common");
 
-
 agit.common.Api = (function($){
     var
         normalizePayload = function(responseObjectName, payload, entityList)
@@ -104,7 +103,7 @@ agit.common.Api = (function($){
 
                     ajaxOpts = {
                         type         : "POST",
-                        url          : Agit.apiBaseUrl + "/" + endpoint.getName(),
+                        url          : agit.cfg.apiBaseUrl + "/" + endpoint.getName(),
                         data         : "request=" + JSON.stringify(request).replace(/\+/g, "%2b").replace(/&/g, "%26"),
                         success      : callbackWrapper,
                         error        : callbackWrapper,
@@ -117,10 +116,8 @@ agit.common.Api = (function($){
                     ajaxOpts.url += ".jsonp";
                 }
 
-                if (Agit.csrfToken)
-                {
-                    ajaxOpts.headers = { "X-Token" : Agit.csrfToken };
-                }
+                if (agit.cfg.csrfToken)
+                    ajaxOpts.headers = { "X-Token" : agit.cfg.csrfToken };
 
                 this.ind.start();
 
