@@ -18,6 +18,7 @@ use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
 use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\AbstractEntityObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
@@ -200,6 +201,9 @@ class ObjectService extends AbstractApiService
 
         if ($entity instanceof Proxy)
             $entity->__load();
+
+        if ($object instanceof AbstractEntityObject)
+            $object->setEntity($entity);
 
         foreach (array_keys($object->getValues()) as $prop)
         {
