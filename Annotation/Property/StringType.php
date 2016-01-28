@@ -25,6 +25,8 @@ class StringType extends AbstractType
 
     protected $maxLength = null;
 
+    protected $pattern = null;
+
     protected $_isScalarType = true;
 
     public function check($value)
@@ -35,12 +37,21 @@ class StringType extends AbstractType
         {
             if (is_array($this->allowedValues))
             {
-                static::$_ValidationService->validate('selection', $value, array_keys($this->allowedValues));
+                static::$_ValidationService->validate("selection", $value, array_keys($this->allowedValues));
             }
-            elseif ($this->minLength || $value !== '')
+            else
             {
-                static::$_ValidationService->validate('string', $value, $this->minLength, $this->maxLength, !$this->allowLineBreaks);
-                $this->checkForbiddenCharacters($value);
+                if ($this->minLength || $value !== "")
+                {
+                    static::$_ValidationService->validate("string", $value, $this->minLength, $this->maxLength, !$this->allowLineBreaks);
+                    $this->checkForbiddenCharacters($value);
+                }
+
+                if ($this->pattern)
+                {
+                    static::$_ValidationService->validate("regex", $value, $this->pattern);
+                    $this->checkForbiddenCharacters($value);
+                }
             }
         }
     }
