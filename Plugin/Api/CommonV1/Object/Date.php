@@ -18,7 +18,7 @@ use Agit\ApiBundle\Common\AbstractObject;
  *
  * A calendar day.
  */
-class Day extends Month
+class Date extends Month
 {
     /**
      * @Property\Name("Day")
