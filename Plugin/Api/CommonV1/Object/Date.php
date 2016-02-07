@@ -25,4 +25,24 @@ class Date extends Month
      * @Property\NumberType(minValue=1, maxValue=31)
      */
     public $day;
+
+    public function setDateTime(\DateTime $dateTime)
+    {
+        $this->set("day", (int)$dateTime->format("d"));
+        $this->set("month", (int)$dateTime->format("m"));
+        $this->set("year", (int)$dateTime->format("Y"));
+    }
+
+    public function getDateTime(\DateTimezone $timezone = null)
+    {
+        if (!$timezone)
+            $timezone = new \DateTimezone("UTC");
+
+        return new \DateTime(sprintf(
+            "%d-%d-%d",
+            $this->get("year"),
+            $this->get("month"),
+            $this->get("day")
+        ), $timezone);
+    }
 }
