@@ -171,7 +171,9 @@ class PersistenceService
                             }
 
                             $this->fillEntity($child, $childValue);
-                            $children->add($child);
+
+                            if (!$child->getId())
+                                $children->add($child);
                         }
                     }
 
