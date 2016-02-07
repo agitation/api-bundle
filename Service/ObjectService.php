@@ -86,6 +86,7 @@ class ObjectService extends AbstractApiService
             else
             {
                 $result = $this->createObject($expectedObject, $rawRequest);
+                $result->validate();
             }
         }
 
