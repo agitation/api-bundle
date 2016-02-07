@@ -41,6 +41,8 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
 
     protected function create(AbstractObject $requestObject)
     {
+        $this->validate($requestObject);
+
         $em = $this->getService("doctrine.orm.entity_manager");
         $className = $em->getClassMetadata($this->getEntityClass())->getName();
         $entity = $this->saveEntity(new $className(), $requestObject);
@@ -50,10 +52,17 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
 
     protected function update(AbstractObject $requestObject)
     {
+        $this->validate($requestObject);
+
         $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
         $entity = $this->saveEntity($entity, $requestObject);
 
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
+    }
+
+    // extra validation for create/update, to be overloaded in the endpoint class
+    protected function validate(AbstractObject $requestObject)
+    {
     }
 
     protected function delete($id, $completeRemove = true)
