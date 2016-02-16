@@ -98,7 +98,10 @@ class ObjectService extends AbstractApiService
         $this->load();
 
         $objectMeta = $this->getObjectMeta($objectName);
-        $propMetaContainerList = $this->getPropertyMeta($objectName);
+        $propMetaContainerList = [];
+
+        foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList)
+            $propMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
 
         $objectClass = $this->objects[$objectName]["class"];
         $object = new $objectClass($objectMeta, $propMetaContainerList);
@@ -127,19 +130,17 @@ class ObjectService extends AbstractApiService
         return $this->createMetaContainer($this->objects[$objectName]["objectMeta"]);
     }
 
-    public function getPropertyMeta($objectName)
+    public function getPropertyMetas($objectName, $propName)
     {
         $this->load();
 
         if (!isset($this->objects[$objectName]))
             throw new InvalidObjectException("Invalid object: $objectName");
 
-        $metas = [];
+        if (!isset($this->objects[$objectName]["propMetaList"][$propName]))
+            throw new InvalidObjectException("Invalid object property: $objectName.$propName");
 
-        foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList)
-            $metas[$propName] = $this->createMetaContainer($propMetaList);
-
-        return $metas;
+        return $this->createMetaContainer($this->objects[$objectName]["propMetaList"][$propName]);
     }
 
     public function getObjectNameFromClass($class)
