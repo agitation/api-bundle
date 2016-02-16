@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Annotation\MetaContainer;
 
-abstract class AbstractApiService
+trait MetaAwareTrait
 {
     protected function createMetaContainer(array $metaList)
     {

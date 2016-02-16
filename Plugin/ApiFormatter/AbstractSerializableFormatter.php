@@ -16,7 +16,7 @@ use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
 use Agit\PluggableBundle\Strategy\Depends;
 
 /**
- * @Depends({"agit.api.object"})
+ * @Depends({"agit.api.objectmeta"})
  */
 abstract class AbstractSerializableFormatter extends AbstractFormatter implements ServiceAwarePluginInterface
 {
@@ -25,7 +25,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
     protected function getHttpHeaders()
     {
         $headers = new ResponseHeaderBag();
-        $headers->set('Content-Type', $this->meta->get('Formatter')->get('mimeType'));
+        $headers->set("Content-Type", $this->meta->get("Formatter")->get("mimeType"));
 
         return $headers;
     }
@@ -36,19 +36,19 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
         $this->compactEntities($response->getPayload());
         $response->setPayload($this->getCompactPayload());
         $response->setEntityList($this->getCompactEntityList());
-        return $this->getEncoder()->encode($response, $this->meta->get('Formatter')->get('format'));
+        return $this->getEncoder()->encode($response, $this->meta->get("Formatter")->get("format"));
     }
 
     private function createContent()
     {
-        $response = $this->getService('agit.api.object')->createObject('common.v1/Response');
-        $response->set('success', $this->endpointClass->getSuccess());
+        $response = $this->getService("agit.api.objectmeta")->createObject("common.v1/Response");
+        $response->set("success", $this->endpointClass->getSuccess());
 
         foreach ($this->endpointClass->getMessages() as $message)
-            $response->add('messageList', $message);
+            $response->add("messageList", $message);
 
         if ($this->endpointClass->getSuccess())
-            $response->set('payload', $this->endpointClass->getResponse());
+            $response->set("payload", $this->endpointClass->getResponse());
 
         return $response;
     }
@@ -59,7 +59,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
     private $idx;
 
-    private $keyPrefix = '#e#';
+    private $keyPrefix = "#e#";
 
     private $compactPayload;
 
@@ -85,7 +85,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
         $compactEntityList = array();
 
         foreach ($this->compactEntityList as $compactEntity)
-            $compactEntityList[$compactEntity['idx']] = $compactEntity['obj'];
+            $compactEntityList[$compactEntity["idx"]] = $compactEntity["obj"];
 
         return $compactEntityList;
     }
@@ -123,23 +123,23 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
     private function isEntityObject($value)
     {
-        return (is_callable([$value, 'has']) &&
-            $value->has('id') &&
-            $value->get('id'));
+        return (is_callable([$value, "has"]) &&
+            $value->has("id") &&
+            $value->get("id"));
     }
 
     private function addEntityObject($object)
     {
-        $key = sprintf('%s:%s', $object->getObjectName(), $object->get('id'));
+        $key = sprintf("%s:%s", $object->getObjectName(), $object->get("id"));
 
         if (!isset($this->compactEntityList[$key]))
         {
-            $this->compactEntityList[$key] = array('idx'=>sprintf("%s:%s", $this->keyPrefix, $this->idx++), 'obj'=>new \stdClass());
+            $this->compactEntityList[$key] = array("idx" => sprintf("%s:%s", $this->keyPrefix, $this->idx++), "obj" => new \stdClass());
 
             foreach ($object->getValues() as $k => $v)
-                $this->compactEntityList[$key]['obj']->$k = $this->processValue($v);
+                $this->compactEntityList[$key]["obj"]->$k = $this->processValue($v);
         }
 
-        return $this->compactEntityList[$key]['idx'];
+        return $this->compactEntityList[$key]["idx"];
     }
 }

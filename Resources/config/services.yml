@@ -5,10 +5,18 @@ services:
         arguments: [ @agit.pluggable.cache.loader_factory, @?agit.user, @service_container ]
         tags: [{ name: agit.pluggable, type: api.endpoint }]
 
-    agit.api.object:
-        class: Agit\ApiBundle\Service\ObjectService
-        arguments: [ @agit.pluggable.cache.loader_factory, @doctrine.orm.entity_manager, @?service_container ]
+    agit.api.objectmeta:
+        class: Agit\ApiBundle\Service\ObjectMetaService
+        arguments: [ @agit.pluggable.cache.loader_factory, @agit.validation ]
         tags: [{ name: agit.pluggable, type: api.object }]
+
+    agit.api.request:
+        class: Agit\ApiBundle\Service\RequestService
+        arguments: [ @agit.api.objectmeta ]
+
+    agit.api.response:
+        class: Agit\ApiBundle\Service\ResponseService
+        arguments: [ @agit.api.objectmeta, @doctrine.orm.entity_manager ]
 
     agit.api.formatter:
         class: Agit\ApiBundle\Service\FormatterService
@@ -17,7 +25,7 @@ services:
 
     agit.api.persistence:
         class: Agit\ApiBundle\Service\PersistenceService
-        arguments: [ @doctrine.orm.entity_manager, @agit.api.object ]
+        arguments: [ @doctrine.orm.entity_manager, @validator ]
 
 
     # Processor factories for pluggable API services

@@ -16,7 +16,8 @@ use Agit\PluggableBundle\Strategy\ServiceAwarePluginInterface;
 use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Annotation\MetaContainer;
-use Agit\ApiBundle\Service\ObjectService;
+use Agit\ApiBundle\Service\RequestService;
+use Agit\ApiBundle\Service\ResponseService;
 use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Exception\BadRequestException;
@@ -42,9 +43,9 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
     protected $apiNamespace;
 
     /**
-     * @var method to execute.
+     * @var endpoint method to execute.
      */
-    protected $method;
+    protected $endpoint;
 
     /**
      * @var MetaContainer instance.
@@ -77,16 +78,19 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
     private $haveProcessedRequest = false;
 
     /**
-     * @var the generated response data
+     * @var the generated response payload
      */
     private $response;
 
-    public function __construct($name, MetaContainer $meta, ObjectService $objectService, Request $httpRequest = null)
+    // TODO: Instead of injecting the $requestService, pass the RequestObject to executeCall()
+
+    public function __construct($name, MetaContainer $meta, RequestService $requestService, ResponseService $responseService, Request $httpRequest = null)
     {
-        $this->method = substr(strrchr($name, '.'), 1);
+        $this->endpoint = substr(strrchr($name, '.'), 1);
         $this->apiNamespace = strstr($name, '/', true);
         $this->meta = $meta;
-        $this->objectService = $objectService;
+        $this->requestService = $requestService;
+        $this->responseService = $responseService;
         $this->httpRequest = $httpRequest;
     }
 
@@ -138,8 +142,8 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
             if (is_null($request) && strlen($this->httpRequest->get('request')))
                 $request = $this->httpRequest->get('request');
 
-            $this->request = $this->objectService
-                ->rawRequestToApiObject($request, $this->getMeta('Endpoint')->get('request'));
+            $this->request = $this->requestService
+                ->createRequestObject($this->getMeta('Endpoint')->get('request'), $request);
 
             $this->haveProcessedRequest = true;
         }
@@ -158,7 +162,7 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
                 if (!$this->haveProcessedRequest)
                     throw new InternalErrorException("The request object must be set before executing the call.");
 
-                $this->response = call_user_func([$this, $this->method], $this->request);
+                $this->response = call_user_func([$this, $this->endpoint], $this->request);
 
                 $this->setSuccess(true);
             }
@@ -174,7 +178,7 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
         if (strpos($name, '/') === false)
             $name = "{$this->apiNamespace}/$name";
 
-        return $this->objectService->createObject($name, $data);
+        return $this->responseService->createResponseObject($name, $data);
     }
 
     private function handleException(\Exception $e)

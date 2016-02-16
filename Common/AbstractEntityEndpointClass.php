@@ -60,7 +60,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
-    // extra validation for create/update, to be overloaded in the endpoint class
+    // extra validation for create/update (e.g. consistency checks), may be overloaded in the endpoint class
     protected function validate(AbstractObject $requestObject)
     {
     }
@@ -119,6 +119,8 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
 
     protected function search(AbstractObject $requestObject)
     {
+        $this->responseService->setView("search");
+
         $query = $this->createSearchQuery($requestObject);
         $result = [];
 

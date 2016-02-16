@@ -39,7 +39,7 @@ abstract class AbstractObject implements \JsonSerializable
     {
         $this->objectMeta = $objectMeta;
         $this->propMetaList = $propMetaList;
-        $this->objectName = $objectMeta->get('Object')->get('objectName');
+        $this->objectName = $objectMeta->get("Object")->get("objectName");
     }
 
     public function getObjectName()
@@ -77,7 +77,7 @@ abstract class AbstractObject implements \JsonSerializable
     public function add($key, $value)
     {
         $this->checkHasProperty($key);
-        $type = $this->getPropertyMeta($key, 'Type');
+        $type = $this->getPropertyMeta($key, "Type");
 
         if ($type->isListType())
         {
@@ -86,7 +86,7 @@ abstract class AbstractObject implements \JsonSerializable
 
             array_push($this->$key, $value);
         }
-        elseif ($type->getType() === 'number')
+        elseif ($type->getType() === "number")
         {
             $this->$key += $value;
         }
@@ -127,13 +127,13 @@ abstract class AbstractObject implements \JsonSerializable
     {
         try
         {
-            $this->getPropertyMeta($key, 'Type')->check($value);
+            $this->getPropertyMeta($key, "Type")->check($value);
         }
         catch(\Exception $e)
         {
             throw new InvalidObjectValueException(sprintf(
                 Translate::t("Invalid value in object `%s` for property `%s`: %s"),
-                $this->getObjectName(), $this->getPropertyMeta($key, 'Name')->getName(), $e->getMessage()));
+                $this->getObjectName(), $this->getPropertyMeta($key, "Name")->getName(), $e->getMessage()));
         }
     }
 }

@@ -41,14 +41,14 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
 
     public function addPlugin($class, PluginInterface $plugin)
     {
-        if ($plugin->get('objectName') !== null)
+        if ($plugin->get("objectName") !== null)
             throw new InternalErrorException("Error in Object annotation on $class: You must not set the `objectName` parameter, it will be set automatically.");
 
         $objectMeta = [];
         $propMetaList = [];
         $classRefl = new \ReflectionClass($class);
         $objectName = $this->translateName($classRefl);
-        $namespace = strstr($objectName, '/', true);
+        $namespace = strstr($objectName, "/", true);
 
         $objAnnotationList = $this->annotationReader->getClassAnnotations($classRefl);
 
@@ -61,8 +61,8 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
             $objectMeta[$objMetaName] = $annotation;
         }
 
-        $plugin->set('objectName', $objectName);
-        $objectMeta['Object'] = $plugin;
+        $plugin->set("objectName", $objectName);
+        $objectMeta["Object"] = $plugin;
 
         foreach ($classRefl->getProperties() as $propertyRefl)
         {
@@ -76,36 +76,36 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
                     continue;
 
                 $propMetaClass = StringHelper::getBareClassName($annotation);
-                $propMetaName = ($annotation instanceof AbstractType) ? 'Type' : $propMetaClass;
+                $propMetaName = ($annotation instanceof AbstractType) ? "Type" : $propMetaClass;
                 $propMeta[$propMetaName] = $annotation;
             }
 
-            if (!isset($propMeta['Type']))
+            if (!isset($propMeta["Type"]))
                 continue;
 
-            if ($propMeta['Type'] instanceof ObjectType)
+            if ($propMeta["Type"] instanceof ObjectType)
             {
-                $targetClass = $propMeta['Type']->get('class');
+                $targetClass = $propMeta["Type"]->get("class");
 
                 if (is_null($targetClass))
                     throw new InternalErrorException("Error in $objectName, property $propName: The target class must be specified.");
 
-                $propMeta['Type']->set('class', $this->fixObjectName($namespace, $targetClass));
+                $propMeta["Type"]->set("class", $this->fixObjectName($namespace, $targetClass));
             }
 
-            if (!isset($propMeta['Name']) || !$propMeta['Name']->get('value'))
-                $propMeta['Name'] = new Name(['value' => $propName]);
+            if (!isset($propMeta["Name"]) || !$propMeta["Name"]->get("value"))
+                $propMeta["Name"] = new Name(["value" => $propName]);
 
             $propMetaList[$propName] = $this->dissectMetaList($propMeta);
         }
 
-        if ($objectMeta['Object']->get('isScalar') && (count($propMetaList) !== 1 || !isset($propMetaList['_'])))
+        if ($objectMeta["Object"]->get("isScalar") && (count($propMetaList) !== 1 || !isset($propMetaList["_"])))
             throw new InternalErrorException("Scalar objects must contain only a `_` property.");
 
         $this->addEntry($objectName, [
-            'class' => $classRefl->getName(),
-            'objectMeta' => $this->dissectMetaList($objectMeta),
-            'propMetaList' => $propMetaList
+            "class" => $classRefl->getName(),
+            "objectMeta" => $this->dissectMetaList($objectMeta),
+            "propMetaList" => $propMetaList
         ]);
     }
 

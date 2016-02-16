@@ -13,16 +13,22 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Validator;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Common\AbstractPersistableObject;
+use Agit\ApiBundle\Exception\PersistenceException;
+
 
 class PersistenceService
 {
     protected $entityManager;
 
-    public function __construct(EntityManager $entityManager)
+    protected $entityValidator;
+
+    public function __construct(EntityManager $entityManager, Validator $entityValidator)
     {
         $this->entityManager = $entityManager;
+        $this->entityValidator = $entityValidator;
     }
 
     public function saveEntity($entity, \stdClass $data)
@@ -184,6 +190,16 @@ class PersistenceService
             }
         }
 
+        $this->validate($entity);
+
         $this->entityManager->persist($entity);
+    }
+
+    private function validate($entity)
+    {
+        $errors = $this->entityValidator->validate($entity, null, true, true);
+
+        if (count($errors) > 0)
+            throw new PersistenceException((string)$errors);
     }
 }

@@ -20,9 +20,10 @@ use Agit\UserBundle\Service\UserService;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Common\AbstractEndpointClass;
 
-class EndpointService extends AbstractApiService
+class EndpointService
 {
     use ServiceInjectorTrait;
+    use MetaAwareTrait;
 
     protected $userService;
 
@@ -46,14 +47,14 @@ class EndpointService extends AbstractApiService
         if (!isset($this->endpoints[$name]))
             throw new InvalidEndpointException("Invalid endpoint: $name");
 
-        $metaContainer = $this->createMetaContainer($this->endpoints[$name]['meta']);
+        $metaContainer = $this->createMetaContainer($this->endpoints[$name]["meta"]);
 
-        $class = $this->endpoints[$name]['class'];
-        $endpoint = new $class($name, $metaContainer, $this->container->get('agit.api.object'), $request);
+        $class = $this->endpoints[$name]["class"];
+        $endpoint = new $class($name, $metaContainer, $this->container->get("agit.api.request"), $this->container->get("agit.api.response"), $request);
 
         $this->checkAuthorisation($endpoint);
 
-        $this->injectServices($endpoint, $metaContainer->get('Endpoint')->get('depends'));
+        $this->injectServices($endpoint, $metaContainer->get("Endpoint")->get("depends"));
 
         return $endpoint;
     }
@@ -71,7 +72,7 @@ class EndpointService extends AbstractApiService
         if (!isset($this->endpoints[$name]))
             throw new InternalErrorException("This endpoint does not exist.");
 
-        return $this->endpoints[$name]['class'];
+        return $this->endpoints[$name]["class"];
     }
 
     public function getEndpointMetaContainer($name)
@@ -81,7 +82,7 @@ class EndpointService extends AbstractApiService
         if (!isset($this->endpoints[$name]))
             throw new InternalErrorException("This endpoint does not exist.");
 
-        return $this->createMetaContainer($this->endpoints[$name]['meta']);
+        return $this->createMetaContainer($this->endpoints[$name]["meta"]);
     }
 
     protected function loadEndpoints()
@@ -92,7 +93,7 @@ class EndpointService extends AbstractApiService
 
     private function checkAuthorisation(AbstractEndpointClass $endpoint)
     {
-        $reqCapibilty = $endpoint->getMeta('Security')->get('capability');
+        $reqCapibilty = $endpoint->getMeta("Security")->get("capability");
 
         if (is_null($reqCapibilty))
             throw new InternalErrorException("The endpoint call must specify the required capabilities.");
@@ -105,7 +106,7 @@ class EndpointService extends AbstractApiService
             $user = $this->userService->getCurrentUser();
 
             if (!$user)
-                throw new UnauthorizedException(Translate::t('You must be logged in to perform this operation.'));
+                throw new UnauthorizedException(Translate::t("You must be logged in to perform this operation."));
 
             if (!$user->hasCapability($reqCapibilty))
                 throw new UnauthorizedException(Translate::t("You do not have sufficient permissions to perform this operation."));

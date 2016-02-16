@@ -16,9 +16,10 @@ use Agit\ApiBundle\Common\AbstractEndpointClass;
 use Agit\ApiBundle\Exception\IncompatibleFormatterException;
 use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
 
-class FormatterService extends AbstractApiService
+class FormatterService
 {
     use ServiceInjectorTrait;
+    use MetaAwareTrait;
 
     /**
      * @var service container instance.
