@@ -90,11 +90,6 @@ class EndpointService extends AbstractApiService
             $this->endpoints = $this->cacheLoader->load();
     }
 
-    protected function getContainer()
-    {
-        return $this->container;
-    }
-
     private function checkAuthorisation(AbstractEndpointClass $endpoint)
     {
         $reqCapibilty = $endpoint->getMeta('Security')->get('capability');

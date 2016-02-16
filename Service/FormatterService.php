@@ -60,11 +60,6 @@ class FormatterService extends AbstractApiService
         return $formatter;
     }
 
-    protected function getContainer()
-    {
-        return $this->container;
-    }
-
     private function loadFormats()
     {
         if (is_null($this->formats))

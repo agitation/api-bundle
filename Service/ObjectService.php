@@ -22,7 +22,6 @@ use Agit\ApiBundle\Common\AbstractEntityObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
-use Agit\ApiBundle\Annotation\Property\Name;
 
 class ObjectService extends AbstractApiService
 {
@@ -244,11 +243,6 @@ class ObjectService extends AbstractApiService
                 }
             }
         }
-    }
-
-    protected function getContainer()
-    {
-        return $this->container;
     }
 
     protected function isEntity($data)
