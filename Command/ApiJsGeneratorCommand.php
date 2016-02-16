@@ -109,9 +109,8 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
             foreach ($objData as $key => $value)
             {
-                $propMetas = $object->getPropertyMetas($key);
-
-                $objProps[$key] = $this->getPropMeta($propMetas);
+                $typeMeta = $objectService->getPropertyMetas($objectName, $key)->get("Type");
+                $objProps[$key] = $this->extractTypeMeta($typeMeta);
 
                 if ($value !== null)
                     $objProps[$key]["default"] = $value;
@@ -125,9 +124,8 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         return $list;
     }
 
-    private function getPropMeta($propMetas)
+    private function extractTypeMeta($typeMeta)
     {
-        $typeMeta = $propMetas->get("Type");
         $meta = ["type" => $typeMeta->getType()];
 
         $keywords = ["minLength", "nullable", "readonly", "maxLength", "minValue",

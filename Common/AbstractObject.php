@@ -95,22 +95,6 @@ abstract class AbstractObject implements \JsonSerializable
             throw new InternalErrorException("Cannot use `add` with this property type.");
         }
     }
-    public function getMeta($name)
-    {
-        return $this->meta->get($name);
-    }
-
-    public function hasPropertyMeta($propKey, $metaName)
-    {
-        $this->checkHasProperty($propKey);
-        return $this->propMetaList[$propKey]->has($metaName);
-    }
-
-    public function getPropertyMetas($propKey)
-    {
-        $this->checkHasProperty($propKey);
-        return $this->propMetaList[$propKey];
-    }
 
     public function getPropertyMeta($propKey, $metaName)
     {
@@ -138,6 +122,7 @@ abstract class AbstractObject implements \JsonSerializable
         foreach ($this->propMetaList as $key => $metaContainer)
             $this->validateValue($key, $this->$key);
     }
+
     protected function validateValue($key, $value)
     {
         try
