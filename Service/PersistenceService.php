@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Validator\Validator;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Common\AbstractPersistableObject;
 use Agit\ApiBundle\Exception\PersistenceException;
@@ -25,7 +25,7 @@ class PersistenceService
 
     protected $entityValidator;
 
-    public function __construct(EntityManager $entityManager, Validator $entityValidator)
+    public function __construct(EntityManager $entityManager, RecursiveValidator $entityValidator)
     {
         $this->entityManager = $entityManager;
         $this->entityValidator = $entityValidator;
