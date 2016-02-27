@@ -128,8 +128,8 @@ agit.common.Api = (function($){
     return function(ind, msgH)
     {
         return Object.create(apiProto, {
-            ind : { value : ind || new agit.widget.Indicator() },
-            msgH : { value : msgH || new agit.msgh.protoAlert() }
+            ind : { value : ind || new agit.api.Indicator() },
+            msgH : { value : msgH || new agit.common.MessageHandler() }
         });
     };
 })(jQuery);
