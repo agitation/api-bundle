@@ -51,7 +51,10 @@ class RequestService extends AbstractObjectService
             else
             {
                 $result = $this->objectMetaService->createObject($expectedObject);
-                $this->fill($result, $rawRequest);
+
+                if (is_object($rawRequest))
+                    $this->fill($result, $rawRequest);
+
                 $result->validate();
             }
         }
