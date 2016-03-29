@@ -83,7 +83,7 @@ abstract class AbstractObjectService
                 throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the `%s` property."), $key));
 
             $result = $this->objectMetaService->createObject($typeMeta->getTargetClass());
-            $this->fill($result, $listValue);
+            $this->fill($result, $value);
         }
 
         return $result;
