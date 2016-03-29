@@ -43,7 +43,7 @@ class StringType extends AbstractType
             {
                 if ($this->minLength || $value !== "")
                 {
-                    static::$_ValidationService->validate("string", $value, $this->minLength, $this->maxLength, !$this->allowLineBreaks);
+                    static::$_ValidationService->validate("string", $value, $this->minLength, $this->maxLength, $this->allowLineBreaks);
                     $this->checkForbiddenCharacters($value);
                 }
 
