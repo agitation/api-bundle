@@ -26,6 +26,11 @@ class Date extends Month
      */
     public $day;
 
+    public function __toString()
+    {
+        return sprintf("%04d-%02d-%02d", $this->year, $this->month, $this->day);
+    }
+
     public function setDateTime(\DateTime $dateTime)
     {
         $this->set("day", (int)$dateTime->format("d"));
@@ -38,11 +43,6 @@ class Date extends Month
         if (!$timezone)
             $timezone = new \DateTimezone("UTC");
 
-        return new \DateTime(sprintf(
-            "%d-%d-%d",
-            $this->get("year"),
-            $this->get("month"),
-            $this->get("day")
-        ), $timezone);
+        return new \DateTime($this->__toString(), $timezone);
     }
 }
