@@ -9,10 +9,11 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
-
 /**
  * The client has requested to format the response in a format which is
  * incompatible with the data type of the result.
  */
-class IncompatibleFormatterException extends AgitException { }
+class IncompatibleFormatterException extends ApiException
+{
+    protected $httpStatus = 406;
+}

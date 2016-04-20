@@ -9,9 +9,10 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
-
 /**
  * The request is utterly malformed and cannot be processed.
  */
-class BadRequestException extends AgitException { }
+class BadRequestException extends ApiException
+{
+    protected $httpStatus = 400;
+}

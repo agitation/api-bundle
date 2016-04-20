@@ -16,4 +16,7 @@ use Agit\CommonBundle\Exception\AgitException;
  * continue processing. This happens usually on boolean fields that should
  * indicate that a user has accepted certain legal terms.
  */
-class MandatoryFieldException extends AgitException { }
+class MandatoryFieldException extends AgitException
+{
+    protected $httpStatus = 400;
+}

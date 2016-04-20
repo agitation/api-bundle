@@ -14,4 +14,7 @@ use Agit\CommonBundle\Exception\AgitException;
 /**
  * A non-existent object has been requested or referenced.
  */
-class ObjectNotFoundException extends AgitException { }
+class ObjectNotFoundException extends AgitException
+{
+    protected $httpStatus = 404;
+}

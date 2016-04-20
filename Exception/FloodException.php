@@ -9,9 +9,10 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
-
 /**
  * The API itself or an endpoint call is being called too frequently.
  */
-class FloodException extends AgitException { }
+class FloodException extends ApiException
+{
+    protected $httpStatus = 429;
+}

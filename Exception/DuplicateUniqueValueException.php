@@ -9,12 +9,13 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
-
 /**
  * An update has been requested where a field would be set to a value which must
  * only exist once in a certain context, but there already exists another object
  * with that field value in the same context. For example, it is not possible to
  * subscript to a shop's newsletter twice with the same e-mail address.
  */
-class DuplicateUniqueValueException extends AgitException { }
+class DuplicateUniqueValueException extends ApiException
+{
+    protected $httpStatus = 409;
+}

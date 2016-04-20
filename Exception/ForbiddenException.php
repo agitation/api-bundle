@@ -9,10 +9,12 @@
 
 namespace Agit\ApiBundle\Exception;
 
+use Agit\CommonBundle\Exception\AgitException;
+
 /**
- * An non-existent or invalid object was requested or referenced.
+ * The requested resource must not be accessed by the current user.
  */
-class InvalidObjectException extends ApiException
+class ForbiddenException extends AgitException
 {
-    protected $httpStatus = 400;
+    protected $httpStatus = 403;
 }

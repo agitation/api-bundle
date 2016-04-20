@@ -14,4 +14,7 @@ use Agit\CommonBundle\Exception\AgitException;
 /**
  * The object persistence requested by an API call has failed.
  */
-class PersistenceException extends AgitException { }
+class PersistenceException extends AgitException
+{
+    protected $httpStatus = 500;
+}

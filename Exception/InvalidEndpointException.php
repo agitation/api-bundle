@@ -9,9 +9,10 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
-
 /**
- * An API request object has an invalid value or doesn't match the required format.
+ * A non-existent endpoint was called.
  */
-class InvalidEndpointException extends AgitException { }
+class InvalidEndpointException extends ApiException
+{
+    protected $httpStatus = 404;
+}

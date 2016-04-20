@@ -9,9 +9,10 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
-
 /**
  * The CSRF check has failed, probably due to a missing or incorrect CSRF token.
  */
-class CsrfException extends AgitException { }
+class CsrfException extends ApiException
+{
+    protected $httpStatus = 401;
+}
