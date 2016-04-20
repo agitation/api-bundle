@@ -1,15 +1,13 @@
 agit.ns("agit.common");
 
-agit.common.Api = (function($){
+(function(){
     var
+        entityReferencePattern = /#e#:[0-9]+/,
+
         normalizePayload = function(responseObjectName, payload, entityList)
         {
-            responseObjectName.substr(-2) === "[]" && (responseObjectName = responseObjectName.substr(0, responseObjectName.length - 2));
-
             var
-                pattern = /#e#:[0-9]+/,
-
-                expand = function(value, objName)
+                expandEntities = function(value, objName)
                 {
                     var newValue = value;
 
@@ -18,7 +16,7 @@ agit.common.Api = (function($){
                         newValue = [];
 
                         $.each(value, function(k, v){
-                            newValue.push(expand(v, objName));
+                            newValue.push(expandEntities(v, objName));
                         });
                     }
                     else if (value instanceof Object)
@@ -29,7 +27,7 @@ agit.common.Api = (function($){
 
                             $.each(value, function(prop, val){
                                 var meta = newValue.getPropMeta(prop);
-                                newValue[prop] = expand(val, meta["class"] || null);
+                                newValue[prop] = expandEntities(val, meta["class"] || null);
                             });
                         }
                         else
@@ -37,99 +35,80 @@ agit.common.Api = (function($){
                             newValue = {};
 
                             $.each(value, function(k, v){
-                                newValue[k] = expand(v);
+                                newValue[k] = expandEntities(v);
                             });
                         }
                     }
-                    else if (typeof(value) === "string" && value.match(pattern))
+                    else if (typeof(value) === "string" && value.match(entityReferencePattern))
                     {
-                        newValue = expand(entityList[value], objName);
+                        newValue = expandEntities(entityList[value], objName);
                     }
 
                     return newValue;
                 };
 
-            return expand(payload, responseObjectName);
+            if (responseObjectName.substr(-2) === "[]")
+                responseObjectName = responseObjectName.substr(0, responseObjectName.length - 2);
+
+            return expandEntities(payload, responseObjectName);
         },
 
-        // this is to make sure that, in the event of an error, we have a "proper" response.
-        processResponse = function(response)
+        successCallback = function(data, textStatus, jqXHR)
         {
-            if (!response ||
-                typeof(response) !== "object" ||
-                response.payload === undefined ||
-                response.messageList === undefined)
-            {
-                response =
-                {
-                    success : false,
-                    payload : null,
-                    messageList : [{ type: "error", text: "Error while loading the requested data." }]
-                };
-            }
+            var self = this;
 
-            return response;
+            self.ind.finish(function() {
+                if (data && data.payload && data.entityList)
+                    data = normalizePayload(self.responseObjectName, data.payload, data.entityList);
+
+                self.callback(data, jqXHR.status, jqXHR);
+            });
         },
 
-        apiProto =
+        errorCallback = function(jqXHR, textStatus)
         {
-            doCall : function(endpoint, request, callback, params)
-            {
-                params = params || {};
+            var self = this;
 
-                typeof(endpoint) === "string" && (endpoint = new agit.api.Endpoint(endpoint));
-
-                var
-                    self = this,
-                    callbackWrapper = function(response)
-                    {
-                        self.ind.finish(function() {
-                            response = processResponse(response);
-
-                            self.msgH.clear("agit.api");
-
-                            response.messageList.forEach(function(message){
-                                self.msgH.showMessage(new agit.common.Message(
-                                    message.text,
-                                    message.type,
-                                    "agit.api"
-                                ));
-                            });
-
-                            response.payload = normalizePayload(endpoint.getResponse(), response.payload, response.entityList);
-                            callback(params.fullResponse ? response : response.payload);
-                        });
-                    },
-
-                    ajaxOpts = {
-                        type         : "POST",
-                        url          : agit.cfg.apiBaseUrl + "/" + endpoint.getName(),
-                        data         : "request=" + JSON.stringify(request).replace(/\+/g, "%2b").replace(/&/g, "%26"),
-                        success      : callbackWrapper,
-                        error        : callbackWrapper,
-                        dataType     : params.dataType || "json"
-                    };
-
-                if (ajaxOpts.dataType === "jsonp")
-                {
-                    ajaxOpts.type = "GET";
-                    ajaxOpts.url += ".jsonp";
-                }
-
-                if (agit.cfg.csrfToken)
-                    ajaxOpts.headers = { "X-Token" : agit.cfg.csrfToken };
-
-                this.ind.start();
-
-                $.ajax(ajaxOpts);
-            }
+            this.ind.finish(function() {
+                self.msgH.clear("agit.api");
+                self.msgH.alert(jqXHR.responseText || "API request failed.",  "error", "agit.api");
+                self.callback(null, jqXHR.status, jqXHR);
+            });
         };
 
-    return function(ind, msgH)
+    agit.common.Api = function(ind, msgH)
     {
-        return Object.create(apiProto, {
-            ind : { value : ind || new agit.api.Indicator() },
-            msgH : { value : msgH || new agit.common.MessageHandler() }
-        });
+        this.ind = ind || new agit.api.Indicator();
+        this.msgH = msgH || new agit.common.MessageHandler();
     };
-})(jQuery);
+
+    agit.common.Api.prototype.doCall = function(endpoint, request, callback)
+    {
+        if (typeof(endpoint) === "string")
+            endpoint = new agit.api.Endpoint(endpoint);
+
+        var
+            callbackParams = {
+                ind: this.ind,
+                msgH : this.msgH,
+                callback : callback,
+                responseObjectName : endpoint.getResponse()
+            },
+
+            ajaxOpts = {
+                type         : "POST",
+                url          : agit.cfg.apiBaseUrl + "/" + endpoint.getName(),
+                data         : "request=" + JSON.stringify(request).replace(/\+/g, "%2b").replace(/&/g, "%26"),
+                success      : successCallback.bind(callbackParams),
+                error        : errorCallback.bind(callbackParams),
+                dataType     : "json"
+            };
+
+        if (agit.cfg.csrfToken)
+            ajaxOpts.headers = { "X-Token" : agit.cfg.csrfToken };
+
+        this.ind.start();
+
+        $.ajax(ajaxOpts);
+    };
+})();
