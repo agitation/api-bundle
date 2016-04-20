@@ -9,12 +9,11 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
-
 /**
- * The requested resource must not be accessed by the current user.
+ * The requested resource must not be accessed by the currently authenticated
+ * user.
  */
-class ForbiddenException extends AgitException
+class ForbiddenException extends ApiException
 {
     protected $httpStatus = 403;
 }
