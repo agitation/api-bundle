@@ -31,19 +31,20 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
     protected function getHttpContent()
     {
-        $response = $this->createContent();
-        $this->compactEntities($response->getPayload());
-        $response->setPayload($this->getCompactPayload());
-        $response->setEntityList($this->getCompactEntityList());
+        $compact = 0; // disabled for now ... we'll see if it still makes sense
+
+        $response = $this->endpointClass->getResponse();
+
+        if ($compact)
+        {
+            list($payload, $entityList) = $this->compactEntities($response);
+
+            $response = $this->getService("agit.api.objectmeta")->createObject("common.v1/Response");
+            $response->setPayload($payload);
+            $response->setEntityList($entityList);
+        }
+
         return $this->getEncoder()->encode($response, $this->meta->get("Formatter")->get("format"));
-    }
-
-    private function createContent()
-    {
-        $response = $this->getService("agit.api.objectmeta")->createObject("common.v1/Response");
-        $response->set("payload", $this->endpointClass->getResponse());
-
-        return $response;
     }
 
     abstract protected function getEncoder();
@@ -54,33 +55,23 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
     private $keyPrefix = "#e#";
 
-    private $compactPayload;
-
-    private $compactEntityList = array();
+    private $compactEntityList = [];
 
     /**
      * {@inheritdoc}
      */
-    public function compactEntities($payload)
+    public function compactEntities($response)
     {
         $this->idx = 0;
-        $this->compactEntityList = array();
-        $this->compactPayload = $this->processValue($payload);
-    }
+        $this->compactEntityList = [];
 
-    public function getCompactPayload()
-    {
-        return $this->compactPayload;
-    }
-
-    public function getCompactEntityList()
-    {
-        $compactEntityList = array();
+        $payload = $this->processValue($response);
+        $compactEntityList = [];
 
         foreach ($this->compactEntityList as $compactEntity)
             $compactEntityList[$compactEntity["idx"]] = $compactEntity["obj"];
 
-        return $compactEntityList;
+        return [$payload, $compactEntityList];
     }
 
     public function processValue($value)
@@ -93,7 +84,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
         }
         elseif (is_array($value))
         {
-            $processed = array();
+            $processed = [];
             foreach ($value as $k=>$v)
                 $processed[$k] = $this->processValue($v);
         }
@@ -127,7 +118,10 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
         if (!isset($this->compactEntityList[$key]))
         {
-            $this->compactEntityList[$key] = array("idx" => sprintf("%s:%s", $this->keyPrefix, $this->idx++), "obj" => new \stdClass());
+            $this->compactEntityList[$key] = [
+                "idx" => sprintf("%s:%s", $this->keyPrefix, $this->idx++),
+                "obj" => new \stdClass()
+            ];
 
             foreach ($object->getValues() as $k => $v)
                 $this->compactEntityList[$key]["obj"]->$k = $this->processValue($v);
