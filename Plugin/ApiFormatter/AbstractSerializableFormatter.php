@@ -24,7 +24,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
     protected function getHttpHeaders()
     {
         $headers = new ResponseHeaderBag();
-        $headers->set("Content-Type", $this->meta->get("Formatter")->get("mimeType"));
+        $headers->set("Content-Type", $this->meta->get("Formatter")->get("mimeType") . "; charset=utf-8");
 
         return $headers;
     }
