@@ -1,7 +1,7 @@
 AgitApiBundle_call:
-    pattern:  /api/{namespace}/{class}.{method}.{_format}
-    defaults: { _controller : AgitApiBundle:Api:call, _format : json }
+    pattern: /api/{namespace}/{class}.{method}.{_ext}
+    defaults: { _controller : AgitApiBundle:Api:call, _ext : json, _format : txt }
     host: %agit.common.domain.app%
     requirements:
         path: ".*"
-    methods:   [GET, POST, OPTIONS]
+    methods: [GET, POST, OPTIONS]

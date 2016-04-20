@@ -18,7 +18,7 @@ use Agit\ApiBundle\Exception\BadRequestException;
 
 class ApiController extends Controller
 {
-    public function callAction($namespace, $class, $method, $_format)
+    public function callAction($namespace, $class, $method, $_ext)
     {
         $request = $this->getRequest();
         $response = new Response();
@@ -31,7 +31,7 @@ class ApiController extends Controller
             $endpointService = $this->container->get('agit.api.endpoint');
             $formatterService = $this->container->get('agit.api.formatter');
 
-            if (!$formatterService->formatExists($_format))
+            if (!$formatterService->formatExists($_ext))
                 throw new BadRequestException("Invalid format.");
 
             $endpoint = $endpointService->createEndpoint("$namespace/$class.$method", $request);
@@ -46,7 +46,7 @@ class ApiController extends Controller
                 $endpoint->executeCall();
 
                 $response = $this->container->get('agit.api.formatter')
-                    ->getFormatter($_format, $endpoint, $request)->getResponse();
+                    ->getFormatter($_ext, $endpoint, $request)->getResponse();
             }
 
             if ($endpoint->getMeta('Security')->get('allowCrossOrigin'))
