@@ -12,6 +12,7 @@ namespace Agit\ApiBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Agit\ApiBundle\Exception\ApiException;
 use Agit\ApiBundle\Exception\BadRequestException;
 
 
@@ -53,10 +54,9 @@ class ApiController extends Controller
         }
         catch (\Exception $e)
         {
-            // NOTE: Exceptions thrown during `executeCall` are caught by the endpoint itself
-            // and transformed into a proper API response, so this one is just for edge cases.
             $response->setContent($e->getMessage());
-            $response->headers->set("Content-Type", "text/html; charset=UTF-8", true);
+            $response->setStatusCode($e instanceof ApiException ? $e->getHttpStatus() : 500);
+            $response->headers->set("Content-Type", "text/plain; charset=UTF-8", true);
         }
 
         $response->headers->set("Cache-Control", "no-cache, must-revalidate, max-age=0", true);

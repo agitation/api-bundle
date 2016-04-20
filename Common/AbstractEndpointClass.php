@@ -53,16 +53,6 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
     protected $meta;
 
     /**
-     * @var indicates whether the call was successful or not.
-     */
-    private $success = null;
-
-    /**
-     * @var list of messages, usually errors or warnings
-     */
-    private $messageList = [];
-
-    /**
      * @var Symfony's request object, only used for security checks
      */
     private $httpRequest;
@@ -99,29 +89,6 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
         return $this->meta->get($name);
     }
 
-    protected function setSuccess($success)
-    {
-        $this->success = $success;
-    }
-
-    public function getSuccess()
-    {
-        return $this->success;
-    }
-
-    protected function addMessage($type, $text, $code = null)
-    {
-        $this->messageList[] = $this->createObject(
-            'common.v1/Message',
-            (object)['type' => $type, 'code' => $code, 'text' => $text]
-        );
-    }
-
-    public function getMessages()
-    {
-        return $this->messageList;
-    }
-
     public function getResponse()
     {
         return $this->response;
@@ -131,46 +98,27 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
     // may be an internal "redirect" where setup and checks are not required.
     public function setupEnvironment()
     {
-        try
-        {
-            if (!$this->httpRequest)
-                throw new InternalErrorException("The request object could not be created, as the actual request has not been passed to the endpoint.");
+        if (!$this->httpRequest)
+            throw new InternalErrorException("The request object could not be created, as the actual request has not been passed to the endpoint.");
 
-            $request = json_decode($this->httpRequest->get('request'));
+        $request = json_decode($this->httpRequest->get('request'));
 
-            // allow literal strings without quotes
-            if (is_null($request) && strlen($this->httpRequest->get('request')))
-                $request = $this->httpRequest->get('request');
+        // allow literal strings without quotes
+        if (is_null($request) && strlen($this->httpRequest->get('request')))
+            $request = $this->httpRequest->get('request');
 
-            $this->request = $this->requestService
-                ->createRequestObject($this->getMeta('Endpoint')->get('request'), $request);
+        $this->request = $this->requestService
+            ->createRequestObject($this->getMeta('Endpoint')->get('request'), $request);
 
-            $this->haveProcessedRequest = true;
-        }
-        catch (\Exception $e)
-        {
-            $this->handleException($e);
-        }
+        $this->haveProcessedRequest = true;
     }
 
     public function executeCall()
     {
-        if ($this->getSuccess() === null)
-        {
-            try
-            {
-                if (!$this->haveProcessedRequest)
-                    throw new InternalErrorException("The request object must be set before executing the call.");
+        if (!$this->haveProcessedRequest)
+            throw new InternalErrorException("The request object must be processed before executing the call.");
 
-                $this->response = call_user_func([$this, $this->endpoint], $this->request);
-
-                $this->setSuccess(true);
-            }
-            catch (\Exception $e)
-            {
-                $this->handleException($e);
-            }
-        }
+        $this->response = call_user_func([$this, $this->endpoint], $this->request);
     }
 
     protected function createObject($name, $data = null)
@@ -179,13 +127,5 @@ abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
             $name = "{$this->apiNamespace}/$name";
 
         return $this->responseService->createResponseObject($name, $data);
-    }
-
-    private function handleException(\Exception $e)
-    {
-        $this->setSuccess(false);
-
-        $code = ($e instanceof AgitException) ? $e->getErrorCode() : null;
-        $this->addMessage('error', $e->getMessage(), $code);
     }
 }

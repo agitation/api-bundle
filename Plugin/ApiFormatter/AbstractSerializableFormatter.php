@@ -10,7 +10,6 @@
 namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\ServiceAwarePluginInterface;
 use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
 use Agit\PluggableBundle\Strategy\Depends;
@@ -42,13 +41,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
     private function createContent()
     {
         $response = $this->getService("agit.api.objectmeta")->createObject("common.v1/Response");
-        $response->set("success", $this->endpointClass->getSuccess());
-
-        foreach ($this->endpointClass->getMessages() as $message)
-            $response->add("messageList", $message);
-
-        if ($this->endpointClass->getSuccess())
-            $response->set("payload", $this->endpointClass->getResponse());
+        $response->set("payload", $this->endpointClass->getResponse());
 
         return $response;
     }

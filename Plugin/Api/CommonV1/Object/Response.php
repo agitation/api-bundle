@@ -23,24 +23,6 @@ use Agit\ApiBundle\Common\AbstractObject;
 class Response extends AbstractObject
 {
     /**
-     * @Property\BooleanType
-     *
-     * The overall success status of the call. Note that this only indicates if
-     * a request could be properly processed. For example, a valid search
-     * request will always be considered successful, even if no results were
-     * found.
-     */
-    protected $success = null;
-
-    /**
-     * @Property\ObjectListType(class="Message")
-     *
-     * In case there are messages which the user must take note of, they are
-     * added to this list.
-     */
-    protected $messageList = [];
-
-    /**
      * @Property\PolymorphicType
      *
      * The actual response object, as specified in the endpoint call.
@@ -64,25 +46,6 @@ class Response extends AbstractObject
      */
     protected $entityList = [];
 
-    public function setSuccess($value)
-    {
-        if (!is_bool($value))
-            throw new InternalErrorException("The value must be boolean or null.");
-
-        $this->success = $value;
-    }
-
-    public function setMessageList(array $messageList)
-    {
-        foreach ($messageList as $message)
-            $this->addMessage($message);
-    }
-
-    public function addMessage(Message $message)
-    {
-        $this->messageList[] = $message;
-    }
-
     public function setPayload($payload)
     {
         $this->payload = $payload;
@@ -91,16 +54,6 @@ class Response extends AbstractObject
     public function setEntityList(array $entityList)
     {
         $this->entityList = $entityList;
-    }
-
-    public function getSuccess()
-    {
-        return $this->success;
-    }
-
-    public function getMessageList()
-    {
-        return $this->messageList;
     }
 
     public function getPayload()

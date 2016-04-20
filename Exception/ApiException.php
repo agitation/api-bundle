@@ -13,9 +13,14 @@ use Agit\CommonBundle\Exception\AgitException;
 
 /**
  * Base exception for all API exceptions.
- * NOTE: Remember to set the correct HTTP status code in the concrete exception.
+ * NOTE: Remember to set the correct HTTP status code in the actual exception.
  */
 abstract class ApiException extends AgitException
 {
     protected $httpStatus = 500;
+
+    public function getHttpStatus()
+    {
+        return $this->httpStatus;
+    }
 }
