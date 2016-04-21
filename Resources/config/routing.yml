@@ -1,7 +1,9 @@
 AgitApiBundle_call:
     pattern: /api/{namespace}/{class}.{method}.{_ext}
-    defaults: { _controller : AgitApiBundle:Api:call, _ext : json, _format : txt }
+    defaults: { _controller : AgitApiBundle:Api:call, _ext : json, _format : txt } # *
     host: %agit.common.domain.app%
     requirements:
         path: ".*"
     methods: [GET, POST, OPTIONS]
+
+# * NOTE: We set the _format to txt in order to have exceptions in plain text
