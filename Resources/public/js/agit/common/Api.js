@@ -101,11 +101,14 @@ agit.ns("agit.common");
                 data         : "request=" + JSON.stringify(request).replace(/\+/g, "%2b").replace(/&/g, "%26"),
                 success      : successCallback.bind(callbackParams),
                 error        : errorCallback.bind(callbackParams),
+                headers      : {},
                 dataType     : "json"
             };
 
         if (agit.cfg.csrfToken)
-            ajaxOpts.headers = { "X-Token" : agit.cfg.csrfToken };
+            ajaxOpts.headers["x-token"] = agit.cfg.csrfToken;
+
+        ajaxOpts.headers["x-api-serialize-compact"] = "true";
 
         this.ind.start();
 

@@ -31,11 +31,10 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
     protected function getHttpContent()
     {
-        $compact = 0; // disabled for now ... we'll see if it still makes sense
-
+        $compactHeader = $this->request->headers->get("x-api-serialize-compact", null, true);
         $response = $this->endpointClass->getResponse();
 
-        if ($compact)
+        if ($compactHeader === "true")
         {
             list($payload, $entityList) = $this->compactEntities($response);
 
