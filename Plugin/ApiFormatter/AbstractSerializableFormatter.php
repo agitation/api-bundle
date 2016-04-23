@@ -43,10 +43,10 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
             $response->setEntityList($entityList);
         }
 
-        return $this->getEncoder()->encode($response, $this->meta->get("Formatter")->get("format"));
+        return $this->encode($response);
     }
 
-    abstract protected function getEncoder();
+    abstract protected function encode($response);
 
     // functions for compact mode
 

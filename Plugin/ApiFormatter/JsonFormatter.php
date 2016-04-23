@@ -9,7 +9,6 @@
 
 namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Agit\ApiBundle\Annotation\Formatter\Formatter;
 
 /**
@@ -17,8 +16,8 @@ use Agit\ApiBundle\Annotation\Formatter\Formatter;
  */
 class JsonFormatter extends AbstractSerializableFormatter
 {
-    protected function getEncoder()
+    protected function encode($result)
     {
-        return new JsonEncoder();
+        return json_encode($result, JSON_UNESCAPED_SLASHES);
     }
 }
