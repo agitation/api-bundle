@@ -29,11 +29,8 @@ class ObjectMetaService
         AbstractType::setValidationService($validationService);
     }
 
-    public function createObject($objectName, $obsolete = "deprecated")
+    public function createObject($objectName)
     {
-        if ($obsolete !== "deprecated")
-            throw new \Exception(sprintf("Do not use the second parameter of %s->%s", __CLASS__, __FUNCTION__));
-
         $objectClass = $this->getObjectClass($objectName);
         $objectMetas = $this->getObjectMetas($objectName);
         $objectPropertyMetas = $this->getObjectPropertyMetas($objectName);
