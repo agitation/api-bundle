@@ -16,6 +16,8 @@ use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Annotation\MetaContainer;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\ApiBundle\Annotation\Property\Name;
+use Agit\ApiBundle\Service\ObjectMetaService;
+
 
 
 abstract class AbstractObject implements \JsonSerializable
@@ -35,11 +37,23 @@ abstract class AbstractObject implements \JsonSerializable
      */
     protected $objectName;
 
-    public function __construct(MetaContainer $objectMeta, array $propMetaList)
+    /**
+     * @var API namespace
+     */
+    protected $apiNamespace;
+
+    /**
+     * @var ObjectMetaService instance
+     */
+     private $objectMetaService;
+
+    public function __construct(MetaContainer $objectMeta, array $propMetaList, ObjectMetaService $objectMetaService)
     {
         $this->objectMeta = $objectMeta;
         $this->propMetaList = $propMetaList;
+        $this->objectMetaService = $objectMetaService;
         $this->objectName = $objectMeta->get("Object")->get("objectName");
+        $this->apiNamespace = strstr($this->objectName, "/", true);
     }
 
     public function getObjectName()
@@ -135,5 +149,13 @@ abstract class AbstractObject implements \JsonSerializable
                 Translate::t("Invalid value in object `%s` for property `%s`: %s"),
                 $this->getObjectName(), $this->getPropertyMeta($key, "Name")->getName(), $e->getMessage()));
         }
+    }
+
+    protected function createObject($name, $data = null)
+    {
+        if (strpos($name, '/') === false)
+            $name = "{$this->apiNamespace}/$name";
+
+        return $this->objectMetaService->createObject($name, $data);
     }
 }

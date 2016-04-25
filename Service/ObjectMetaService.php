@@ -35,7 +35,7 @@ class ObjectMetaService
         $objectMetas = $this->getObjectMetas($objectName);
         $objectPropertyMetas = $this->getObjectPropertyMetas($objectName);
 
-        return new $objectClass($objectMetas, $objectPropertyMetas);
+        return new $objectClass($objectMetas, $objectPropertyMetas, $this);
     }
 
     public function getObjectNames()
