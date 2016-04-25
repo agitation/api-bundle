@@ -16,7 +16,6 @@ use Doctrine\ORM\Proxy\Proxy;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Common\AbstractObject;
-use Agit\ApiBundle\Common\AbstractEntityObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
