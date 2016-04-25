@@ -149,11 +149,11 @@ abstract class AbstractObject implements \JsonSerializable
         }
     }
 
-    protected function createObject($name, $data = null)
+    protected function createObject($name)
     {
         if (strpos($name, '/') === false)
             $name = "{$this->apiNamespace}/$name";
 
-        return $this->objectMetaService->createObject($name, $data);
+        return $this->objectMetaService->createObject($name);
     }
 }
