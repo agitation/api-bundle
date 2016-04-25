@@ -18,8 +18,6 @@ use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\ApiBundle\Service\ObjectMetaService;
 
-
-
 abstract class AbstractObject implements \JsonSerializable
 {
     /**
