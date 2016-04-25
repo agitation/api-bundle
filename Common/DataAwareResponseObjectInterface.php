@@ -15,8 +15,11 @@ interface DataAwareResponseObjectInterface
      * Can be implemented by API objects which know what data they expect;
      * especially handy for response objects resembling entities.
      *
+     * NOTE: The $data parameter is not part of the signature in order to
+     * allow type hinting.
+     *
      * @param mixed $data
      * @return void
      */
-    public function fill($data = null);
+    public function fill();
 }
