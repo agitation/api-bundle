@@ -20,7 +20,7 @@ services:
 
     agit.api.formatter:
         class: Agit\ApiBundle\Service\FormatterService
-        arguments: [ @agit.pluggable.cache.loader_factory, @service_container ]
+        arguments: [ @agit.pluggable.cache.loader_factory, @service_container, %kernel.debug% ]
         tags: [{ name: agit.pluggable, type: api.formatter }]
 
     agit.api.persistence:

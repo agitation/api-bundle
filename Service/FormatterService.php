@@ -31,12 +31,15 @@ class FormatterService
      */
     protected $cacheLoader;
 
+    private $debug;
+
     private $formats;
 
-    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ContainerInterface $container)
+    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ContainerInterface $container, $debug)
     {
         $this->cacheLoader = $cacheLoaderFactory->create("agit.api.formatter");
         $this->container = $container;
+        $this->debug = $debug;
     }
 
     public function formatExists($format)
@@ -50,13 +53,13 @@ class FormatterService
         if (!$this->formatExists($format))
             throw new IncompatibleFormatterException("Unknown data format.");
 
-        $class = $this->formats[$format]['class'];
-        $meta = $this->formats[$format]['meta'];
+        $class = $this->formats[$format]["class"];
+        $meta = $this->formats[$format]["meta"];
 
         $metaContainer = $this->createMetaContainer(["Formatter" => $meta]);
-        $formatter = new $class($metaContainer, $controller, $request);
+        $formatter = new $class($metaContainer, $controller, $request, $this->debug);
 
-        $this->injectServices($formatter, $metaContainer->get('Formatter')->get('depends'));
+        $this->injectServices($formatter, $metaContainer->get("Formatter")->get("depends"));
 
         return $formatter;
     }

@@ -22,11 +22,14 @@ abstract class AbstractFormatter
 
     protected $request;
 
-    public function __construct(MetaContainer $meta, AbstractController $controller, Request $request)
+    protected $debug;
+
+    public function __construct(MetaContainer $meta, AbstractController $controller, Request $request, $debug)
     {
         $this->meta = $meta;
         $this->controller = $controller;
         $this->request = $request;
+        $this->debug = $debug;
     }
 
     public function getResponse()

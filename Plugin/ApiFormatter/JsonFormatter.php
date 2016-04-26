@@ -18,6 +18,11 @@ class JsonFormatter extends AbstractSerializableFormatter
 {
     protected function encode($result)
     {
-        return json_encode($result, JSON_UNESCAPED_SLASHES);
+        $opts = JSON_UNESCAPED_SLASHES;
+
+        if ($this->debug)
+            $opts += JSON_PRETTY_PRINT;
+
+        return json_encode($result, $opts);
     }
 }
