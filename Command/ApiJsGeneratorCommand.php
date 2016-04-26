@@ -73,7 +73,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         {
             $metaContainer = $endpointService->getEndpointMetaContainer($name);
 
-            if (strpos($endpointService->getEndpointClass($name), $bundleNamespace) !== 0) continue;
+            if (strpos($endpointService->getController($name), $bundleNamespace) !== 0) continue;
 
             $list[$name] = [
                 $metaContainer->get("Endpoint")->get("request"),

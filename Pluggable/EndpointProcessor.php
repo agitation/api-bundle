@@ -19,7 +19,7 @@ use Agit\PluggableBundle\Strategy\PluggableServiceInterface;
 use Agit\PluggableBundle\Strategy\PluginInterface;
 use Agit\PluggableBundle\Strategy\Depends;
 use Agit\ApiBundle\Annotation\Endpoint\AbstractEndpointMeta;
-use Agit\ApiBundle\Annotation\Endpoint\EntityEndpointClass;
+use Agit\ApiBundle\Annotation\Endpoint\EntityController;
 use Agit\ApiBundle\Annotation\Endpoint\Security;
 use Agit\ApiBundle\Annotation\Endpoint\EntityEndpoint;
 
@@ -50,8 +50,8 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
         $namespace = strstr($endpointClass, "/", true);
 
         // if this is an entity endpoint, there may be inherited endpoints
-        if ($plugin instanceof EntityEndpointClass)
-            $this->processEntityEndpointClass($plugin, $class, $endpointClass);
+        if ($plugin instanceof EntityController)
+            $this->processEntityController($plugin, $class, $endpointClass);
 
         foreach ($classRefl->getMethods() as $methodRefl)
         {
@@ -99,7 +99,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
         $this->cacheProvider->save("agit.api.endpoint", $this->getEntries());
     }
 
-    protected function processEntityEndpointClass($plugin, $class, $endpointClass)
+    protected function processEntityController($plugin, $class, $endpointClass)
     {
         $capPrefix = $plugin->get("cap");
         $entityMeta = $this->entityManager->getClassMetadata($plugin->get("entity"));

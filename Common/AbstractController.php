@@ -25,7 +25,7 @@ use Agit\ApiBundle\Exception\BadRequestException;
  * Generic Endpoint handler. To be inherited by an API version specific
  * handler, which again is inherited by the actual Endpoint.
  */
-abstract class AbstractEndpointClass implements ServiceAwarePluginInterface
+abstract class AbstractController implements ServiceAwarePluginInterface
 {
     // including the service-aware features here, because almost all endpoints
     // have service dependencies.

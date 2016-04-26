@@ -16,7 +16,7 @@ use Agit\PluggableBundle\Strategy\PluginInterface;
  *
  * A special type of endpoint class which is responsible for CRUD operations on a given entity
  */
-class EntityEndpointClass extends EndpointClass
+class EntityController extends Controller
 {
     /**
      * @var the entity this class refers to

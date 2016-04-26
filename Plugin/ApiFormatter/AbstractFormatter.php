@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Agit\ApiBundle\Common\AbstractEndpointClass;
+use Agit\ApiBundle\Common\AbstractController;
 use Agit\ApiBundle\Annotation\MetaContainer;
 
 abstract class AbstractFormatter
@@ -22,7 +22,7 @@ abstract class AbstractFormatter
 
     protected $request;
 
-    public function __construct(MetaContainer $meta, AbstractEndpointClass $endpointClass, Request $request)
+    public function __construct(MetaContainer $meta, AbstractController $endpointClass, Request $request)
     {
         $this->meta = $meta;
         $this->endpointClass = $endpointClass;

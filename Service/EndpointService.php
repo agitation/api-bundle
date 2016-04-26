@@ -18,7 +18,7 @@ use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\ApiBundle\Exception\UnauthorizedException;
 use Agit\UserBundle\Service\UserService;
 use Agit\IntlBundle\Translate;
-use Agit\ApiBundle\Common\AbstractEndpointClass;
+use Agit\ApiBundle\Common\AbstractController;
 
 class EndpointService
 {
@@ -65,7 +65,7 @@ class EndpointService
         return array_keys($this->endpoints);
     }
 
-    public function getEndpointClass($name)
+    public function getController($name)
     {
         $this->loadEndpoints();
 
@@ -91,7 +91,7 @@ class EndpointService
             $this->endpoints = $this->cacheLoader->load();
     }
 
-    private function checkAuthorisation(AbstractEndpointClass $endpoint)
+    private function checkAuthorisation(AbstractController $endpoint)
     {
         $reqCapibilty = $endpoint->getMeta("Security")->get("capability");
 

@@ -26,6 +26,6 @@ class EndpointService implements PluggableServiceInterface
 
     public function getTag()
     {
-        return "Agit\ApiBundle\Annotation\Endpoint\EndpointClass";
+        return "Agit\ApiBundle\Annotation\Endpoint\Controller";
     }
 }

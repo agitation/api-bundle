@@ -24,7 +24,7 @@ use Agit\ApiBundle\Exception\ObjectNotFoundException;
  * NOTE: The `get`, `create`, `update`, `delete` and `search` methods can be used
  * as endpoints – even though they don’t have annotations on them.
  *
- * The actual endpoint class can tell through the EntityEndpointClass annotation
+ * The actual endpoint class can tell through the EntityController annotation
  * which of these methods it wants to provide.
  *
  * It is also possible to override them, there are two different ways: The first
@@ -32,7 +32,7 @@ use Agit\ApiBundle\Exception\ObjectNotFoundException;
  * In this case, the method will assume the standard request/response/capability
  * settings. It is also possible to annotate the class with a custom configuration.
  */
-abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
+abstract class AbstractEntityController extends AbstractController
 {
     protected function get($id)
     {
