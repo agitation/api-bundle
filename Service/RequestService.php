@@ -10,12 +10,12 @@
 namespace Agit\ApiBundle\Service;
 
 use Agit\IntlBundle\Translate;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Exception\InvalidObjectException;
+use Agit\ApiBundle\Common\RequestObjectInterface;
 
 class RequestService extends AbstractObjectService
 {
-    // TODO: Validation here?
-
     public function createRequestObject($expectedObject, $rawRequest)
     {
         $result = null;
@@ -42,7 +42,8 @@ class RequestService extends AbstractObjectService
 
                 // we fill the scalar object, but only to see if it passes validation.
                 // then we return the bare request
-                $object = $this->objectMetaService->createObject($expectedObject);
+                $object = $this->createObject($expectedObject);
+
                 $object->set("_", $rawRequest);
                 $object->validate();
 
@@ -50,7 +51,7 @@ class RequestService extends AbstractObjectService
             }
             else
             {
-                $result = $this->objectMetaService->createObject($expectedObject);
+                $result = $this->createObject($expectedObject);
 
                 if (is_object($rawRequest))
                     $this->fill($result, $rawRequest);
@@ -60,5 +61,15 @@ class RequestService extends AbstractObjectService
         }
 
         return $result;
+    }
+
+    private function createObject($objectName)
+    {
+        $object = $this->objectMetaService->createObject($objectName);
+
+        if (!($object instanceof RequestObjectInterface))
+            throw new InternalErrorException("Object $objectName must implement RequestObjectInterface.");
+
+        return $object;
     }
 }

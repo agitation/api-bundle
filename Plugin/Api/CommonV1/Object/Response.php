@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
-use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\AbstractResponseObject;
 
 /**
  * @Object\Object
@@ -20,7 +20,7 @@ use Agit\ApiBundle\Common\AbstractObject;
  * The root response object. The response object you'll see in an endpoint
  * call's documentation is actually the `payload` field of this object.
  */
-class Response extends AbstractObject
+class Response extends AbstractResponseObject
 {
     /**
      * @Property\PolymorphicType

@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 
 use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
-use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\AbstractValueObject;
 use Agit\ApiBundle\Exception\InvalidRangeException;
 use Agit\IntlBundle\Translate;
 
@@ -20,7 +20,7 @@ use Agit\IntlBundle\Translate;
  *
  * A date period, consisting of a start date and an end date.
  */
-class Period extends AbstractObject
+class Period extends AbstractValueObject
 {
     /**
      * @Property\ObjectType(class="Date")

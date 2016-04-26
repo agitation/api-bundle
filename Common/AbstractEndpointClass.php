@@ -18,7 +18,6 @@ use Agit\IntlBundle\Translate;
 use Agit\ApiBundle\Annotation\MetaContainer;
 use Agit\ApiBundle\Service\RequestService;
 use Agit\ApiBundle\Service\ResponseService;
-use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Exception\BadRequestException;
 

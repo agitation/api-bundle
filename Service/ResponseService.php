@@ -9,14 +9,13 @@
 
 namespace Agit\ApiBundle\Service;
 
-
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Proxy\Proxy;
+use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\ResponseObjectInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
-use Agit\ApiBundle\Common\AbstractObject;
-use Agit\ApiBundle\Common\DataAwareResponseObjectInterface;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Proxy\Proxy;
 
 class ResponseService extends AbstractObjectService
 {
@@ -41,12 +40,23 @@ class ResponseService extends AbstractObjectService
     public function createResponseObject($objectName, $data = null)
     {
         $object = $this->objectMetaService->createObject($objectName);
-        $this->fill($object, $data);
 
+        if (!($object instanceof ResponseObjectInterface))
+            throw new InternalErrorException("Object $objectName must implement ResponseObjectInterface!");
+
+        $object->setResponseService($this);
+
+        $object->fill($data);
         return $object;
     }
 
-    public function fill(AbstractObject $object, $data)
+    protected function fill(AbstractObject $object, $data)
+    {
+        // allows the object to handle the data itself; it'll use $this as fallback.
+        $object->fill($data);
+    }
+
+    public function fillObjectFromPlain(ResponseObjectInterface $object, $data)
     {
         if ($object instanceof DataAwareResponseObjectInterface)
         {
@@ -74,7 +84,7 @@ class ResponseService extends AbstractObjectService
         return $object;
     }
 
-    public function fillObjectFromEntity($object, $entity)
+    public function fillObjectFromEntity(ResponseObjectInterface $object, $entity)
     {
         $metadata = $this->entityManager->getClassMetadata(get_class($entity));
 

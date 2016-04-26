@@ -10,15 +10,15 @@
 namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 
 use Agit\ApiBundle\Annotation\Object;
-use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\AbstractValueObject;
 
 /**
  * @Object\Object
  *
- * Just an empty response payload container. If a call has this object as its
- * response object, you should simple rely on the `Response.status` field to see
- * if your call was successful.
+ * Acts as a pseudo-object, indicating an empty request or response. If a call
+ * has this as its response object, the client should rely on the HTTP status
+ * to see if the call was successful.
  */
-class Null extends AbstractObject
+class Null extends AbstractValueObject
 {
 }

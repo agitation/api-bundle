@@ -12,7 +12,8 @@ namespace Agit\ApiBundle\Common;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\PluggableBundle\Strategy\Depends;
-use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\RequestObjectInterface;
+use Agit\ApiBundle\Common\AbstractEntityObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 
 /**
@@ -39,7 +40,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
-    protected function create(AbstractObject $requestObject)
+    protected function create(AbstractEntityObject $requestObject)
     {
         $this->validate($requestObject);
 
@@ -50,7 +51,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
-    protected function update(AbstractObject $requestObject)
+    protected function update(AbstractEntityObject $requestObject)
     {
         $this->validate($requestObject);
 
@@ -61,7 +62,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
     }
 
     // extra validation for create/update (e.g. consistency checks), may be overloaded in the endpoint class
-    protected function validate(AbstractObject $requestObject)
+    protected function validate(AbstractEntityObject $requestObject)
     {
     }
 
@@ -117,7 +118,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
         return true;
     }
 
-    protected function search(AbstractObject $requestObject)
+    protected function search(RequestObjectInterface $requestObject)
     {
         $this->responseService->setView("search");
 
@@ -145,7 +146,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
         return $apiClass;
     }
 
-    protected function createSearchQuery(AbstractObject $requestObject)
+    protected function createSearchQuery(RequestObjectInterface $requestObject)
     {
         $entityName = $this->getEntityClass();
 
@@ -184,7 +185,7 @@ abstract class AbstractEntityEndpointClass extends AbstractEndpointClass
             $output = new \stdClass();
             $reqObj = null;
 
-            if ($input instanceof AbstractObject)
+            if ($input instanceof AbstractEntityObject)
             {
                 $reqObj = $input;
                 $input = $input->getValues();

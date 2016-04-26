@@ -11,14 +11,14 @@ namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 
 use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
-use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Common\AbstractValueObject;
 
 /**
  * @Object\Object
  *
  * The time of a day.
  */
-class Time extends AbstractObject
+class Time extends AbstractValueObject
 {
     /**
      * @Property\Name("Hour")
