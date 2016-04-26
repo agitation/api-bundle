@@ -32,7 +32,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
     protected function getHttpContent()
     {
         $compactHeader = $this->request->headers->get("x-api-serialize-compact", null, true);
-        $response = $this->endpointClass->getResponse();
+        $response = $this->controller->getResponse();
 
         if ($compactHeader === "true")
         {

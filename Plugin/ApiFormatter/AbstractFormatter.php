@@ -18,14 +18,14 @@ abstract class AbstractFormatter
 {
     protected $meta;
 
-    protected $endpointClass;
+    protected $controller;
 
     protected $request;
 
-    public function __construct(MetaContainer $meta, AbstractController $endpointClass, Request $request)
+    public function __construct(MetaContainer $meta, AbstractController $controller, Request $request)
     {
         $this->meta = $meta;
-        $this->endpointClass = $endpointClass;
+        $this->controller = $controller;
         $this->request = $request;
     }
 

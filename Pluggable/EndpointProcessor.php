@@ -46,12 +46,12 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
     public function addPlugin($class, PluginInterface $plugin)
     {
         $classRefl = new \ReflectionClass($class);
-        $endpointClass = $this->translateName($classRefl);
-        $namespace = strstr($endpointClass, "/", true);
+        $controller = $this->translateName($classRefl);
+        $namespace = strstr($controller, "/", true);
 
         // if this is an entity endpoint, there may be inherited endpoints
         if ($plugin instanceof EntityController)
-            $this->processEntityController($plugin, $class, $endpointClass);
+            $this->processEntityController($plugin, $class, $controller);
 
         foreach ($classRefl->getMethods() as $methodRefl)
         {
@@ -83,7 +83,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
 
             $endpoint = sprintf(
                 "%s.%s",
-                $endpointClass,
+                $controller,
                 $methodRefl->getName());
 
             $this->addEntry($endpoint, [
@@ -99,7 +99,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
         $this->cacheProvider->save("agit.api.endpoint", $this->getEntries());
     }
 
-    protected function processEntityController($plugin, $class, $endpointClass)
+    protected function processEntityController($plugin, $class, $controller)
     {
         $capPrefix = $plugin->get("cap");
         $entityMeta = $this->entityManager->getClassMetadata($plugin->get("entity"));
@@ -122,25 +122,25 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
             {
                 $endpointMeta["Security"]->set("capability", "$capPrefix.read");
                 $endpointMeta["Endpoint"]->set("request", $idObject);
-                $endpointMeta["Endpoint"]->set("response", $endpointClass);
+                $endpointMeta["Endpoint"]->set("response", $controller);
             }
             elseif ($method === "search")
             {
                 $endpointMeta["Security"]->set("capability", "$capPrefix.read");
-                $endpointMeta["Endpoint"]->set("request",  "{$endpointClass}Search");
-                $endpointMeta["Endpoint"]->set("response", "{$endpointClass}[]");
+                $endpointMeta["Endpoint"]->set("request",  "{$controller}Search");
+                $endpointMeta["Endpoint"]->set("response", "{$controller}[]");
             }
             elseif ($method === "create")
             {
                 $endpointMeta["Security"]->set("capability", "$capPrefix.write");
-                $endpointMeta["Endpoint"]->set("request", $endpointClass);
-                $endpointMeta["Endpoint"]->set("response", $endpointClass);
+                $endpointMeta["Endpoint"]->set("request", $controller);
+                $endpointMeta["Endpoint"]->set("response", $controller);
             }
             elseif ($method === "update")
             {
                 $endpointMeta["Security"]->set("capability", "$capPrefix.write");
-                $endpointMeta["Endpoint"]->set("request", $endpointClass);
-                $endpointMeta["Endpoint"]->set("response", $endpointClass);
+                $endpointMeta["Endpoint"]->set("request", $controller);
+                $endpointMeta["Endpoint"]->set("response", $controller);
             }
             elseif ($method === "delete")
             {
@@ -149,7 +149,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
                 $endpointMeta["Endpoint"]->set("response", "common.v1/Null");
             }
 
-            $this->addEntry("$endpointClass.$method", [
+            $this->addEntry("$controller.$method", [
                 "class" => $class,
                 "method" => $method,
                 "meta" => $this->dissectMetaList($endpointMeta)

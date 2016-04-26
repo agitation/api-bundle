@@ -45,7 +45,7 @@ class FormatterService
         return (is_array($this->formats) && isset($this->formats[$format]));
     }
 
-    public function getFormatter($format, AbstractController $endpointClass, Request $request)
+    public function getFormatter($format, AbstractController $controller, Request $request)
     {
         if (!$this->formatExists($format))
             throw new IncompatibleFormatterException("Unknown data format.");
@@ -54,7 +54,7 @@ class FormatterService
         $meta = $this->formats[$format]['meta'];
 
         $metaContainer = $this->createMetaContainer(["Formatter" => $meta]);
-        $formatter = new $class($metaContainer, $endpointClass, $request);
+        $formatter = new $class($metaContainer, $controller, $request);
 
         $this->injectServices($formatter, $metaContainer->get('Formatter')->get('depends'));
 
