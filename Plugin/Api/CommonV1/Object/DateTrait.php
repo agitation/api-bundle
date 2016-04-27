@@ -9,15 +9,15 @@
 
 namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 
-use Agit\ApiBundle\Annotation\Object;
-use Agit\ApiBundle\Common\AbstractValueObject;
+use Agit\ApiBundle\Annotation\Property;
 
-/**
- * @Object\Object
- *
- * A calendar month.
- */
-class Month extends AbstractValueObject
+trait DateTrait
 {
     use MonthTrait;
+
+    /**
+    * @Property\Name("Day")
+    * @Property\NumberType(minValue=1, maxValue=31)
+    */
+    public $day;
 }

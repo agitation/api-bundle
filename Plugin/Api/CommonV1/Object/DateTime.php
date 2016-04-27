@@ -15,21 +15,24 @@ use Agit\ApiBundle\Common\AbstractValueObject;
 /**
  * @Object\Object
  *
- * A calendar day.
+ * Day and time of day.
  */
-class Date extends AbstractValueObject
+class DateTime extends AbstractValueObject
 {
     use DateTrait;
+    use TimeTrait;
 
-    public function fill(\DateTime $dateTime)
+    public function fill($dateTime)
     {
         $this->year = (int)$dateTime->format("Y");
         $this->month = (int)$dateTime->format("m");
         $this->day = (int)$dateTime->format("d");
+        $this->hour = (int)$dateTime->format("H");
+        $this->minute = (int)$dateTime->format("i");
     }
 
     public function __toString()
     {
-        return sprintf("%04d-%02d-%02d", $this->year, $this->month, $this->day);
+        return sprintf("%04d-%02d-%02d %02d:%02d:00", $this->year, $this->month, $this->day, $this->hour, $this->minute);
     }
 }

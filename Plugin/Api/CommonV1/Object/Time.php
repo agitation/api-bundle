@@ -10,7 +10,6 @@
 namespace Agit\ApiBundle\Plugin\Api\CommonV1\Object;
 
 use Agit\ApiBundle\Annotation\Object;
-use Agit\ApiBundle\Annotation\Property;
 use Agit\ApiBundle\Common\AbstractValueObject;
 
 /**
@@ -20,17 +19,13 @@ use Agit\ApiBundle\Common\AbstractValueObject;
  */
 class Time extends AbstractValueObject
 {
-    /**
-     * @Property\Name("Hour")
-     * @Property\NumberType(minValue=0, maxValue=23)
-     */
-    public $hour;
+    use TimeTrait;
 
-    /**
-     * @Property\Name("Minute")
-     * @Property\NumberType(minValue=0, maxValue=59)
-     */
-    public $minute;
+    public function fill($dateTime)
+    {
+        $this->hour = (int)$dateTime->format("H");
+        $this->minute = (int)$dateTime->format("i");
+    }
 
     public function setMinutes($minutes)
     {
@@ -42,23 +37,4 @@ class Time extends AbstractValueObject
     {
         return $this->get("hour") * 60 + $this->get("minute");
     }
-
-    public function setDateTime(\DateTime $dateTime)
-    {
-        $this->set("hour", (int)$dateTime->format("H"));
-        $this->set("minute", (int)$dateTime->format("i"));
-    }
-
-    public function getDateTime(\DateTimezone $timezone = null)
-    {
-        if (!$timezone)
-            $timezone = new \DateTimezone("UTC");
-
-        return new \DateTime(sprintf(
-            "1970-01-01 %2d:%2d:00",
-            $this->get("hour"),
-            $this->get("minute")
-        ), $timezone);
-    }
-
 }
