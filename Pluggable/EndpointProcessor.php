@@ -105,6 +105,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
         $entityMeta = $this->entityManager->getClassMetadata($plugin->get("entity"));
         $entityIdFieldMeta = $entityMeta->getFieldMapping($entityMeta->getSingleIdentifierFieldName());
         $idObject = ($entityIdFieldMeta["type"] === "integer") ? "common.v1/Integer" : "common.v1/String";
+        $crossOrigin = $plugin->get("crossOrigin");
 
         foreach ($plugin->get("endpoints") as $method)
         {
@@ -118,35 +119,43 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
                 "entity" => $plugin->get("entity")
             ]);
 
+            $readCap = $capPrefix ? "$capPrefix.read" : "";
+            $writeCap = $capPrefix ? "$capPrefix.write" : "";
+
             if ($method === "get")
             {
-                $endpointMeta["Security"]->set("capability", "$capPrefix.read");
+                $endpointMeta["Security"]->set("capability", $readCap);
                 $endpointMeta["Endpoint"]->set("request", $idObject);
                 $endpointMeta["Endpoint"]->set("response", $controller);
             }
             elseif ($method === "search")
             {
-                $endpointMeta["Security"]->set("capability", "$capPrefix.read");
+                $endpointMeta["Security"]->set("capability", $readCap);
                 $endpointMeta["Endpoint"]->set("request",  "{$controller}Search");
                 $endpointMeta["Endpoint"]->set("response", "{$controller}[]");
             }
             elseif ($method === "create")
             {
-                $endpointMeta["Security"]->set("capability", "$capPrefix.write");
+                $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $controller);
                 $endpointMeta["Endpoint"]->set("response", $controller);
             }
             elseif ($method === "update")
             {
-                $endpointMeta["Security"]->set("capability", "$capPrefix.write");
+                $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $controller);
                 $endpointMeta["Endpoint"]->set("response", $controller);
             }
             elseif ($method === "delete")
             {
-                $endpointMeta["Security"]->set("capability", "$capPrefix.write");
+                $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $idObject);
                 $endpointMeta["Endpoint"]->set("response", "common.v1/Null");
+            }
+
+            if ($crossOrigin && ($method === "get" || $method === "search"))
+            {
+                $endpointMeta["Security"]->set("allowCrossOrigin", true);
             }
 
             $this->addEntry("$controller.$method", [

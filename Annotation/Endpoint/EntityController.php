@@ -34,4 +34,9 @@ class EntityController extends Controller
      * xxx.read is for "get" and "search", xxx.write is for "create", "update", "delete"
      */
     public $cap;
+
+    /**
+     * @var boolean if the call should allow cross-origin requests. Only available for get/search requests.
+     */
+    public $crossOrigin;
 }
