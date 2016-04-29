@@ -18,9 +18,8 @@ use Agit\ApiBundle\Exception\BadRequestException;
 
 class ApiController extends Controller
 {
-    public function callAction($namespace, $class, $method, $_ext)
+    public function callAction(Request $request, $namespace, $class, $method, $_ext)
     {
-        $request = $this->getRequest();
         $response = new Response();
 
         try
