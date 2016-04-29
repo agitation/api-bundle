@@ -51,7 +51,7 @@ class PersistenceService
         }
     }
 
-    private function fillEntity($entity, \stdClass $data)
+    public function fillEntity($entity, \stdClass $data)
     {
         if ($entity instanceof Proxy)
             $entity->__load();
