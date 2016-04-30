@@ -21,11 +21,14 @@ class Date extends AbstractValueObject
 {
     use DateTrait;
 
-    public function fill(\DateTime $dateTime)
+    public function fill($dateTime)
     {
-        $this->year = (int)$dateTime->format("Y");
-        $this->month = (int)$dateTime->format("m");
-        $this->day = (int)$dateTime->format("d");
+        if ($dateTime)
+        {
+            $this->year = (int)$dateTime->format("Y");
+            $this->month = (int)$dateTime->format("m");
+            $this->day = (int)$dateTime->format("d");
+        }
     }
 
     public function __toString()
