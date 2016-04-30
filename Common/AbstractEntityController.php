@@ -42,6 +42,7 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function create(AbstractEntityObject $requestObject)
     {
+        $this->checkPermissions($requestObject, "create");
         $this->validate($requestObject);
 
         $em = $this->getService("doctrine.orm.entity_manager");
@@ -53,6 +54,7 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function update(AbstractEntityObject $requestObject)
     {
+        $this->checkPermissions($requestObject, "update");
         $this->validate($requestObject);
 
         $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
@@ -61,58 +63,26 @@ abstract class AbstractEntityController extends AbstractController
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
-    // extra validation for create/update (e.g. consistency checks), may be overloaded in the endpoint class
-    protected function validate(AbstractEntityObject $requestObject)
+    protected function delete($id)
     {
-    }
+        $this->checkPermissions($id, "delete");
 
-    protected function delete($id, $completeRemove = true)
-    {
+        $em = $this->getService("doctrine.orm.entity_manager");
+        $entity = $this->retrieveEntity($this->getEntityClass(), $id);
+
         try
         {
-            $deleted = false;
-            $em = $this->getService("doctrine.orm.entity_manager");
-
-            // first, try to just set the status to "deleted" ...
-            $em->beginTransaction();
-
-            $entity = $this->retrieveEntity($this->getEntityClass(), $id);
-
-            if (method_exists($entity, "setStatus"))
-            {
-                $entity->setStatus(-1);
-                $em->persist($entity);
-                $em->flush();
-
-                $deleted = true;
-            }
-
-            $em->commit();
-
-            // ... then try to completely remove the entity
-            // (if it fails, the entity has dependencies)
-
-            if ($completeRemove)
-            {
-                $em->beginTransaction();
-
-                $em->remove($entity);
-                $em->flush();
-
-                $em->commit();
-                $deleted = true;
-            }
+            $em->remove($entity);
+            $em->flush();
         }
         catch(\Exception $e)
         {
-            $em->rollback();
-
             // reload the entity manager after a "failed" full delete
             if (!$em->isOpen())
                 $em = $em->create($em->getConnection(), $em->getConfiguration(), $em->getEventManager());
 
             if (!$deleted)
-                throw new InternalErrorException(sprintf("Failed deleting an object of type %s, possibly because of dependencies and lack of the setStatus() method.", $this->getEntityClass()));
+                throw new InternalErrorException(sprintf("Failed deleting an object of type %s, possibly because of dependencies. You must implement your own delete().", $this->getEntityClass()));
         }
 
         return true;
@@ -129,6 +99,32 @@ abstract class AbstractEntityController extends AbstractController
             $result[] = $this->createObject($this->getResponseObjectApiClass(), $entity);
 
         return $result;
+    }
+
+    /**
+     * optional extra validation for create/update (e.g. consistency checks),
+     * may be overridden in the entity controller
+     */
+    protected function validate(AbstractEntityObject $requestObject)
+    {
+    }
+
+    /**
+     * This is for write-access endpoints. If the endpoint declares a capability
+     * access will be granted by default, assuming that a user with the required
+     * capability is allowed to edit all entities managed by this endpoint.
+     *
+     * However, if the endpoint does not declare capabilities, the endpoint controller
+     * must override this method with a concrete check which ensures that the client
+     * is allowed to create/update/delete the entity in question.
+     *
+     * ATTENTION: If you override one of the create/update/delete methods, you
+     * must by all means call checkPermissions() in the new method!
+     */
+    protected function checkPermissions($request, $type)
+    {
+        if (!$this->getMeta("Security")->get("capability"))
+            throw new InternalErrorException(sprintf("Endpoints allowing public access must override the %s method with actual checks.", __FUNCTION__));
     }
 
     protected function getEntityClass()
