@@ -61,7 +61,7 @@ class ApiController extends Controller
                 ? $e->getMessage()
                 : Translate("Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible.");
 
-            if ($isDebug)
+            if ($isDebug && !$isApiException)
                 $content .= "\n\n" . $e->getTraceAsString();
 
             $response->setContent($content);
