@@ -14,6 +14,8 @@ use Agit\IntlBundle\Translate;
 use Agit\PluggableBundle\Strategy\Depends;
 use Agit\ApiBundle\Common\RequestObjectInterface;
 use Agit\ApiBundle\Common\AbstractEntityObject;
+use Agit\ApiBundle\Common\AbstractValueObject;
+use Agit\ApiBundle\Common\AbstractRequestObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 
 /**
@@ -181,13 +183,13 @@ abstract class AbstractEntityController extends AbstractController
             $output = new \stdClass();
             $reqObj = null;
 
-            if ($input instanceof AbstractEntityObject)
+            if ($input instanceof AbstractEntityObject || $input instanceof AbstractValueObject || $input instanceof AbstractRequestObject)
             {
                 $reqObj = $input;
                 $input = $input->getValues();
             }
 
-            foreach ((array)$input as $key => $value)
+            foreach ($input as $key => $value)
                 if (!$reqObj || !$reqObj->getPropertyMeta($key, "Type")->get("readonly"))
                     $output->$key = $this->getPersistableData($value);
         }
