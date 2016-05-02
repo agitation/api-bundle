@@ -11,6 +11,33 @@ agit.api.Object.register({
             "maxValue": 59
         }
     },
+    "common.v1/DateTime": {
+        "day": {
+            "type": "number",
+            "minValue": 1,
+            "maxValue": 31
+        },
+        "month": {
+            "type": "number",
+            "minValue": 1,
+            "maxValue": 12
+        },
+        "year": {
+            "type": "number",
+            "minValue": 2000,
+            "maxValue": 2100
+        },
+        "hour": {
+            "type": "number",
+            "minValue": 0,
+            "maxValue": 23
+        },
+        "minute": {
+            "type": "number",
+            "minValue": 0,
+            "maxValue": 59
+        }
+    },
     "common.v1/Null": [],
     "common.v1/String": {
         "_": {
@@ -30,14 +57,6 @@ agit.api.Object.register({
         }
     },
     "common.v1/Response": {
-        "success": {
-            "type": "boolean"
-        },
-        "messageList": {
-            "type": "objectlist",
-            "class": "common.v1/Message",
-            "default": []
-        },
         "payload": {
             "type": "polymorphic",
             "nullable": true
@@ -46,6 +65,20 @@ agit.api.Object.register({
             "type": "polymorphic",
             "nullable": true,
             "default": []
+        }
+    },
+    "common.v1/Location": {
+        "lat": {
+            "type": "number",
+            "allowFloat": true,
+            "minValue": -90,
+            "maxValue": 90
+        },
+        "lon": {
+            "type": "number",
+            "allowFloat": true,
+            "minValue": -180,
+            "maxValue": 180
         }
     },
     "common.v1/Date": {
@@ -65,22 +98,14 @@ agit.api.Object.register({
             "maxValue": 2100
         }
     },
-    "common.v1/Message": {
-        "type": {
-            "type": "string",
-            "values": [
-                "info",
-                "success",
-                "warning",
-                "error"
-            ]
+    "common.v1/Period": {
+        "from": {
+            "type": "object",
+            "class": "common.v1/Date"
         },
-        "code": {
-            "type": "string",
-            "nullable": true
-        },
-        "text": {
-            "type": "string"
+        "until": {
+            "type": "object",
+            "class": "common.v1/Date"
         }
     },
     "common.v1/Integer": {
