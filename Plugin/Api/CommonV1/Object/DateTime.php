@@ -24,15 +24,23 @@ class DateTime extends AbstractValueObject
 
     public function fill($dateTime)
     {
-        $this->year = (int)$dateTime->format("Y");
-        $this->month = (int)$dateTime->format("m");
-        $this->day = (int)$dateTime->format("d");
-        $this->hour = (int)$dateTime->format("H");
-        $this->minute = (int)$dateTime->format("i");
+        if ($dateTime instanceof \DateTime)
+        {
+            $this->year = (int)$dateTime->format("Y");
+            $this->month = (int)$dateTime->format("m");
+            $this->day = (int)$dateTime->format("d");
+            $this->hour = (int)$dateTime->format("H");
+            $this->minute = (int)$dateTime->format("i");
+        }
     }
 
     public function __toString()
     {
         return sprintf("%04d-%02d-%02d %02d:%02d:00", $this->year, $this->month, $this->day, $this->hour, $this->minute);
+    }
+
+    public function getDate()
+    {
+        return new \DateTime($this->__toString());
     }
 }

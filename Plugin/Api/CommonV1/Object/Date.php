@@ -23,7 +23,7 @@ class Date extends AbstractValueObject
 
     public function fill($dateTime)
     {
-        if ($dateTime)
+        if ($dateTime instanceof \DateTime)
         {
             $this->year = (int)$dateTime->format("Y");
             $this->month = (int)$dateTime->format("m");
@@ -35,4 +35,10 @@ class Date extends AbstractValueObject
     {
         return sprintf("%04d-%02d-%02d", $this->year, $this->month, $this->day);
     }
+
+    public function getDate()
+    {
+        return new \DateTime($this->__toString() . "00:00:00");
+    }
+
 }
