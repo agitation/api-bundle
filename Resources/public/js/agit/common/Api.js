@@ -58,7 +58,7 @@ agit.ns("agit.common");
             var self = this;
 
             self.ind.finish(function() {
-                if (data && data.payload !== undefined && data.entityList !== undefined )
+                if (data && data.payload !== undefined && data.entityList !== undefined)
                     data = normalizePayload(self.responseObjectName, data.payload, data.entityList);
 
                 self.callback(data, jqXHR.status, jqXHR);

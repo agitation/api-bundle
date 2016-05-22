@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Common\AbstractPersistableObject;
@@ -197,7 +198,7 @@ class PersistenceService
 
     private function validate($entity)
     {
-        $errors = $this->entityValidator->validate($entity, null, true, true);
+        $errors = $this->entityValidator->validate($entity, new Valid(["traverse" => true, "deep" => true]));
 
         if (count($errors) > 0)
             throw new PersistenceException((string)$errors);
