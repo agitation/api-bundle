@@ -1,4 +1,4 @@
-agit.api.Object.register({
+ag.api.Object.register({
     "common.v1/Time": {
         "hour": {
             "type": "number",

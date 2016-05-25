@@ -1,4 +1,4 @@
-agit.ns("agit.api");
+ag.ns("ag.api");
 
 (function(){
     var
@@ -11,5 +11,5 @@ agit.ns("agit.api");
     err.prototype = Object.create(Error.prototype);
     err.prototype.constructor = err;
 
-    agit.api.ApiError = err;
+    ag.api.ApiError = err;
 })();

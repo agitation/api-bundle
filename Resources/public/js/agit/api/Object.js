@@ -1,6 +1,6 @@
-agit.ns("agit.api");
+ag.ns("ag.api");
 
-agit.api.Object = (function() {
+ag.api.Object = (function() {
     var
         factoryProto =
         {
@@ -30,12 +30,12 @@ agit.api.Object = (function() {
         defaultValues = defaultValues || {};
 
         var
-            objectMeta = agit.api.Object.list[objectName],
+            objectMeta = ag.api.Object.list[objectName],
             values = {},
             object = Object.create(factoryProto);
 
         if (objectMeta === undefined)
-            throw new agit.api.ApiError("Object `" + objectName + "` does not exist.");
+            throw new ag.api.ApiError("Object `" + objectName + "` does not exist.");
 
         Object.keys(objectMeta).forEach(function(prop){
             values[prop] = (defaultValues[prop] !== undefined)
@@ -58,16 +58,16 @@ agit.api.Object = (function() {
     };
 })();
 
-agit.api.Object.list = {};
+ag.api.Object.list = {};
 
-agit.api.Object.register = function(objects)
+ag.api.Object.register = function(objects)
 {
     Object.keys(objects).map(function(key){
-        agit.api.Object.list[key] = objects[key];
+        ag.api.Object.list[key] = objects[key];
     });
 };
 
-agit.api.Object.exists = function(objectName)
+ag.api.Object.exists = function(objectName)
 {
-    return !!agit.api.Object.list[objectName];
+    return !!ag.api.Object.list[objectName];
 };

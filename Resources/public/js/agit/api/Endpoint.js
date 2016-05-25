@@ -1,12 +1,12 @@
-agit.ns("agit.api");
+ag.ns("ag.api");
 
-agit.api.Endpoint = function(endpointName)
+ag.api.Endpoint = function(endpointName)
 {
     var
-        endpointMeta = agit.api.Endpoint.list[endpointName];
+        endpointMeta = ag.api.Endpoint.list[endpointName];
 
     if (!endpointMeta)
-        throw new agit.api.ApiError("No meta was loaded for " + endpointName);
+        throw new ag.api.ApiError("No meta was loaded for " + endpointName);
 
     this.getName = function()
     {
@@ -29,11 +29,11 @@ agit.api.Endpoint = function(endpointName)
     };
 };
 
-agit.api.Endpoint.list = {};
+ag.api.Endpoint.list = {};
 
-agit.api.Endpoint.register = function(endpoints)
+ag.api.Endpoint.register = function(endpoints)
 {
     Object.keys(endpoints).map(function(key){
-        agit.api.Endpoint.list[key] = endpoints[key];
+        ag.api.Endpoint.list[key] = endpoints[key];
     });
 };

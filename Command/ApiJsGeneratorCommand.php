@@ -154,13 +154,13 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         if ($endpoints)
         {
             $endpointsJson = json_encode($endpoints, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-            $file .= "agit.api.Endpoint.register($endpointsJson);\n";
+            $file .= "ag.api.Endpoint.register($endpointsJson);\n";
         }
 
         if ($objects)
         {
             $objectsJson = json_encode($objects, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-            $file .= "agit.api.Object.register($objectsJson);\n";
+            $file .= "ag.api.Object.register($objectsJson);\n";
         }
 
         file_put_contents("$path/api.js", $file);

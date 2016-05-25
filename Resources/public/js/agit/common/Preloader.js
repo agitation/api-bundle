@@ -1,6 +1,6 @@
-agit.ns("agit.common");
+ag.ns("ag.api");
 
-agit.common.Preloader = function()
+ag.api.Preloader = function()
 {
     var
         callbacks = { entities : {}, settings : {} },
@@ -46,7 +46,7 @@ agit.common.Preloader = function()
 
     this.run = function(callback)
     {
-        var apiService = agit.srv("api");
+        var apiService = ag.srv("api");
 
         finishCallback = callback;
 
@@ -72,7 +72,7 @@ agit.common.Preloader = function()
 
             apiService.doCall(
                 name + ".search",
-                new agit.api.Object(name + "Search", { statusList : [1] }),
+                new ag.api.Object(name + "Search", { statusList : [1] }),
                 function(entityList){
                     data.entities[name] = entityList;
 

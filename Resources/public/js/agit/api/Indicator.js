@@ -1,6 +1,6 @@
-agit.ns("agit.api");
+ag.ns("ag.api");
 
-agit.api.Indicator = function()
+ag.api.Indicator = function()
 {
     this.start = function() {};
 

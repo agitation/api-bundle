@@ -1,4 +1,4 @@
-agit.ns("agit.common");
+ag.ns("ag.api");
 
 (function(){
     var
@@ -23,7 +23,7 @@ agit.ns("agit.common");
                     {
                         if (objName)
                         {
-                            newValue = new agit.api.Object(objName);
+                            newValue = new ag.api.Object(objName);
 
                             $.each(value, function(prop, val){
                                 var meta = newValue.getPropMeta(prop);
@@ -76,16 +76,16 @@ agit.ns("agit.common");
             });
         };
 
-    agit.common.Api = function(ind, msgH)
+    ag.api.Api = function(ind, msgH)
     {
-        this.ind = ind || new agit.api.Indicator();
-        this.msgH = msgH || new agit.common.MessageHandler();
+        this.ind = ind || new ag.api.Indicator();
+        this.msgH = msgH || new ag.common.MessageHandler();
     };
 
-    agit.common.Api.prototype.doCall = function(endpoint, request, callback)
+    ag.api.Api.prototype.doCall = function(endpoint, request, callback)
     {
         if (typeof(endpoint) === "string")
-            endpoint = new agit.api.Endpoint(endpoint);
+            endpoint = new ag.api.Endpoint(endpoint);
 
         var
             callbackParams = {
