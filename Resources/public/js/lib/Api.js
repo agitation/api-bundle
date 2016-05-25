@@ -97,7 +97,7 @@ ag.ns("ag.api");
 
             ajaxOpts = {
                 type         : "POST",
-                url          : agit.cfg.apiBaseUrl + "/" + endpoint.getName(),
+                url          : ag.cfg.apiBaseUrl + "/" + endpoint.getName(),
                 data         : "request=" + JSON.stringify(request).replace(/\+/g, "%2b").replace(/&/g, "%26"),
                 success      : successCallback.bind(callbackParams),
                 error        : errorCallback.bind(callbackParams),
@@ -105,8 +105,8 @@ ag.ns("ag.api");
                 dataType     : "json"
             };
 
-        if (agit.cfg.csrfToken)
-            ajaxOpts.headers["x-token"] = agit.cfg.csrfToken;
+        if (ag.cfg.csrfToken)
+            ajaxOpts.headers["x-token"] = ag.cfg.csrfToken;
 
         ajaxOpts.headers["x-api-serialize-compact"] = "true";
 
