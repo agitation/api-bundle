@@ -83,8 +83,7 @@ abstract class AbstractEntityController extends AbstractController
             if (!$em->isOpen())
                 $em = $em->create($em->getConnection(), $em->getConfiguration(), $em->getEventManager());
 
-            if (!$deleted)
-                throw new InternalErrorException(sprintf("Failed deleting an object of type %s, possibly because of dependencies. You must implement your own delete().", $this->getEntityClass()));
+            throw new InternalErrorException(sprintf("Failed deleting an object of type %s: %s.", $this->getEntityClass(), $e->getMessage()));
         }
 
         return true;
