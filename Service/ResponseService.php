@@ -121,7 +121,7 @@ class ResponseService extends AbstractObjectService
 
                 if ($mapping["type"] & ClassMetadataInfo::TO_ONE)
                 {
-                    $object->set($propName, $this->createResponseObject($typeMeta->getTargetClass(), $value));
+                    $object->set($propName, $value === null ? null : $this->createResponseObject($typeMeta->getTargetClass(), $value));
                 }
                 elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY)
                 {
