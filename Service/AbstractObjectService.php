@@ -67,7 +67,7 @@ abstract class AbstractObjectService
                     $result[] = $childObj;
                 }
             }
-            elseif (in_array($expectedType, ["array", "map", "entity", "entitylist"]))
+            elseif (in_array($expectedType, ["array", "entity", "entitylist"]))
             {
                 $result = $value;
             }
@@ -78,11 +78,18 @@ abstract class AbstractObjectService
         }
         elseif (is_object($value))
         {
-            if (!$typeMeta->isObjectType())
+            if ($expectedType === "map")
+            {
+                $result = (array)$value;
+            }
+            else
+            {
+                if (!$typeMeta->isObjectType())
                 throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the `%s` property."), $key));
 
-            $result = $this->objectMetaService->createObject($typeMeta->getTargetClass());
-            $this->fill($result, $value);
+                $result = $this->objectMetaService->createObject($typeMeta->getTargetClass());
+                $this->fill($result, $value);
+            }
         }
 
         return $result;
