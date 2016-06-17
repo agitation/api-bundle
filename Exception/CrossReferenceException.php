@@ -9,11 +9,13 @@
 
 namespace Agit\ApiBundle\Exception;
 
+use Agit\CommonBundle\Exception\AgitException;
+
 /**
  * An object has been requested which is incompatible with other objects in the
  * current context.
  */
-class CrossReferenceException extends ApiException
+class CrossReferenceException extends AgitException
 {
     protected $httpStatus = 409;
 }

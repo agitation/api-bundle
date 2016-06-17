@@ -9,11 +9,13 @@
 
 namespace Agit\ApiBundle\Exception;
 
+use Agit\CommonBundle\Exception\AgitException;
+
 /**
  * The server was acting as a gateway or proxy and received an invalid response
  * from the upstream server.
  */
-class BadGatewayException extends ApiException
+class BadGatewayException extends AgitException
 {
     protected $httpStatus = 502;
 }

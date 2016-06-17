@@ -9,10 +9,12 @@
 
 namespace Agit\ApiBundle\Exception;
 
+use Agit\CommonBundle\Exception\AgitException;
+
 /**
  * A range (like a period of time) is out of bounds.
  */
-class InvalidRangeException extends ApiException
+class InvalidRangeException extends AgitException
 {
     protected $httpStatus = 400;
 }

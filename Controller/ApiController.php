@@ -9,11 +9,12 @@
 
 namespace Agit\ApiBundle\Controller;
 
+use Agit\CommonBundle\Exception\AgitException;
 use Agit\IntlBundle\Translate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\CssSelector\Exception\InternalErrorException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Agit\ApiBundle\Exception\ApiException;
 use Agit\ApiBundle\Exception\BadRequestException;
 
 
@@ -55,17 +56,17 @@ class ApiController extends Controller
         catch (\Exception $e)
         {
             $isDebug = $this->container->getParameter("kernel.debug");
-            $isApiException = $e instanceof ApiException;
+            $publicException = $e instanceof AgitException && !($e instanceof InternalErrorException);
 
-            $content = $isDebug || $isApiException
+            $content = $isDebug || $publicException
                 ? $e->getMessage()
-                : Translate("Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible.");
+                : Translate::t("Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible.");
 
-            if ($isDebug && !$isApiException)
+            if ($isDebug && !$publicException)
                 $content .= "\n\n" . $e->getTraceAsString();
 
             $response->setContent($content);
-            $response->setStatusCode($isApiException ? $e->getHttpStatus() : 500);
+            $response->setStatusCode($publicException ? $e->getHttpStatus() : 500);
             $response->headers->set("Content-Type", "text/plain; charset=UTF-8", true);
         }
 

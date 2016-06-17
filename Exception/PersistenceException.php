@@ -9,11 +9,12 @@
 
 namespace Agit\ApiBundle\Exception;
 
+use Agit\CommonBundle\Exception\AgitException;
+
 /**
  * The object persistence requested by an API call has failed.
  */
-class PersistenceException extends ApiException
+class PersistenceException extends AgitException
 {
     protected $httpStatus = 500;
 }
-

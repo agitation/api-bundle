@@ -9,12 +9,14 @@
 
 namespace Agit\ApiBundle\Exception;
 
+use Agit\CommonBundle\Exception\AgitException;
+
 /**
  * A field, although technically valid, does not have a neccessary value to
  * continue processing. This happens usually on boolean fields that should
  * indicate that a user has accepted certain legal terms.
  */
-class MandatoryFieldException extends ApiException
+class MandatoryFieldException extends AgitException
 {
     protected $httpStatus = 400;
 }

@@ -9,12 +9,14 @@
 
 namespace Agit\ApiBundle\Exception;
 
+use Agit\CommonBundle\Exception\AgitException;
+
 /**
  * The requested ressource requires authentication, but the client did not
  * authenticate and is therefore considered unauthorized. After authentication,
  * the client may try again.
  */
-class UnauthorizedException extends ApiException
+class UnauthorizedException extends AgitException
 {
     protected $httpStatus = 401;
 }
