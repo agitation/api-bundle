@@ -90,7 +90,6 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
     private function generateObjectsFiles($bundleNamespace)
     {
-        $objectMetaService = $this->getContainer()->get("agit.api.objectmeta");
         $objectService = $this->getContainer()->get("agit.api.objectmeta");
         $objectNames = $objectService->getObjectNames();
         $list = [];
@@ -99,9 +98,15 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
         foreach ($objectNames as $objectName)
         {
+            $objectMeta = $objectService->getObjectMetas($objectName)->get("Object");
+
+            if ($objectMeta->get("abstract"))
+                continue;
+
             $object = $objectService->createObject($objectName);
 
-            if (strpos(get_class($object), $bundleNamespace) !== 0) continue;
+            if (strpos(get_class($object), $bundleNamespace) !== 0)
+                continue;
 
             $objData = $object->getValues();
             $objProps = [];
