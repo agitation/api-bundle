@@ -12,6 +12,7 @@ namespace Agit\ApiBundle\Service;
 use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Common\ResponseObjectInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Helper\StringHelper;
 use Agit\IntlBundle\Translate;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -121,15 +122,26 @@ class ResponseService extends AbstractObjectService
 
                 if ($mapping["type"] & ClassMetadataInfo::TO_ONE)
                 {
-                    $object->set($propName, $value === null ? null : $this->createResponseObject($typeMeta->getTargetClass(), $value));
+                    if ($value)
+                    {
+                        $targetClass = $this->getRealTargetClass($value, $typeMeta);
+                        $object->set($propName, $this->createResponseObject($targetClass, $value));
+                    }
                 }
                 elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY)
                 {
                     if (!$typeMeta->isListType())
                         throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be a list type.", $propName, $object->getObjectName()));
 
-                    foreach ($value->getValues() as $val)
-                        $object->add($propName, $this->createResponseObject($typeMeta->getTargetClass(), $val));
+                    $values = $value->getValues();
+
+                    if (count($values))
+                    {
+                        $targetClass = $this->getRealTargetClass(reset($values), $typeMeta);
+
+                        foreach ($value->getValues() as $val)
+                        $object->add($propName, $this->createResponseObject($targetClass, $val));
+                    }
                 }
             }
         }
@@ -164,6 +176,26 @@ class ResponseService extends AbstractObjectService
             "Type" => $metas->get("Type"),
             "View" => $metas->has("View") ? $metas->get("View") : null
         ];
+    }
+
+    private function getRealTargetClass($entity, $typeMeta)
+    {
+        $metadata = $this->entityManager->getClassMetadata(get_class($entity));
+        $objectMeta = $this->objectMetaService->getObjectMetas($typeMeta->getTargetClass())->get("Object");
+        $targetClass = $typeMeta->getTargetClass();
+
+        if ($objectMeta->get("abstract") && $metadata->name !== $metadata->rootEntityName)
+        {
+            // we try to resolve the real target object by the entity name.
+            // we expect the target object to be in the same API namespace and have the same name as the entity.
+            // this is a bit of guesswork but should work in most cases.
+
+            $entityName = StringHelper::getBareClassName($metadata->name);
+            $namespace = strstr($typeMeta->getTargetClass(), "/", true);
+            $targetClass = "$namespace/$entityName";
+        }
+
+        return $targetClass;
     }
 
     private function doInclude($viewMeta, $propName)

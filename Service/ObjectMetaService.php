@@ -31,8 +31,12 @@ class ObjectMetaService
 
     public function createObject($objectName)
     {
-        $objectClass = $this->getObjectClass($objectName);
         $objectMetas = $this->getObjectMetas($objectName);
+
+        if ($objectMetas->get("Object")->get("abstract"))
+            throw new InternalErrorException(sprintf("Object %s is marked as abstract and can therefore not be instantiated.", $objectName));
+
+        $objectClass = $this->getObjectClass($objectName);
         $objectPropertyMetas = $this->getObjectPropertyMetas($objectName);
 
         return new $objectClass($objectMetas, $objectPropertyMetas, $this);

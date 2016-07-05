@@ -27,6 +27,11 @@ class Object extends AbstractObjectMeta implements PluginInterface
     public $depends = [];
 
     /**
+     * @var this is an abstract object; must not be instantiated, but can be used for validation/casting
+     */
+    protected $abstract = false;
+
+    /**
      * @var this is a scalar "object", i.e. a dummy object that carries a scalar value.
      */
     protected $isScalar = false;
