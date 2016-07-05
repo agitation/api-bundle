@@ -15,7 +15,7 @@ use Agit\ApiBundle\Annotation\Property;
 use Agit\ApiBundle\Common\AbstractValueObject;
 
 /**
- * @Object\Object(isScalar=true)
+ * @Object\Object(scalar=true)
  *
  * A simple string value.
  */

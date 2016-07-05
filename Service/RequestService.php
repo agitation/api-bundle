@@ -33,7 +33,7 @@ class RequestService extends AbstractObjectService
         else
         {
             $meta = $this->objectMetaService->getObjectMetas($expectedObject);
-            $expectsScalar = $meta->get("Object")->get("isScalar");
+            $expectsScalar = $meta->get("Object")->get("scalar");
 
             if ($expectsScalar)
             {
