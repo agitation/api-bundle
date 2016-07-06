@@ -4,6 +4,9 @@ ag.ns("ag.api");
     var
         entityReferencePattern = /#e#:[0-9]+/,
 
+        // some API objects have meta fields describing the object itself
+        knownMetaFields = {"realClass" : "_class"},
+
         normalizePayload = function(responseObjectName, payload, entityList)
         {
             var
@@ -21,6 +24,9 @@ ag.ns("ag.api");
                     }
                     else if (value instanceof Object)
                     {
+                        if (value[knownMetaFields.realClass])
+                            objName = value[knownMetaFields.realClass];
+
                         if (objName)
                         {
                             newValue = new ag.api.Object(objName);
