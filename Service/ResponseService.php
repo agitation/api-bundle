@@ -140,7 +140,7 @@ class ResponseService extends AbstractObjectService
                         $targetClass = $this->getRealTargetClass(reset($values), $typeMeta);
 
                         foreach ($value->getValues() as $val)
-                        $object->add($propName, $this->createResponseObject($targetClass, $val));
+                            $object->add($propName, $this->createResponseObject($targetClass, $val));
                     }
                 }
             }
@@ -184,15 +184,22 @@ class ResponseService extends AbstractObjectService
         $objectMeta = $this->objectMetaService->getObjectMetas($typeMeta->getTargetClass())->get("Object");
         $targetClass = $typeMeta->getTargetClass();
 
-        if ($objectMeta->get("abstract") && $metadata->name !== $metadata->rootEntityName)
+        if ($objectMeta->get("super") && $metadata->name !== $metadata->rootEntityName)
         {
             // we try to resolve the real target object by the entity name.
             // we expect the target object to be in the same API namespace and have the same name as the entity.
-            // this is a bit of guesswork but should work in most cases.
 
             $entityName = StringHelper::getBareClassName($metadata->name);
             $namespace = strstr($typeMeta->getTargetClass(), "/", true);
             $targetClass = "$namespace/$entityName";
+
+            if (!$this->objectMetaService->objectExists($targetClass))
+                throw new InternalErrorException("Failed to resolve the target class for a $entityName entity.");
+
+            $targetObjectMeta = $this->objectMetaService->getObjectMetas($targetClass)->get("Object");
+
+            if ($objectMeta->get("objectName") !== $targetObjectMeta->get("parentObjectName"))
+                throw new InternalErrorException("Failed to resolve the target class for a $entityName entity.");
         }
 
         return $targetClass;

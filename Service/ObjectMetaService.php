@@ -29,12 +29,12 @@ class ObjectMetaService
         AbstractType::setValidationService($validationService);
     }
 
-    public function createObject($objectName)
+    public function createObject($objectName, $force = false)
     {
         $objectMetas = $this->getObjectMetas($objectName);
 
-        if ($objectMetas->get("Object")->get("abstract"))
-            throw new InternalErrorException(sprintf("Object %s is marked as abstract and can therefore not be instantiated.", $objectName));
+        if ($objectMetas->get("Object")->get("super") && !$force)
+            throw new InternalErrorException(sprintf("Object %s is marked as super class and can therefore not be instantiated.", $objectName));
 
         $objectClass = $this->getObjectClass($objectName);
         $objectPropertyMetas = $this->getObjectPropertyMetas($objectName);
@@ -45,6 +45,11 @@ class ObjectMetaService
     public function getObjectNames()
     {
         return array_keys($this->objects);
+    }
+
+    public function objectExists($objectName)
+    {
+        return isset($this->objects[$objectName]);
     }
 
     public function getObjectClass($objectName)

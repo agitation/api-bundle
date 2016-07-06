@@ -22,9 +22,14 @@ abstract class AbstractType extends AbstractPropertyMeta
     protected $nullable = false;
 
     /**
-     * @var can be set to the name of an entity getter to indicate a data source
+     * @var can be set to the name of a getter method to use, if the input is an object
      */
     protected $source = null;
+
+    /**
+     * @var if this field is not null, it marks the property as a meta field. the only possible value is currently `class`
+     */
+    protected $meta;
 
     /**
      * @var the annotated field must not be set in a request object

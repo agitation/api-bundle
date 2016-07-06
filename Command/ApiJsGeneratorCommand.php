@@ -98,12 +98,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
         foreach ($objectNames as $objectName)
         {
-            $objectMeta = $objectService->getObjectMetas($objectName)->get("Object");
-
-            if ($objectMeta->get("abstract"))
-                continue;
-
-            $object = $objectService->createObject($objectName);
+            $object = $objectService->createObject($objectName, true);
 
             if (strpos(get_class($object), $bundleNamespace) !== 0)
                 continue;
@@ -135,7 +130,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         $meta = ["type" => $typeMeta->getType()];
 
         $keywords = ["minLength", "nullable", "readonly", "maxLength", "minValue",
-            "maxValue", "positive", "allowFloat", "allowLineBreaks", "class"];
+            "maxValue", "positive", "allowFloat", "allowLineBreaks", "class", "meta"];
 
         foreach ($typeMeta->getOptions() as $key => $value)
         {

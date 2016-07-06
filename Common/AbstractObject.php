@@ -75,7 +75,22 @@ abstract class AbstractObject implements \JsonSerializable
         $values = [];
 
         foreach ($this->propMetaList as $key => $meta)
-            $values[$key] = $this->$key;
+        {
+            $metaField = $meta->get("Type")->get("meta");
+
+            if ($metaField)
+            {
+                if ($metaField === "class")
+                    $values[$key] = $this->objectName;
+                else
+                    throw new InternalErrorException("This ");
+            }
+            else
+            {
+                $values[$key] = $this->$key;
+            }
+
+        }
 
         return $values;
     }
