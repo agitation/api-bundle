@@ -10,9 +10,9 @@
 namespace Agit\ApiBundle\Controller;
 
 use Agit\CommonBundle\Exception\AgitException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\CssSelector\Exception\InternalErrorException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Agit\ApiBundle\Exception\BadRequestException;
