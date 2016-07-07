@@ -84,19 +84,23 @@ ag.ns("ag.api");
 
     ag.api.Api = function(ind, msgH)
     {
-        this.ind = ind || new ag.api.Indicator();
-        this.msgH = msgH || new ag.common.MessageHandler();
+         // these will be used as defaults; they can be overridden per call
+        this.defaultInd = ind || new ag.api.Indicator();
+        this.defaultMsgH = msgH || new ag.common.MessageHandler();
     };
 
-    ag.api.Api.prototype.doCall = function(endpoint, request, callback)
+    ag.api.Api.prototype.doCall = function(endpoint, request, callback, indicator, messageHandler)
     {
         if (typeof(endpoint) === "string")
             endpoint = new ag.api.Endpoint(endpoint);
 
+        indicator = indicator || this.defaultInd;
+        messageHandler = messageHandler || this.defaultMsgH;
+
         var
             callbackParams = {
-                ind: this.ind,
-                msgH : this.msgH,
+                ind: indicator,
+                msgH : messageHandler,
                 callback : callback,
                 responseObjectName : endpoint.getResponse()
             },
@@ -116,7 +120,7 @@ ag.ns("ag.api");
 
         ajaxOpts.headers["x-api-serialize-compact"] = "true";
 
-        this.ind.start();
+        indicator.start();
 
         $.ajax(ajaxOpts);
     };
