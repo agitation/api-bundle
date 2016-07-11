@@ -23,6 +23,7 @@ class ApiController extends Controller
     public function callAction(Request $request, $namespace, $class, $method, $_ext)
     {
         $response = new Response();
+        $isDev = ($this->container->getParameter("kernel.environment") === "dev");
 
         try
         {
@@ -37,7 +38,7 @@ class ApiController extends Controller
 
             $endpoint = $endpointService->createEndpoint("$namespace/$class.$method", $request);
 
-            if (!$endpoint->getMeta("Security")->get("allowCrossOrigin"))
+            if (!$isDev && !$endpoint->getMeta("Security")->get("allowCrossOrigin"))
                 $this->container->get("agit.api.csrf")->checkToken($this->getCsrfToken());
 
             $endpoint->setupEnvironment();
@@ -55,14 +56,13 @@ class ApiController extends Controller
         }
         catch (\Exception $e)
         {
-            $isDebug = $this->container->getParameter("kernel.debug");
             $publicException = $e instanceof AgitException && !($e instanceof InternalErrorException);
 
-            $content = $isDebug || $publicException
+            $content = $isDev || $publicException
                 ? $e->getMessage()
                 : Translate::t("Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible.");
 
-            if ($isDebug && !$publicException)
+            if ($isDev && !$publicException)
                 $content .= "\n\n" . $e->getTraceAsString();
 
             $response->setContent($content);
