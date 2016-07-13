@@ -19,7 +19,7 @@ use Agit\ApiBundle\Common\AbstractRequestObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 
 /**
- * @Depends({"doctrine.orm.entity_manager", "agit.api.persistence"});
+ * @Depends({"@doctrine.orm.entity_manager", "@agit.api.persistence"});
  *
  * Endpoint class providing CRUD operations for entities.
  *

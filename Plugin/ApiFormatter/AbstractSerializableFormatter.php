@@ -15,7 +15,7 @@ use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
 use Agit\PluggableBundle\Strategy\Depends;
 
 /**
- * @Depends({"agit.api.objectmeta"})
+ * @Depends({"@agit.api.objectmeta"})
  */
 abstract class AbstractSerializableFormatter extends AbstractFormatter implements ServiceAwarePluginInterface
 {
