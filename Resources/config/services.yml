@@ -7,7 +7,7 @@ services:
 
     agit.api.objectmeta:
         class: Agit\ApiBundle\Service\ObjectMetaService
-        arguments: [ @agit.pluggable.cache.loader_factory, @agit.validation ]
+        arguments: [ @agit.pluggable.cache.loader_factory, @agit.validation, @service_container ]
         tags: [{ name: agit.pluggable, type: api.object }]
 
     agit.api.request:

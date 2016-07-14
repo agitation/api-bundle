@@ -10,23 +10,29 @@
 namespace Agit\ApiBundle\Service;
 
 use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
+use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
 use Agit\ValidationBundle\Service\ValidationService;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ObjectMetaService
 {
+    use ServiceInjectorTrait;
     use MetaAwareTrait;
 
     private $cacheLoaderFactory;
 
     private $validationService;
 
-    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ValidationService $validationService)
+    protected $container;
+
+    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ValidationService $validationService, ContainerInterface $container = null)
     {
         $this->objects = $cacheLoaderFactory->create("agit.api.object")->load();
         AbstractType::setValidationService($validationService);
+        $this->container = $container;
     }
 
     public function createObject($objectName, $force = false)
@@ -39,7 +45,11 @@ class ObjectMetaService
         $objectClass = $this->getObjectClass($objectName);
         $objectPropertyMetas = $this->getObjectPropertyMetas($objectName);
 
-        return new $objectClass($objectMetas, $objectPropertyMetas, $this);
+        $object = new $objectClass($objectMetas, $objectPropertyMetas, $this);
+
+        $this->injectServices($object, $objectMetas->get("Object")->get("depends"));
+
+        return $object;
     }
 
     public function getObjectNames()
