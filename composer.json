@@ -8,6 +8,7 @@
         "agitation/common-bundle": "dev-master",
         "agitation/intl-bundle": "dev-master",
         "agitation/pluggable-bundle": "dev-master",
+        "agitation/validation-bundle": "dev-master",
         "agitation/logging-bundle": "dev-master"
     },
     "suggest": {
