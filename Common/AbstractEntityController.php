@@ -9,6 +9,8 @@
 
 namespace Agit\ApiBundle\Common;
 
+use Exception;
+use Agit\CommonBundle\Entity\DeletableInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\PluggableBundle\Strategy\Depends;
@@ -23,8 +25,9 @@ use Agit\ApiBundle\Exception\ObjectNotFoundException;
  *
  * Endpoint class providing CRUD operations for entities.
  *
- * NOTE: The `get`, `create`, `update`, `delete` and `search` methods can be used
- * as endpoints – even though they don’t have annotations on them.
+ * NOTE: The `get`, `create`, `update`, `delete`, `undelete` and `search`
+ * methods can be used as endpoints – even though they don’t have annotations
+ * on them.
  *
  * The actual endpoint class can tell through the EntityController annotation
  * which of these methods it wants to provide.
@@ -72,19 +75,35 @@ abstract class AbstractEntityController extends AbstractController
         $em = $this->getService("doctrine.orm.entity_manager");
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
-        try
+        if ($entity instanceof DeletableInterface)
+        {
+            $entity->setDeleted(true);
+            $em->persist($entity);
+        }
+        else
         {
             $em->remove($entity);
-            $em->flush();
         }
-        catch(\Exception $e)
-        {
-            // reload the entity manager after a "failed" full delete
-            if (!$em->isOpen())
-                $em = $em->create($em->getConnection(), $em->getConfiguration(), $em->getEventManager());
 
-            throw new InternalErrorException(sprintf("Failed deleting an object of type %s: %s.", $this->getEntityClass(), $e->getMessage()));
-        }
+        $em->flush();
+    }
+
+    protected function undelete($id)
+    {
+        $this->checkPermissions($id, "update");
+
+        $em = $this->getService("doctrine.orm.entity_manager");
+        $entity = $this->retrieveEntity($this->getEntityClass(), $id);
+
+        if (!($entity instanceof DeletableInterface))
+            throw new InternalErrorException("Only entities which implement the DeletableInterface can be undeleted here.");
+
+        if (!$entity->isDeleted())
+            throw new InternalErrorException("This entity is not deleted and hence cannot be undeleted.");
+
+        $entity->setDeleted(false);
+        $em->persist($entity);
+        $em->flush();
 
         return true;
     }
