@@ -109,7 +109,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
 
         foreach ($plugin->get("endpoints") as $method)
         {
-            if (!in_array($method, ["get", "create", "update", "delete", "search"]))
+            if (!in_array($method, ["search", "get", "create", "update", "delete", "undelete"]))
                 continue;
 
             $endpointMeta = [];
@@ -134,19 +134,13 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
                 $endpointMeta["Endpoint"]->set("request",  "{$controller}Search");
                 $endpointMeta["Endpoint"]->set("response", "{$controller}[]");
             }
-            elseif ($method === "create")
+            elseif ($method === "create" || $method === "update")
             {
                 $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $controller);
                 $endpointMeta["Endpoint"]->set("response", $controller);
             }
-            elseif ($method === "update")
-            {
-                $endpointMeta["Security"]->set("capability", $writeCap);
-                $endpointMeta["Endpoint"]->set("request", $controller);
-                $endpointMeta["Endpoint"]->set("response", $controller);
-            }
-            elseif ($method === "delete")
+            elseif ($method === "delete" || $method === "undelete")
             {
                 $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $idObject);
