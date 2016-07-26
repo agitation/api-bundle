@@ -7,34 +7,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "nplurals=2; plural=(n != 1);\n"
 
-#: @AgitApiBundle/Api/Endpoint/AbstractEndpoint.php:189
-msgid "You must be logged in to perform this operation."
-msgstr "Sie müssen eingeloggt sein, um diese Aktion auszuführen."
-
-#: @AgitApiBundle/Api/Endpoint/AbstractEndpoint.php:192
-msgid "You do not have sufficient permissions to perform this operation."
-msgstr "Ihre Zugriffsrechte reichen für diese Aktion nicht aus."
-
-#: @AgitApiBundle/Api/Meta/Property/StringType.php:50
+#: @AgitApiBundle/Annotation/Property/StringType.php:68
 #, php-format
 msgid "The “%s” character must not be contained."
 msgstr "Das Zeichen „%s“ darf nicht enthalten sein."
 
-#: @AgitApiBundle/Api/Object/AbstractObject.php:161
+#: @AgitApiBundle/Common/AbstractEntityController.php:184
 #, php-format
-msgid "Invalid value for “%s”: %s"
-msgstr "Ungültiger Wert für „%s“: %s"
+msgid "The requested object with ID `%s` was not found."
+msgstr ""
 
-#: @AgitApiBundle/Service/ObjectService.php:61
+#: @AgitApiBundle/Common/AbstractObject.php:136
+#, php-format
+msgid "The `%s` object does not have a `%s` property."
+msgstr ""
+
+#: @AgitApiBundle/Common/AbstractObject.php:162
+#, php-format
+msgid "Invalid value in object `%s` for property `%s`: %s"
+msgstr ""
+
+#: @AgitApiBundle/Controller/ApiController.php:63
+msgid "Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible."
+msgstr ""
+
+#: @AgitApiBundle/Plugin/Api/CommonV1/Object/Period.php:40
+msgid "The start date must be earlier than or equal to the end date."
+msgstr ""
+
+#: @AgitApiBundle/Service/AbstractObjectService.php:76
+#: @AgitApiBundle/Service/AbstractObjectService.php:88
+#, php-format
+msgid "Invalid value for the `%s` property."
+msgstr ""
+
+#: @AgitApiBundle/Service/EndpointService.php:109
+msgid "You must be logged in to perform this operation."
+msgstr "Sie müssen eingeloggt sein, um diese Aktion auszuführen."
+
+#: @AgitApiBundle/Service/EndpointService.php:112
+msgid "You do not have sufficient permissions to perform this operation."
+msgstr "Ihre Zugriffsrechte reichen für diese Aktion nicht aus."
+
+#: @AgitApiBundle/Service/RequestService.php:26
 msgid "The request is expected to be an array."
 msgstr "Die Anfrage muss ein Array sein."
 
-#: @AgitApiBundle/Service/ObjectService.php:76
+#: @AgitApiBundle/Service/RequestService.php:41
 msgid "The request is expected to be a scalar value."
 msgstr "Die Anfrage muss ein skalarer Wert sein."
-
-#: @AgitApiBundle/Service/ObjectService.php:208
-#: @AgitApiBundle/Service/ObjectService.php:214
-#, php-format
-msgid "Invalid value for the “%s” property."
-msgstr "Ungültiger Wert für die Eigenschaft „%s“."
