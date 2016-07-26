@@ -16,6 +16,9 @@ ag.api.Object = (function() {
 
             getPropMeta : function(propName)
             {
+                if (this._meta[propName] === undefined)
+                    throw new ag.api.ApiError("Object `" + this._name + "` does not have a `" + propName + "` property.");
+
                 return this._meta[propName];
             },
 
