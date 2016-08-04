@@ -10,6 +10,7 @@
 namespace Agit\ApiBundle\Common;
 
 use Exception;
+use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\CommonBundle\Entity\DeletableInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
@@ -77,6 +78,10 @@ abstract class AbstractEntityController extends AbstractController
 
         if ($entity instanceof DeletableInterface)
         {
+            if ($entity->isDeleted())
+                throw new BadRequestException(Translate::t("This entity is already deleted."));
+
+
             $entity->setDeleted(true);
             $em->persist($entity);
         }
@@ -99,13 +104,11 @@ abstract class AbstractEntityController extends AbstractController
             throw new InternalErrorException("Only entities which implement the DeletableInterface can be undeleted here.");
 
         if (!$entity->isDeleted())
-            throw new InternalErrorException("This entity is not deleted and hence cannot be undeleted.");
+            throw new BadRequestException(Translate::t("This entity is not deleted and hence cannot be undeleted."));
 
         $entity->setDeleted(false);
         $em->persist($entity);
         $em->flush();
-
-        return true;
     }
 
     protected function search(RequestObjectInterface $requestObject)
