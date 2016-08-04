@@ -90,7 +90,7 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function undelete($id)
     {
-        $this->checkPermissions($id, "update");
+        $this->checkPermissions($id, "undelete");
 
         $em = $this->getService("doctrine.orm.entity_manager");
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
