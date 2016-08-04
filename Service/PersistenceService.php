@@ -196,7 +196,7 @@ class PersistenceService
         $this->entityManager->persist($entity);
     }
 
-    private function validate($entity)
+    public function validate($entity)
     {
         $errors = $this->entityValidator->validate($entity, new Valid(["traverse" => true]));
 
