@@ -9,6 +9,8 @@
 
 namespace Agit\ApiBundle\Service;
 
+use stdClass;
+use Exception;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
@@ -32,27 +34,33 @@ class PersistenceService
         $this->entityValidator = $entityValidator;
     }
 
-    public function saveEntity($entity, \stdClass $data)
+    public function saveEntity($entity, stdClass $data = null, Callable $callback = null)
     {
         try
         {
             $this->entityManager->beginTransaction();
 
-            $this->fillEntity($entity, $data);
+            if (is_object($data))
+                $this->fillEntity($entity, $data);
+
+            if (is_callable($callback))
+                $callback($entity, $data);
+
+            $this->validate($entity);
 
             $this->entityManager->flush();
             $this->entityManager->commit();
 
             $this->entityManager->refresh($entity);
         }
-        catch (\Exception $e)
+        catch (Exception $e)
         {
             $this->entityManager->rollback();
             throw $e;
         }
     }
 
-    public function fillEntity($entity, \stdClass $data)
+    public function fillEntity($entity, stdClass $data)
     {
         if ($entity instanceof Proxy)
             $entity->__load();
@@ -190,8 +198,6 @@ class PersistenceService
                 }
             }
         }
-
-        $this->validate($entity);
 
         $this->entityManager->persist($entity);
     }

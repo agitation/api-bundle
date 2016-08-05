@@ -194,30 +194,12 @@ abstract class AbstractEntityController extends AbstractController
         return $entity;
     }
 
-    protected function saveEntity($entity, $request, Callable $callback = null)
+    protected function saveEntity($entity, $request)
     {
-        $em = $this->getService("doctrine.orm.entity_manager");
-
-        try
-        {
-            $em->beginTransaction();
-
-            $this->getService("agit.api.persistence")->fillEntity(
-                $entity,
-                $this->getPersistableData($request)
-            );
-
-            if (is_callable($callback))
-                $callback($entity, $request);
-
-            $em->flush();
-            $em->commit();
-        }
-        catch (Exception $e)
-        {
-            $em->rollback();
-            throw $e;
-        }
+        $this->getService("agit.api.persistence")->saveEntity(
+            $entity,
+            $this->getPersistableData($request)
+        );
 
         return $entity;
     }
