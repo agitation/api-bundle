@@ -42,13 +42,14 @@ abstract class AbstractEntityController extends AbstractController
 {
     protected function get($id)
     {
+        $this->checkPermissions($requestObject, __FUNCTION__);
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
     protected function create(AbstractEntityObject $requestObject)
     {
-        $this->checkPermissions($requestObject, "create");
+        $this->checkPermissions($requestObject, __FUNCTION__);
         $this->validate($requestObject);
 
         $em = $this->getService("doctrine.orm.entity_manager");
@@ -60,7 +61,7 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function update(AbstractEntityObject $requestObject)
     {
-        $this->checkPermissions($requestObject, "update");
+        $this->checkPermissions($requestObject, __FUNCTION__);
         $this->validate($requestObject);
 
         $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
@@ -71,7 +72,7 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function delete($id)
     {
-        $this->checkPermissions($id, "delete");
+        $this->checkPermissions($id, __FUNCTION__);
 
         $em = $this->getService("doctrine.orm.entity_manager");
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
@@ -95,7 +96,7 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function undelete($id)
     {
-        $this->checkPermissions($id, "undelete");
+        $this->checkPermissions($id, __FUNCTION__);
 
         $em = $this->getService("doctrine.orm.entity_manager");
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
@@ -113,6 +114,8 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function search(RequestObjectInterface $requestObject)
     {
+        $this->checkPermissions($requestObject, __FUNCTION__);
+
         $this->responseService->setView("search");
 
         $query = $this->createSearchQuery($requestObject);
@@ -133,16 +136,18 @@ abstract class AbstractEntityController extends AbstractController
     }
 
     /**
-     * This is for write-access endpoints. If the endpoint declares a capability
-     * access will be granted by default, assuming that a user with the required
-     * capability is allowed to edit all entities managed by this endpoint.
+     * This method performs checks for endpoints which don’t require user capabilities.
+     *
+     * What does that mean? If the endpoint declares a user capability, access
+     * will be granted to each user with the required capability.
      *
      * However, if the endpoint does not declare capabilities, the endpoint controller
      * must override this method with a concrete check which ensures that the client
-     * is allowed to create/update/delete the entity in question.
+     * is allowed to access the endpoint in question.
      *
-     * ATTENTION: If you override one of the create/update/delete methods, you
-     * must by all means call checkPermissions() in the new method!
+     * ATTENTION: If you override one of the get/search/create/update/delete/undelete
+     * methods, you must either call checkPermissions() in the new method or
+     * validate the access in place!
      */
     protected function checkPermissions($request, $type)
     {
