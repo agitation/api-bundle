@@ -128,32 +128,17 @@ abstract class AbstractEntityController extends AbstractController
     }
 
     /**
-     * optional extra validation for create/update (e.g. consistency checks),
-     * may be overridden in the entity controller
+     * Additional security checks, e.g. for entity endpoints which are not based
+     * on the current user’s capabilities. To be overridden in the entity
+     * controller, if necessary.
      */
-    protected function validate(AbstractEntityObject $requestObject)
-    {
-    }
+    protected function checkPermissions($request, $type) { }
 
     /**
-     * This method performs checks for endpoints which don’t require user capabilities.
-     *
-     * What does that mean? If the endpoint declares a user capability, access
-     * will be granted to each user with the required capability.
-     *
-     * However, if the endpoint does not declare capabilities, the endpoint controller
-     * must override this method with a concrete check which ensures that the client
-     * is allowed to access the endpoint in question.
-     *
-     * ATTENTION: If you override one of the get/search/create/update/delete/undelete
-     * methods, you must either call checkPermissions() in the new method or
-     * validate the access in place!
+     * Optional extra validation for create/update (e.g. consistency checks),
+     * may be overridden in the entity controller, if necessary.
      */
-    protected function checkPermissions($request, $type)
-    {
-        if (!$this->getMeta("Security")->get("capability"))
-            throw new InternalErrorException(sprintf("Endpoints allowing public access must override the %s method with actual checks.", __FUNCTION__));
-    }
+    protected function validate(AbstractEntityObject $requestObject) { }
 
     protected function getEntityClass()
     {
