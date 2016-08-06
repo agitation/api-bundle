@@ -42,7 +42,7 @@ abstract class AbstractEntityController extends AbstractController
 {
     protected function get($id)
     {
-        $this->checkPermissions($requestObject, __FUNCTION__);
+        $this->checkPermissions($id, __FUNCTION__);
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
