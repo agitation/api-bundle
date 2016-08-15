@@ -68,11 +68,13 @@ ag.api.Preloader = function()
 
         // entities
         Object.keys(callbacks.entities).forEach(function(name){
+            var endpoint = new ag.api.Endpoint(name + ".search");
+
             data.entities = {};
 
             apiService.doCall(
-                name + ".search",
-                new ag.api.Object(name + "Search", { statusList : [1] }),
+                endpoint,
+                new ag.api.Object(endpoint.getRequest()),
                 function(entityList){
                     data.entities[name] = entityList;
 
