@@ -13,20 +13,23 @@ use Exception;
 use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\CommonBundle\Entity\DeletableInterface;
 use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Helper\StringHelper;
 use Agit\IntlBundle\Translate;
+use Agit\MultilangBundle\Multilang;
 use Agit\PluggableBundle\Strategy\Depends;
 use Agit\ApiBundle\Common\RequestObjectInterface;
 use Agit\ApiBundle\Common\AbstractEntityObject;
 use Agit\ApiBundle\Common\AbstractValueObject;
 use Agit\ApiBundle\Common\AbstractRequestObject;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
+use Psr\Log\LogLevel;
 
 /**
  * @Depends({"@doctrine.orm.entity_manager", "@agit.api.persistence"});
  *
  * Endpoint class providing CRUD operations for entities.
  *
- * NOTE: The `get`, `create`, `update`, `delete`, `undelete` and `search`
+ * NOTE: The `get`, `create`, `update`, `delete`, `undelete`, `remove` and `search`
  * methods can be used as endpoints – even though they don’t have annotations
  * on them.
  *
@@ -51,10 +54,29 @@ abstract class AbstractEntityController extends AbstractController
     {
         $this->checkPermissions($requestObject, __FUNCTION__);
         $this->validate($requestObject);
-
         $em = $this->getService("doctrine.orm.entity_manager");
-        $className = $em->getClassMetadata($this->getEntityClass())->getName();
-        $entity = $this->saveEntity(new $className(), $requestObject);
+
+        try
+        {
+            $em->beginTransaction();
+
+            $className = $em->getClassMetadata($this->getEntityClass())->getName();
+            $entity = $this->saveEntity(new $className(), $requestObject);
+
+            $this->logger->log(
+                LogLevel::WARNING,
+                "agit.api.entity",
+                sprintf(Translate::tl("New object %s of type %s has been created."), $entity->getId(), $this->getEntityClassName($entity)),
+                true
+            );
+
+            $em->commit();
+        }
+        catch (Exception $e)
+        {
+            $em->rollBack();
+            throw $e;
+        }
 
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
@@ -63,9 +85,29 @@ abstract class AbstractEntityController extends AbstractController
     {
         $this->checkPermissions($requestObject, __FUNCTION__);
         $this->validate($requestObject);
+        $em = $this->getService("doctrine.orm.entity_manager");
 
-        $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
-        $entity = $this->saveEntity($entity, $requestObject);
+        try
+        {
+            $em->beginTransaction();
+
+            $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
+            $entity = $this->saveEntity($entity, $requestObject);
+
+            $this->logger->log(
+                LogLevel::WARNING,
+                "agit.api.entity",
+                sprintf(Translate::tl("Object “%s” of type “%s” has been updated."), $this->getEntityName($entity), $this->getEntityClassName($entity)),
+                true
+            );
+
+            $em->commit();
+        }
+        catch (Exception $e)
+        {
+            $em->rollBack();
+            throw $e;
+        }
 
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
@@ -73,43 +115,110 @@ abstract class AbstractEntityController extends AbstractController
     protected function delete($id)
     {
         $this->checkPermissions($id, __FUNCTION__);
-
         $em = $this->getService("doctrine.orm.entity_manager");
-        $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
-        if ($entity instanceof DeletableInterface)
+        try
         {
+            $em->beginTransaction();
+
+            $entity = $this->retrieveEntity($this->getEntityClass(), $id);
+
+            if (!($entity instanceof DeletableInterface))
+                throw new InternalErrorException("Only entities which implement the DeletableInterface can be deleted here.");
+
             if ($entity->isDeleted())
                 throw new BadRequestException(Translate::t("This entity is already deleted."));
 
-
             $entity->setDeleted(true);
             $em->persist($entity);
+
+            $em->flush();
+
+            $this->logger->log(
+                LogLevel::WARNING,
+                "agit.api.entity",
+                sprintf(Translate::tl("Object %s of type %s has been deleted."), $entity->getId(), $this->getEntityClassName($entity)),
+                true
+            );
+
+            $em->commit();
         }
-        else
+        catch (Exception $e)
         {
-            $em->remove($entity);
+            $em->rollBack();
+            throw $e;
         }
 
-        $em->flush();
+        return true;
     }
 
     protected function undelete($id)
+    {
+        $this->checkPermissions($id, __FUNCTION__);
+        $em = $this->getService("doctrine.orm.entity_manager");
+
+        try
+        {
+            $em->beginTransaction();
+
+            $entity = $this->retrieveEntity($this->getEntityClass(), $id);
+
+            if (!($entity instanceof DeletableInterface))
+                throw new InternalErrorException("Only entities which implement the DeletableInterface can be undeleted here.");
+
+            if (!$entity->isDeleted())
+                throw new BadRequestException(Translate::t("This entity is not deleted and hence cannot be undeleted."));
+
+            $entity->setDeleted(false);
+            $em->persist($entity);
+            $em->flush();
+
+            $this->logger->log(
+                LogLevel::WARNING,
+                "agit.api.entity",
+                sprintf(Translate::tl("Object %s of type %s has been undeleted."), $entity->getId(), $this->getEntityClassName($entity)),
+                true
+            );
+
+            $em->commit();
+        }
+        catch (Exception $e)
+        {
+            $em->rollBack();
+            throw $e;
+        }
+
+        return true;
+    }
+
+    protected function remove($id)
     {
         $this->checkPermissions($id, __FUNCTION__);
 
         $em = $this->getService("doctrine.orm.entity_manager");
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
-        if (!($entity instanceof DeletableInterface))
-            throw new InternalErrorException("Only entities which implement the DeletableInterface can be undeleted here.");
+        try
+        {
+            $em->beginTransaction();
 
-        if (!$entity->isDeleted())
-            throw new BadRequestException(Translate::t("This entity is not deleted and hence cannot be undeleted."));
+            $em->remove($entity);
+            $em->flush();
 
-        $entity->setDeleted(false);
-        $em->persist($entity);
-        $em->flush();
+            $this->logger->log(
+                LogLevel::WARNING,
+                "agit.api.entity",
+                sprintf(Translate::tl("Object %s of type %s has been removed permanently."), $entity->getId(), $this->getEntityClassName($entity)),
+                true
+            );
+
+            $em->commit();
+        }
+        catch (Exception $e)
+        {
+            $em->rollBack();
+            throw new BadRequestException(Translate::t("This object cannot be removed, because there are other objects depending on it."));
+        }
     }
 
     protected function search(RequestObjectInterface $requestObject)
@@ -187,6 +296,20 @@ abstract class AbstractEntityController extends AbstractController
         );
 
         return $entity;
+    }
+
+    protected function getEntityName($entity)
+    {
+        return is_callable([$entity, "getName"])
+            ? Multilang::u($entity->getName())
+            : $entity->getId();
+    }
+
+    protected function getEntityClassName($entity)
+    {
+        return is_callable([$entity, "getEntityClassName"])
+            ? $entity->getEntityClassName()
+            : StringHelper::getBareClassName($entity);
     }
 
     protected function getPersistableData($input)

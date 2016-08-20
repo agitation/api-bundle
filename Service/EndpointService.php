@@ -50,7 +50,14 @@ class EndpointService
         $metaContainer = $this->createMetaContainer($this->endpoints[$name]["meta"]);
 
         $class = $this->endpoints[$name]["class"];
-        $endpoint = new $class($name, $metaContainer, $this->container->get("agit.api.request"), $this->container->get("agit.api.response"), $request);
+        $endpoint = new $class(
+            $name,
+            $metaContainer,
+            $this->container->get("agit.api.request"),
+            $this->container->get("agit.api.response"),
+            $this->container->get("agit.logger"),
+            $request
+        );
 
         $this->checkAuthorisation($endpoint);
 

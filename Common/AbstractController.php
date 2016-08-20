@@ -9,6 +9,7 @@
 
 namespace Agit\ApiBundle\Common;
 
+use Agit\LoggingBundle\Service\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Agit\CommonBundle\Exception\AgitException;
 use Agit\CommonBundle\Exception\InternalErrorException;
@@ -52,7 +53,7 @@ abstract class AbstractController implements ServiceAwarePluginInterface
     protected $meta;
 
     /**
-     * @var Symfony's request object, only used for security checks
+     * @var Symfony’s request object, only used for security checks
      */
     private $httpRequest;
 
@@ -71,15 +72,21 @@ abstract class AbstractController implements ServiceAwarePluginInterface
      */
     private $response;
 
+    /**
+     * @var instance of the logger service
+     */
+    protected $logger;
+
     // TODO: Instead of injecting the $requestService, pass the RequestObject to executeCall()
 
-    public function __construct($name, MetaContainer $meta, RequestService $requestService, ResponseService $responseService, Request $httpRequest = null)
+    public function __construct($name, MetaContainer $meta, RequestService $requestService, ResponseService $responseService, Logger $logger, Request $httpRequest = null)
     {
-        $this->endpoint = substr(strrchr($name, '.'), 1);
-        $this->apiNamespace = strstr($name, '/', true);
+        $this->endpoint = substr(strrchr($name, "."), 1);
+        $this->apiNamespace = strstr($name, "/", true);
         $this->meta = $meta;
         $this->requestService = $requestService;
         $this->responseService = $responseService;
+        $this->logger = $logger;
         $this->httpRequest = $httpRequest;
     }
 
@@ -100,14 +107,14 @@ abstract class AbstractController implements ServiceAwarePluginInterface
         if (!$this->httpRequest)
             throw new InternalErrorException("The request object could not be created, as the actual request has not been passed to the endpoint.");
 
-        $request = json_decode($this->httpRequest->get('request'));
+        $request = json_decode($this->httpRequest->get("request"));
 
         // allow literal strings without quotes
-        if (is_null($request) && strlen($this->httpRequest->get('request')))
-            $request = $this->httpRequest->get('request');
+        if (is_null($request) && strlen($this->httpRequest->get("request")))
+            $request = $this->httpRequest->get("request");
 
         $this->request = $this->requestService
-            ->createRequestObject($this->getMeta('Endpoint')->get('request'), $request);
+            ->createRequestObject($this->getMeta("Endpoint")->get("request"), $request);
 
         $this->haveProcessedRequest = true;
     }
@@ -122,7 +129,7 @@ abstract class AbstractController implements ServiceAwarePluginInterface
 
     protected function createObject($name, $data = null)
     {
-        if (strpos($name, '/') === false)
+        if (strpos($name, "/") === false)
             $name = "{$this->apiNamespace}/$name";
 
         return $this->responseService->createResponseObject($name, $data);

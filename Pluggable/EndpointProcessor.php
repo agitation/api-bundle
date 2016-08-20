@@ -109,7 +109,7 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
 
         foreach ($plugin->get("endpoints") as $method)
         {
-            if (!in_array($method, ["search", "get", "create", "update", "delete", "undelete"]))
+            if (!in_array($method, ["search", "get", "create", "update", "delete", "undelete", "remove"]))
                 continue;
 
             $endpointMeta = [];
@@ -134,20 +134,20 @@ class EndpointProcessor extends AbstractApiProcessor implements ProcessorInterfa
                 $endpointMeta["Endpoint"]->set("request",  "{$controller}Search");
                 $endpointMeta["Endpoint"]->set("response", "{$controller}[]");
             }
-            elseif ($method === "create" || $method === "update")
+            elseif (in_array($method, ["create", "update"]))
             {
                 $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $controller);
                 $endpointMeta["Endpoint"]->set("response", $controller);
             }
-            elseif ($method === "delete" || $method === "undelete")
+            elseif (in_array($method, ["delete", "undelete", "remove"]))
             {
                 $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $idObject);
                 $endpointMeta["Endpoint"]->set("response", "common.v1/Null");
             }
 
-            if ($crossOrigin && ($method === "get" || $method === "search"))
+            if ($crossOrigin && in_array($method, ["get", "search"]))
             {
                 $endpointMeta["Security"]->set("allowCrossOrigin", true);
             }
