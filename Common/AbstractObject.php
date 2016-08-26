@@ -59,6 +59,11 @@ abstract class AbstractObject implements \JsonSerializable
         return $this->objectName;
     }
 
+    public function getKeys()
+    {
+        return array_keys($this->propMetaList);
+    }
+
     public function has($key)
     {
         return isset($this->propMetaList[$key]);
@@ -82,14 +87,11 @@ abstract class AbstractObject implements \JsonSerializable
             {
                 if ($metaField === "class")
                     $values[$key] = $this->objectName;
-                else
-                    throw new InternalErrorException("This ");
             }
-            else
+            elseif (isset($this->$key)) // filter null and unset values
             {
                 $values[$key] = $this->$key;
             }
-
         }
 
         return $values;

@@ -25,6 +25,9 @@ class ResponseService extends AbstractObjectService
     // cache of entity classes
     private $entities;
 
+    // cache of generated objects with an identity
+    private $objects = [];
+
     private $view;
 
     public function __construct(ObjectMetaService $objectMetaService, EntityManager $entityManager)
@@ -40,14 +43,19 @@ class ResponseService extends AbstractObjectService
 
     public function createResponseObject($objectName, $data = null)
     {
-        $object = $this->objectMetaService->createObject($objectName);
+        if (!$object = $this->cacheGet($objectName, $data))
+        {
+            $object = $this->objectMetaService->createObject($objectName);
 
-        if (!($object instanceof ResponseObjectInterface))
+            if (!($object instanceof ResponseObjectInterface))
             throw new InternalErrorException("Object $objectName must implement ResponseObjectInterface!");
 
-        $object->setResponseService($this);
+            $object->setResponseService($this);
 
-        $object->fill($data);
+            $object->fill($data);
+            $this->cachePut($object);
+        }
+
         return $object;
     }
 
@@ -76,7 +84,10 @@ class ResponseService extends AbstractObjectService
                 $metas = $this->getPropertyMetas($object, $propName);
 
                 if (!$this->doInclude($metas["View"], $propName))
+                {
+                    unset($object->$propName);
                     continue;
+                }
 
                 $object->set($propName, $this->createFieldValue($metas["Type"], $propName, $value));
             }
@@ -92,12 +103,15 @@ class ResponseService extends AbstractObjectService
         if ($entity instanceof Proxy)
             $entity->__load();
 
-        foreach (array_keys($object->getValues()) as $propName)
+        foreach ($object->getKeys() as $propName)
         {
             $metas = $this->getPropertyMetas($object, $propName);
 
             if (!$this->doInclude($metas["View"], $propName))
+            {
+                unset($object->$propName);
                 continue;
+            }
 
             $getter = "get" . ucfirst($propName);
             $value = null;
@@ -212,5 +226,33 @@ class ResponseService extends AbstractObjectService
             in_array($this->view, $viewMeta->get("only")) ||
             (!$viewMeta->get("only") && !in_array($this->view, $viewMeta->get("not")))
         );
+    }
+    private function cacheGet($objectName, $data)
+    {
+        $id = $object = null;
+
+        if ($this->isEntity($data) && method_exists($data, "getId"))
+            $id = $data->getId();
+        elseif ($data instanceof AbstractObject && $data->has("id"))
+            $id = $data->get("id");
+
+        if ($id)
+        {
+            $key = "$objectName:$id";
+
+            if (isset($this->objects[$key]))
+                $object = $this->objects[$key];
+        }
+
+        return $object;
+    }
+
+    private function cachePut($object)
+    {
+        if ($object instanceof AbstractObject && $object->has("id") && $object->get("id"))
+        {
+            $key = sprintf("%s:%s", $object->getObjectName(), $object->get("id"));
+            $this->objects[$key] = $object;
+        }
     }
 }
