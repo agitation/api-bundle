@@ -23,14 +23,14 @@ class Name extends AbstractPropertyMeta
     /**
      * @var context, in case the name is ambiguous
      */
-    protected $context = '';
+    protected $context = "";
 
     // NOTE: This method returns the translated name. If you want the original
-    // string, use `Name::get('value')`.
+    // string, use `Name::get("value")`.
     public function getName()
     {
         return $this->context
-            ? Translate::x($this->value, $this->context)
+            ? Translate::x($this->context, $this->value)
             : Translate::t($this->value);
     }
 }
