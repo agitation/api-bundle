@@ -19,8 +19,8 @@ class LogentryCategorySeedPlugin implements SeedPluginInterface
         $this->seedData = [];
 
         $categories = [
-            "agit.api" => Translate::noopX("API", "logging category"),
-            "agit.api.entity" => Translate::noopX("Entity API", "logging category")
+            "agit.api" => Translate::noopX("logging category", "API"),
+            "agit.api.entity" => Translate::noopX("logging category", "Entity API")
         ];
 
         foreach ($categories as $id => $name)
