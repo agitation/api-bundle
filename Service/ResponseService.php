@@ -11,8 +11,8 @@ namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Common\ResponseObjectInterface;
-use Agit\CommonBundle\Exception\InternalErrorException;
-use Agit\CommonBundle\Helper\StringHelper;
+use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Helper\StringHelper;
 use Agit\IntlBundle\Translate;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;

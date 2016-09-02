@@ -11,8 +11,8 @@ namespace Agit\ApiBundle\Pluggable;
 
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\Reader;
-use Agit\CommonBundle\Helper\StringHelper;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Helper\StringHelper;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\ProcessorInterface;
 use Agit\PluggableBundle\Strategy\PluggableServiceInterface;
 use Agit\PluggableBundle\Strategy\PluginInterface;

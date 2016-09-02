@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\AgitException;
 
 /**
  * An API request object has an invalid value or doesn't match the required format.

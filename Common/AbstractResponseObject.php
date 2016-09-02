@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Common;
 
 use stdClass;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Annotation\MetaContainer;
 
 abstract class AbstractResponseObject extends AbstractObject implements ResponseObjectInterface

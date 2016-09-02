@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\AgitException;
 
 /**
  * The requested resource must not be accessed by the currently authenticated

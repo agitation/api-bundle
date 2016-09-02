@@ -9,13 +9,13 @@
 
 namespace Agit\ApiBundle\Command;
 
-use Agit\CommonBundle\Helper\StringHelper;
+use Agit\BaseBundle\Helper\StringHelper;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Agit\CommonBundle\Command\SingletonCommandTrait;
+use Agit\BaseBundle\Command\SingletonCommandTrait;
 
 class GenerateObjectCommand extends ContainerAwareCommand
 {

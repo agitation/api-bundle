@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\AgitException;
 
 /**
  * The object persistence requested by an API call has failed.

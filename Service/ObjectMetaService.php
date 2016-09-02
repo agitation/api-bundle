@@ -14,7 +14,7 @@ use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
 use Agit\ValidationBundle\Service\ValidationService;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ObjectMetaService

@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 
 abstract class AbstractType extends AbstractPropertyMeta

@@ -9,8 +9,8 @@
 
 namespace Agit\ApiBundle\Annotation\Object;
 
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
-use Agit\CommonBundle\Annotation\SerializableAnnotationTrait;
+use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
+use Agit\BaseBundle\Annotation\SerializableAnnotationTrait;
 
 /**
  * @Annotation

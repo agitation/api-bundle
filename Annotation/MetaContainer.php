@@ -9,8 +9,8 @@
 
 namespace Agit\ApiBundle\Annotation;
 
-use Agit\CommonBundle\Exception\InternalErrorException;
-use Agit\CommonBundle\Annotation\SerializableAnnotationInterface;
+use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
 
 class MetaContainer
 {

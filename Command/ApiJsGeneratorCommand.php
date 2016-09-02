@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
-use Agit\CommonBundle\Command\SingletonCommandTrait;
+use Agit\BaseBundle\Command\SingletonCommandTrait;
 
 class ApiJsGeneratorCommand extends ContainerAwareCommand
 {

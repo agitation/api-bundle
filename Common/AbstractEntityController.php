@@ -11,9 +11,9 @@ namespace Agit\ApiBundle\Common;
 
 use Exception;
 use Agit\ApiBundle\Exception\BadRequestException;
-use Agit\CommonBundle\Entity\DeletableInterface;
-use Agit\CommonBundle\Exception\InternalErrorException;
-use Agit\CommonBundle\Helper\StringHelper;
+use Agit\BaseBundle\Entity\DeletableInterface;
+use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Helper\StringHelper;
 use Agit\IntlBundle\Translate;
 use Agit\MultilangBundle\Multilang;
 use Agit\PluggableBundle\Strategy\Depends;

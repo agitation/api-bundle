@@ -11,8 +11,8 @@ namespace Agit\ApiBundle\Common;
 
 use Agit\LoggingBundle\Service\Logger;
 use Symfony\Component\HttpFoundation\Request;
-use Agit\CommonBundle\Exception\AgitException;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\ServiceAwarePluginInterface;
 use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
 use Agit\IntlBundle\Translate;

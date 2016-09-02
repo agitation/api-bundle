@@ -9,8 +9,8 @@
 
 namespace Agit\ApiBundle\Controller;
 
-use Agit\CommonBundle\Exception\AgitException;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;

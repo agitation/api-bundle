@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Twig;
 
-use Agit\CommonBundle\Service\UrlService;
+use Agit\BaseBundle\Service\UrlService;
 use Agit\ApiBundle\Service\CsrfTokenService;
 
 class ApiExtension extends \Twig_Extension

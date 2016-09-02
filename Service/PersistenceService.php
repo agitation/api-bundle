@@ -17,7 +17,7 @@ use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Common\AbstractPersistableObject;
 use Agit\ApiBundle\Exception\PersistenceException;
 

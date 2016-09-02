@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Service;
 
 use Agit\IntlBundle\Translate;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Common\RequestObjectInterface;
 
