@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Pluggable;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManager;
-use Agit\BaseBundle\Helper\StringHelper;
+use Agit\BaseBundle\Tool\StringHelper;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\ProcessorInterface;
 use Agit\PluggableBundle\Strategy\PluggableServiceInterface;

@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\IntlBundle\Translate;
+use Agit\BaseBundle\Tool\Translate;
 
 /**
  * @Annotation

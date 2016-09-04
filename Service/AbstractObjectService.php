@@ -14,7 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Translate;
+use Agit\BaseBundle\Tool\Translate;
 use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;

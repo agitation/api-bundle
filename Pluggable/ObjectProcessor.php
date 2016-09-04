@@ -13,7 +13,7 @@ use ReflectionObject;
 use Agit\ApiBundle\Annotation\Object\Object;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\Reader;
-use Agit\BaseBundle\Helper\StringHelper;
+use Agit\BaseBundle\Tool\StringHelper;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\PluggableBundle\Strategy\ProcessorInterface;
 use Agit\PluggableBundle\Strategy\PluggableServiceInterface;

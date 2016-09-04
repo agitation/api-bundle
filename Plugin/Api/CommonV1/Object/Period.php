@@ -13,7 +13,7 @@ use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
 use Agit\ApiBundle\Common\AbstractValueObject;
 use Agit\ApiBundle\Exception\InvalidRangeException;
-use Agit\IntlBundle\Translate;
+use Agit\BaseBundle\Tool\Translate;
 
 /**
  * @Object\Object

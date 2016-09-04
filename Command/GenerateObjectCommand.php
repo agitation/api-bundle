@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Command;
 
-use Agit\BaseBundle\Helper\StringHelper;
+use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;

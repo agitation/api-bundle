@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Common;
 
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Translate;
+use Agit\BaseBundle\Tool\Translate;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Annotation\MetaContainer;

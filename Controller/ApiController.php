@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Controller;
 
 use Agit\BaseBundle\Exception\AgitException;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Translate;
+use Agit\BaseBundle\Tool\Translate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
