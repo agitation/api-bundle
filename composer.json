@@ -6,6 +6,7 @@
         "php": ">=5.4.9",
         "symfony/symfony": "2.8.*",
         "agitation/base-bundle": "dev-master",
+        "agitation/validation-bundle": "dev-master",
         "agitation/logging-bundle": "dev-master"
     },
     "suggest": {

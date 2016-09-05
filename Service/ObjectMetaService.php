@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Service;
 
 use Agit\BaseBundle\Pluggable\Cache\CacheLoaderFactory;
 use Agit\BaseBundle\Pluggable\ServiceInjectorTrait;
-use Agit\BaseBundle\Service\ValidationService;
+use Agit\ValidationBundle\ValidationService;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\BaseBundle\Exception\InternalErrorException;
