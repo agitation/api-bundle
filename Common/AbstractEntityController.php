@@ -16,7 +16,7 @@ use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\BaseBundle\Tool\Translate;
 use Agit\MultilangBundle\Multilang;
-use Agit\PluggableBundle\Strategy\Depends;
+use Agit\BaseBundle\Pluggable\Depends;
 use Agit\ApiBundle\Common\RequestObjectInterface;
 use Agit\ApiBundle\Common\AbstractEntityObject;
 use Agit\ApiBundle\Common\AbstractValueObject;

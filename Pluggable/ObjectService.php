@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Pluggable;
 
 use Agit\BaseBundle\Annotation\AnnotationTrait;
-use Agit\PluggableBundle\Strategy\PluggableServiceInterface;
+use Agit\BaseBundle\Pluggable\PluggableServiceInterface;
 
 /**
  * @Annotation

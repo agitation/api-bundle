@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Pluggable;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManager;
-use Agit\PluggableBundle\Strategy\ProcessorFactoryInterface;
+use Agit\BaseBundle\Pluggable\ProcessorFactoryInterface;
 
 abstract class AbstractApiProcessorFactory implements ProcessorFactoryInterface
 {

@@ -11,10 +11,10 @@ namespace Agit\ApiBundle\Service;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Agit\PluggableBundle\Strategy\Cache\CacheLoaderFactory;
+use Agit\BaseBundle\Pluggable\Cache\CacheLoaderFactory;
 use Agit\ApiBundle\Common\AbstractController;
 use Agit\ApiBundle\Exception\IncompatibleFormatterException;
-use Agit\PluggableBundle\Strategy\ServiceInjectorTrait;
+use Agit\BaseBundle\Pluggable\ServiceInjectorTrait;
 
 class FormatterService
 {

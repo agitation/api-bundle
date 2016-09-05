@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Pluggable;
 
 use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\PluggableBundle\Strategy\ProcessorInterface;
+use Agit\BaseBundle\Pluggable\ProcessorInterface;
 
 abstract class AbstractApiProcessor implements ProcessorInterface
 {

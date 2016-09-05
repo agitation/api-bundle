@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Annotation\Formatter;
 
-use Agit\PluggableBundle\Strategy\PluginInterface;
+use Agit\BaseBundle\Pluggable\PluginInterface;
 
 /**
  * @Annotation

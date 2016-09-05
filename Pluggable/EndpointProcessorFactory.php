@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Pluggable;
 
-use Agit\PluggableBundle\Strategy\PluggableServiceInterface;
+use Agit\BaseBundle\Pluggable\PluggableServiceInterface;
 
 class EndpointProcessorFactory extends AbstractApiProcessorFactory
 {

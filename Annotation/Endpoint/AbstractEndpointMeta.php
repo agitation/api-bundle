@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Annotation\Endpoint;
 
 use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
 use Agit\BaseBundle\Annotation\SerializableAnnotationTrait;
-use Agit\PluggableBundle\Strategy\PluginInterface;
+use Agit\BaseBundle\Pluggable\PluginInterface;
 
 /**
  * @Annotation

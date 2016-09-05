@@ -10,9 +10,9 @@
 namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Agit\PluggableBundle\Strategy\ServiceAwarePluginInterface;
-use Agit\PluggableBundle\Strategy\ServiceAwarePluginTrait;
-use Agit\PluggableBundle\Strategy\Depends;
+use Agit\BaseBundle\Pluggable\ServiceAwarePluginInterface;
+use Agit\BaseBundle\Pluggable\ServiceAwarePluginTrait;
+use Agit\BaseBundle\Pluggable\Depends;
 
 /**
  * @Depends({"@agit.api.objectmeta"})

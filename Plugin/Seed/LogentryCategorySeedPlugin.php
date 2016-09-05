@@ -2,9 +2,9 @@
 
 namespace Agit\ApiBundle\Plugin\Seed;
 
-use Agit\PluggableBundle\Strategy\Seed\SeedPluginInterface;
-use Agit\PluggableBundle\Strategy\Seed\SeedPlugin;
-use Agit\PluggableBundle\Strategy\Seed\SeedEntry;
+use Agit\BaseBundle\Pluggable\Seed\SeedPluginInterface;
+use Agit\BaseBundle\Pluggable\Seed\SeedPlugin;
+use Agit\BaseBundle\Pluggable\Seed\SeedEntry;
 use Agit\BaseBundle\Tool\Translate;
 
 /**
