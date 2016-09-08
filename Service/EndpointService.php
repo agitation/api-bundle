@@ -17,7 +17,7 @@ use Agit\BaseBundle\Pluggable\ServiceInjectorTrait;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\ApiBundle\Exception\UnauthorizedException;
 use Agit\UserBundle\Service\UserService;
-use Agit\BaseBundle\Tool\Translate;
+use Agit\IntlBundle\Tool\Translate;
 use Agit\ApiBundle\Common\AbstractController;
 
 class EndpointService

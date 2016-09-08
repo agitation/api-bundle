@@ -14,7 +14,7 @@ use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Tool\StringHelper;
-use Agit\BaseBundle\Tool\Translate;
+use Agit\IntlBundle\Tool\Translate;
 use Agit\MultilangBundle\Multilang;
 use Agit\BaseBundle\Pluggable\Depends;
 use Agit\ApiBundle\Common\RequestObjectInterface;

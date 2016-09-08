@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\Annotation\Property;
 
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
-use Agit\BaseBundle\Tool\Translate;
+use Agit\IntlBundle\Tool\Translate;
 
 /**
  * @Annotation

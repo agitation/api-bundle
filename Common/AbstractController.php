@@ -15,7 +15,7 @@ use Agit\BaseBundle\Exception\AgitException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Pluggable\ServiceAwarePluginInterface;
 use Agit\BaseBundle\Pluggable\ServiceAwarePluginTrait;
-use Agit\BaseBundle\Tool\Translate;
+use Agit\IntlBundle\Tool\Translate;
 use Agit\ApiBundle\Annotation\MetaContainer;
 use Agit\ApiBundle\Service\RequestService;
 use Agit\ApiBundle\Service\ResponseService;

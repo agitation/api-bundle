@@ -13,7 +13,7 @@ use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Common\ResponseObjectInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Tool\StringHelper;
-use Agit\BaseBundle\Tool\Translate;
+use Agit\IntlBundle\Tool\Translate;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
