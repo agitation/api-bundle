@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -33,12 +41,14 @@ class Object extends AbstractObjectMeta implements PluginInterface
 
     /**
      * @var full object name with namespace prefix, e.g. `common.v1/SomeObject`.
+     *
      * @internal Do not set this field, it will be filled automatically.
      */
     protected $objectName;
 
     /**
      * @var if the parent is a super class, this field contains its name.
+     *
      * @internal Do not set this field, it will be filled automatically.
      */
     protected $parentObjectName;

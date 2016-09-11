@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -32,15 +40,16 @@ class NumberType extends AbstractType
     {
         $this->init($value);
 
-        if ($this->mustCheck())
-        {
-            if ($this->positive === true && (!$this->minValue || $this->minValue < 0))
+        if ($this->mustCheck()) {
+            if ($this->positive === true && (! $this->minValue || $this->minValue < 0)) {
                 $this->minValue = 0;
+            }
 
             static::$_ValidationService->validate($this->allowFloat === true ? 'float' : 'integer', $value, $this->minValue, $this->maxValue);
 
-            if (is_array($this->allowedValues))
+            if (is_array($this->allowedValues)) {
                 static::$_ValidationService->validate('selection', $value, $this->allowedValues);
+            }
         }
     }
 }

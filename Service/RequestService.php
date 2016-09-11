@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,10 +17,10 @@
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\IntlBundle\Tool\Translate;
-use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Common\RequestObjectInterface;
+use Agit\ApiBundle\Exception\InvalidObjectException;
+use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\IntlBundle\Tool\Translate;
 
 class RequestService extends AbstractObjectService
 {
@@ -20,25 +28,24 @@ class RequestService extends AbstractObjectService
     {
         $result = null;
 
-        if (substr($expectedObject, -2) === "[]")
-        {
-            if (!is_array($rawRequest))
+        if (substr($expectedObject, -2) === "[]") {
+            if (! is_array($rawRequest)) {
                 throw new InvalidObjectException(Translate::t("The request is expected to be an array."));
+            }
 
             $result = [];
 
-            foreach ($rawRequest as $rawRequestElem)
+            foreach ($rawRequest as $rawRequestElem) {
                 $result[] = $this->createRequestObject(substr($expectedObject, 0, -2), $rawRequestElem);
-        }
-        else
-        {
+            }
+        } else {
             $meta = $this->objectMetaService->getObjectMetas($expectedObject);
             $expectsScalar = $meta->get("Object")->get("scalar");
 
-            if ($expectsScalar)
-            {
-                if (!is_scalar($rawRequest))
+            if ($expectsScalar) {
+                if (! is_scalar($rawRequest)) {
                     throw new InvalidObjectException(Translate::t("The request is expected to be a scalar value."));
+                }
 
                 // we fill the scalar object, but only to see if it passes validation.
                 // then we return the bare request
@@ -48,13 +55,12 @@ class RequestService extends AbstractObjectService
                 $object->validate();
 
                 $result = $rawRequest;
-            }
-            else
-            {
+            } else {
                 $result = $this->createObject($expectedObject);
 
-                if (is_object($rawRequest))
+                if (is_object($rawRequest)) {
                     $this->fill($result, $rawRequest);
+                }
 
                 $result->validate();
             }
@@ -67,8 +73,9 @@ class RequestService extends AbstractObjectService
     {
         $object = $this->objectMetaService->createObject($objectName);
 
-        if (!($object instanceof RequestObjectInterface))
+        if (! ($object instanceof RequestObjectInterface)) {
             throw new InternalErrorException("Object $objectName must implement RequestObjectInterface.");
+        }
 
         return $object;
     }

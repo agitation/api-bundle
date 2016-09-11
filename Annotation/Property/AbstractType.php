@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,8 +17,8 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 
 abstract class AbstractType extends AbstractPropertyMeta
 {
@@ -81,23 +89,26 @@ abstract class AbstractType extends AbstractPropertyMeta
 
     protected function init($value)
     {
-        if (!static::$_ValidationService)
+        if (! static::$_ValidationService) {
             throw new InternalErrorException("The container must be set.");
+        }
 
-        if ($this->readonly)
-        {
-            if (isset($value))
+        if ($this->readonly) {
+            if (isset($value)) {
                 throw new InvalidObjectValueException("The value is read-only and hence must not be set in a request.");
+            }
 
             // readonly implies nullable
             $this->nullable = true;
         }
 
-        if (!$this->nullable)
+        if (! $this->nullable) {
             static::$_ValidationService->validate('notNull', $value);
+        }
 
-        if ($this->nullable === true && is_null($value))
+        if ($this->nullable === true && is_null($value)) {
             $this->_mustCheck = false;
+        }
     }
 
     protected function mustCheck()

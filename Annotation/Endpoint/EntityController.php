@@ -1,15 +1,21 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
  */
 
 namespace Agit\ApiBundle\Annotation\Endpoint;
-
-use Agit\BaseBundle\Pluggable\PluginInterface;
 
 /**
  * @Annotation
@@ -36,7 +42,7 @@ class EntityController extends Controller
     public $cap;
 
     /**
-     * @var boolean if the call should allow cross-origin requests. Only available for get/search requests.
+     * @var bool if the call should allow cross-origin requests. Only available for get/search requests.
      */
     public $crossOrigin;
 }

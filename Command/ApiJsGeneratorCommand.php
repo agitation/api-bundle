@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,12 +17,12 @@
 
 namespace Agit\ApiBundle\Command;
 
+use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Filesystem\Filesystem;
-use Agit\BaseBundle\Command\SingletonCommandTrait;
 
 class ApiJsGeneratorCommand extends ContainerAwareCommand
 {
@@ -36,7 +44,9 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->flock(__FILE__)) return;
+        if (! $this->flock(__FILE__)) {
+            return;
+        }
 
         $this->output = $output;
         $this->filesystem = new Filesystem();
@@ -50,11 +60,13 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         $endpoints = $this->generateEndpointsFiles($bundleNamespace);
         $objects = $this->generateObjectsFiles($bundleNamespace);
 
-        if (!$endpoints && !$objects)
+        if (! $endpoints && ! $objects) {
             return;
+        }
 
-        if (!is_dir($targetPath))
+        if (! is_dir($targetPath)) {
             $this->filesystem->mkdir($targetPath);
+        }
 
         $this->createJsFiles($targetPath, $endpoints, $objects);
 
@@ -69,11 +81,12 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
         $this->output->write("Processing endpoints ");
 
-        foreach ($names as $name)
-        {
+        foreach ($names as $name) {
             $metaContainer = $endpointService->getEndpointMetaContainer($name);
 
-            if (strpos($endpointService->getController($name), $bundleNamespace) !== 0) continue;
+            if (strpos($endpointService->getController($name), $bundleNamespace) !== 0) {
+                continue;
+            }
 
             $list[$name] = [
                 $metaContainer->get("Endpoint")->get("request"),
@@ -96,25 +109,25 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
         $this->output->write("Processing objects ");
 
-        foreach ($objectNames as $objectName)
-        {
+        foreach ($objectNames as $objectName) {
             $object = $objectService->createObject($objectName, true);
 
-            if (strpos(get_class($object), $bundleNamespace) !== 0)
+            if (strpos(get_class($object), $bundleNamespace) !== 0) {
                 continue;
+            }
 
             $objData = $object->getValues();
             $objProps = [];
 
             $objRefl = new \ReflectionClass(get_class($object));
 
-            foreach ($objData as $key => $value)
-            {
+            foreach ($objData as $key => $value) {
                 $typeMeta = $objectService->getPropertyMetas($objectName, $key)->get("Type");
                 $objProps[$key] = $this->extractTypeMeta($typeMeta);
 
-                if ($value !== null)
+                if ($value !== null) {
                     $objProps[$key]["default"] = $value;
+                }
             }
 
             $list[$objectName] = $objProps;
@@ -132,14 +145,10 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         $keywords = ["minLength", "nullable", "readonly", "maxLength", "minValue",
             "maxValue", "positive", "allowFloat", "allowLineBreaks", "class", "meta"];
 
-        foreach ($typeMeta->getOptions() as $key => $value)
-        {
-            if (in_array($key, $keywords) && $value !== null && $value !== false)
-            {
+        foreach ($typeMeta->getOptions() as $key => $value) {
+            if (in_array($key, $keywords) && $value !== null && $value !== false) {
                 $meta[$key] = $value;
-            }
-            elseif ($key === "allowedValues" && $value !== null)
-            {
+            } elseif ($key === "allowedValues" && $value !== null) {
                 $meta["values"] = $value;
             }
         }
@@ -151,14 +160,12 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
     {
         $file = "";
 
-        if ($endpoints)
-        {
+        if ($endpoints) {
             $endpointsJson = json_encode($endpoints, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
             $file .= "ag.api.Endpoint.register($endpointsJson);\n";
         }
 
-        if ($objects)
-        {
+        if ($objects) {
             $objectsJson = json_encode($objects, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
             $file .= "ag.api.Object.register($objectsJson);\n";
         }

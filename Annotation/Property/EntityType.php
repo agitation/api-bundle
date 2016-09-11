@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -26,7 +34,8 @@ class EntityType extends ObjectType
     {
         $this->init($value);
 
-        if ($this->mustCheck())
+        if ($this->mustCheck()) {
             static::$_ValidationService->validate($this->keytype, $value, 1);
+        }
     }
 }

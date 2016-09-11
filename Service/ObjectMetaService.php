@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,12 +17,12 @@
 
 namespace Agit\ApiBundle\Service;
 
+use Agit\ApiBundle\Annotation\Property\AbstractType;
+use Agit\ApiBundle\Exception\InvalidObjectException;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Pluggable\Cache\CacheLoaderFactory;
 use Agit\BaseBundle\Pluggable\ServiceInjectorTrait;
 use Agit\ValidationBundle\ValidationService;
-use Agit\ApiBundle\Exception\InvalidObjectException;
-use Agit\ApiBundle\Annotation\Property\AbstractType;
-use Agit\BaseBundle\Exception\InternalErrorException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ObjectMetaService
@@ -39,8 +47,9 @@ class ObjectMetaService
     {
         $objectMetas = $this->getObjectMetas($objectName);
 
-        if ($objectMetas->get("Object")->get("super") && !$force)
+        if ($objectMetas->get("Object")->get("super") && ! $force) {
             throw new InternalErrorException(sprintf("Object %s is marked as super class and can therefore not be instantiated.", $objectName));
+        }
 
         $objectClass = $this->getObjectClass($objectName);
         $objectPropertyMetas = $this->getObjectPropertyMetas($objectName);
@@ -64,70 +73,80 @@ class ObjectMetaService
 
     public function getObjectClass($objectName)
     {
-        if (!isset($this->objects[$objectName]))
+        if (! isset($this->objects[$objectName])) {
             throw new InvalidObjectException("Invalid object: $objectName");
+        }
 
         return $this->objects[$objectName]["class"];
     }
 
     public function getObjectMetas($objectName)
     {
-        if (!isset($this->objects[$objectName]))
+        if (! isset($this->objects[$objectName])) {
             throw new InvalidObjectException("Invalid object: $objectName");
+        }
 
         return $this->createMetaContainer($this->objects[$objectName]["objectMeta"]);
     }
 
     public function getObjectPropertyMetas($objectName)
     {
-        if (!isset($this->objects[$objectName]))
+        if (! isset($this->objects[$objectName])) {
             throw new InvalidObjectException("Invalid object: $objectName");
+        }
 
         $propMetaContainerList = [];
 
-        foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList)
+        foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList) {
             $propMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
+        }
 
         return $propMetaContainerList;
     }
 
     public function getPropertyMetas($objectName, $propName)
     {
-        if (!isset($this->objects[$objectName]))
+        if (! isset($this->objects[$objectName])) {
             throw new InvalidObjectException("Invalid object: $objectName");
+        }
 
-        if (!isset($this->objects[$objectName]["propMetaList"][$propName]))
+        if (! isset($this->objects[$objectName]["propMetaList"][$propName])) {
             throw new InvalidObjectException("Invalid object property: $objectName.$propName");
+        }
 
         return $this->createMetaContainer($this->objects[$objectName]["propMetaList"][$propName]);
     }
 
     public function getPropertyMeta($objectName, $propName, $metaName)
     {
-        if (!isset($this->objects[$objectName]))
+        if (! isset($this->objects[$objectName])) {
             throw new InvalidObjectException("Invalid object: $objectName");
+        }
 
-        if (!isset($this->objects[$objectName]["propMetaList"][$propName]))
+        if (! isset($this->objects[$objectName]["propMetaList"][$propName])) {
             throw new InvalidObjectException("Invalid object property: $objectName.$propName");
+        }
 
-        if (!$this->objects[$objectName]["propMetaList"][$propName][$metaName])
+        if (! $this->objects[$objectName]["propMetaList"][$propName][$metaName]) {
             throw new InvalidObjectException("Invalid object property meta: $objectName.$propName.$metaName");
+        }
 
         return $this->composeMeta($this->objects[$objectName]["propMetaList"][$propName][$metaName]);
     }
 
     public function getObjectNameFromClass($class)
     {
-        if (is_null($this->classes))
-        {
+        if (is_null($this->classes)) {
             $this->classes = [];
 
-            foreach ($this->objects as $objectName => $data)
+            foreach ($this->objects as $objectName => $data) {
                 $this->classes[$data["class"]] = $objectName;
+            }
         }
 
-        if (!isset($this->classes[$class]))
+        if (! isset($this->classes[$class])) {
             throw new InternalErrorException("Class `$class` has not been registered.");
+        }
 
         return $this->classes[$class];
     }

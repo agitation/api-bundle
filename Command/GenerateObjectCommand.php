@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,13 +17,13 @@
 
 namespace Agit\ApiBundle\Command;
 
+use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Agit\BaseBundle\Command\SingletonCommandTrait;
 
 class GenerateObjectCommand extends ContainerAwareCommand
 {
@@ -33,12 +41,13 @@ class GenerateObjectCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->flock(__FILE__)) return;
+        if (! $this->flock(__FILE__)) {
+            return;
+        }
 
         $bundleName = "Foo\BarBundle";
 
-        if ($input->getArgument("bundle"))
-        {
+        if ($input->getArgument("bundle")) {
             $bundle = $this->getContainer()->get("kernel")->getBundle($input->getArgument("bundle"));
             $bundleName = $bundle->getNamespace();
         }
@@ -55,37 +64,30 @@ class GenerateObjectCommand extends ContainerAwareCommand
 
         $tpl = [];
 
-        foreach ($allFields as $prop)
-        {
+        foreach ($allFields as $prop) {
             $attr = "";
 
-            if (!in_array($prop, $assoc))
-            {
+            if (! in_array($prop, $assoc)) {
                 $type = $metadata->getTypeOfField($prop);
 
-                if ($type === "smallint" || $type === "integer" || $type === "decimal")
+                if ($type === "smallint" || $type === "integer" || $type === "decimal") {
                     $attr = "@Property\NumberType(minValue=, maxValue=)";
-                elseif ($type === "text" || $type === "string")
+                } elseif ($type === "text" || $type === "string") {
                     $attr = "@Property\StringType(minLength=, maxLength=)";
-            }
-            else
-            {
+                }
+            } else {
                 $mapping = $metadata->getAssociationMapping($prop);
                 $targetEntity = StringHelper::getBareClassName($mapping["targetEntity"]);
                 $isOwning = $mapping["isOwningSide"];
 
-                if ($mapping["type"] & ClassMetadataInfo::TO_ONE && !$mapping["inversedBy"])
-                {
+                if ($mapping["type"] & ClassMetadataInfo::TO_ONE && ! $mapping["inversedBy"]) {
                     $attr = "@Property\ObjectType(class=\"$targetEntity\")";
-                }
-                elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY)
-                {
+                } elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY) {
                     $attr = "@Property\ObjectListType(class=\"$targetEntity\", minLength=, maxLength=)";
                 }
             }
 
-            if ($attr)
-            {
+            if ($attr) {
                 $tpl[] = "    /**\n" .
                          "     * @Property\Name(\"$prop\")\n" .
                          "     * $attr\n" .

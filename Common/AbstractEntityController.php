@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,19 +17,15 @@
 
 namespace Agit\ApiBundle\Common;
 
-use Exception;
 use Agit\ApiBundle\Exception\BadRequestException;
+use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Pluggable\Depends;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\MultilangBundle\Multilang;
-use Agit\BaseBundle\Pluggable\Depends;
-use Agit\ApiBundle\Common\RequestObjectInterface;
-use Agit\ApiBundle\Common\AbstractEntityObject;
-use Agit\ApiBundle\Common\AbstractValueObject;
-use Agit\ApiBundle\Common\AbstractRequestObject;
-use Agit\ApiBundle\Exception\ObjectNotFoundException;
+use Exception;
 use Psr\Log\LogLevel;
 
 /**
@@ -47,6 +51,7 @@ abstract class AbstractEntityController extends AbstractController
     {
         $this->checkPermissions($id, __FUNCTION__);
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
+
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
     }
 
@@ -56,8 +61,7 @@ abstract class AbstractEntityController extends AbstractController
         $this->validate($requestObject);
         $em = $this->getService("doctrine.orm.entity_manager");
 
-        try
-        {
+        try {
             $em->beginTransaction();
 
             $className = $em->getClassMetadata($this->getEntityClass())->getName();
@@ -71,9 +75,7 @@ abstract class AbstractEntityController extends AbstractController
             );
 
             $em->commit();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $em->rollBack();
             throw $e;
         }
@@ -87,8 +89,7 @@ abstract class AbstractEntityController extends AbstractController
         $this->validate($requestObject);
         $em = $this->getService("doctrine.orm.entity_manager");
 
-        try
-        {
+        try {
             $em->beginTransaction();
 
             $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
@@ -102,9 +103,7 @@ abstract class AbstractEntityController extends AbstractController
             );
 
             $em->commit();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $em->rollBack();
             throw $e;
         }
@@ -117,17 +116,18 @@ abstract class AbstractEntityController extends AbstractController
         $this->checkPermissions($id, __FUNCTION__);
         $em = $this->getService("doctrine.orm.entity_manager");
 
-        try
-        {
+        try {
             $em->beginTransaction();
 
             $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
-            if (!($entity instanceof DeletableInterface))
+            if (! ($entity instanceof DeletableInterface)) {
                 throw new InternalErrorException("Only entities which implement the DeletableInterface can be deleted here.");
+            }
 
-            if ($entity->isDeleted())
+            if ($entity->isDeleted()) {
                 throw new BadRequestException(Translate::t("This entity is already deleted."));
+            }
 
             $entity->setDeleted(true);
             $em->persist($entity);
@@ -142,9 +142,7 @@ abstract class AbstractEntityController extends AbstractController
             );
 
             $em->commit();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $em->rollBack();
             throw $e;
         }
@@ -157,17 +155,18 @@ abstract class AbstractEntityController extends AbstractController
         $this->checkPermissions($id, __FUNCTION__);
         $em = $this->getService("doctrine.orm.entity_manager");
 
-        try
-        {
+        try {
             $em->beginTransaction();
 
             $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
-            if (!($entity instanceof DeletableInterface))
+            if (! ($entity instanceof DeletableInterface)) {
                 throw new InternalErrorException("Only entities which implement the DeletableInterface can be undeleted here.");
+            }
 
-            if (!$entity->isDeleted())
+            if (! $entity->isDeleted()) {
                 throw new BadRequestException(Translate::t("This entity is not deleted and hence cannot be undeleted."));
+            }
 
             $entity->setDeleted(false);
             $em->persist($entity);
@@ -181,9 +180,7 @@ abstract class AbstractEntityController extends AbstractController
             );
 
             $em->commit();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $em->rollBack();
             throw $e;
         }
@@ -198,8 +195,7 @@ abstract class AbstractEntityController extends AbstractController
         $em = $this->getService("doctrine.orm.entity_manager");
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
-        try
-        {
+        try {
             $em->beginTransaction();
 
             $em->remove($entity);
@@ -213,9 +209,7 @@ abstract class AbstractEntityController extends AbstractController
             );
 
             $em->commit();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             $em->rollBack();
             throw new BadRequestException(Translate::t("This object cannot be removed, because there are other objects depending on it."));
         }
@@ -230,8 +224,9 @@ abstract class AbstractEntityController extends AbstractController
         $query = $this->createSearchQuery($requestObject);
         $result = [];
 
-        foreach ($query->getQuery()->getResult() as $entity)
+        foreach ($query->getQuery()->getResult() as $entity) {
             $result[] = $this->createObject($this->getResponseObjectApiClass(), $entity);
+        }
 
         return $result;
     }
@@ -241,13 +236,17 @@ abstract class AbstractEntityController extends AbstractController
      * on the current user’s capabilities. To be overridden in the entity
      * controller, if necessary.
      */
-    protected function checkPermissions($request, $type) { }
+    protected function checkPermissions($request, $type)
+    {
+    }
 
     /**
      * Optional extra validation for create/update (e.g. consistency checks),
      * may be overridden in the entity controller, if necessary.
      */
-    protected function validate(AbstractEntityObject $requestObject) { }
+    protected function validate(AbstractEntityObject $requestObject)
+    {
+    }
 
     protected function getEntityClass()
     {
@@ -258,8 +257,9 @@ abstract class AbstractEntityController extends AbstractController
     {
         $apiClass = $this->getMeta("Endpoint")->get("response");
 
-        if (substr($apiClass, -2) === "[]")
+        if (substr($apiClass, -2) === "[]") {
             $apiClass = substr($apiClass, 0, -2);
+        }
 
         return $apiClass;
     }
@@ -282,8 +282,9 @@ abstract class AbstractEntityController extends AbstractController
             ->getRepository($entityClass)
             ->findOneBy(["id" => $id]);
 
-        if (!$entity)
+        if (! $entity) {
             throw new ObjectNotFoundException(sprintf(Translate::t("The requested object with ID `%s` was not found."), $id));
+        }
 
         return $entity;
     }
@@ -316,30 +317,27 @@ abstract class AbstractEntityController extends AbstractController
     {
         $output = null;
 
-        if (is_object($input))
-        {
+        if (is_object($input)) {
             $output = new \stdClass();
             $reqObj = null;
 
-            if ($input instanceof AbstractEntityObject || $input instanceof AbstractValueObject || $input instanceof AbstractRequestObject)
-            {
+            if ($input instanceof AbstractEntityObject || $input instanceof AbstractValueObject || $input instanceof AbstractRequestObject) {
                 $reqObj = $input;
                 $input = $input->getValues();
             }
 
-            foreach ($input as $key => $value)
-                if (!$reqObj || !$reqObj->getPropertyMeta($key, "Type")->get("readonly"))
+            foreach ($input as $key => $value) {
+                if (! $reqObj || ! $reqObj->getPropertyMeta($key, "Type")->get("readonly")) {
                     $output->$key = $this->getPersistableData($value);
-        }
-        elseif (is_array($input))
-        {
+                }
+            }
+        } elseif (is_array($input)) {
             $output = [];
 
-            foreach ($input as $key => $value)
+            foreach ($input as $key => $value) {
                 $output[$key] = $this->getPersistableData($value);
-        }
-        else
-        {
+            }
+        } else {
             $output = $input;
         }
 

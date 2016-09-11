@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,10 +17,10 @@
 
 namespace Agit\ApiBundle\Plugin\ApiFormatter;
 
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Agit\BaseBundle\Pluggable\Depends;
 use Agit\BaseBundle\Pluggable\ServiceAwarePluginInterface;
 use Agit\BaseBundle\Pluggable\ServiceAwarePluginTrait;
-use Agit\BaseBundle\Pluggable\Depends;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * @Depends({"@agit.api.objectmeta"})
@@ -34,8 +42,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
         $compactHeader = $this->request->headers->get("x-api-serialize-compact", null, true);
         $response = $this->controller->getResponse();
 
-        if ($compactHeader === "true")
-        {
+        if ($compactHeader === "true") {
             list($payload, $entityList) = $this->compactEntities($response);
 
             $response = $this->getService("agit.api.objectmeta")->createObject("common.v1/Response");
@@ -67,8 +74,9 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
         $payload = $this->processValue($response);
         $compactEntityList = [];
 
-        foreach ($this->compactEntityList as $compactEntity)
+        foreach ($this->compactEntityList as $compactEntity) {
             $compactEntityList[$compactEntity["idx"]] = $compactEntity["obj"];
+        }
 
         return [$payload, $compactEntityList];
     }
@@ -77,27 +85,21 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
     {
         $processed = null;
 
-        if (is_scalar($value))
-        {
+        if (is_scalar($value)) {
             $processed = $value;
-        }
-        elseif (is_array($value))
-        {
+        } elseif (is_array($value)) {
             $processed = [];
-            foreach ($value as $k=>$v)
+            foreach ($value as $k => $v) {
                 $processed[$k] = $this->processValue($v);
-        }
-        elseif (is_object($value))
-        {
-            if ($this->isEntityObject($value))
-            {
-                $processed = $this->addEntityObject($value);
             }
-            else
-            {
+        } elseif (is_object($value)) {
+            if ($this->isEntityObject($value)) {
+                $processed = $this->addEntityObject($value);
+            } else {
                 $processed = new \stdClass();
-                foreach (get_object_vars($value) as $k=>$v)
+                foreach (get_object_vars($value) as $k => $v) {
                     $processed->$k = $this->processValue($v);
+                }
             }
         }
 
@@ -106,24 +108,24 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter implement
 
     private function isEntityObject($value)
     {
-        return (is_callable([$value, "has"]) &&
+        return is_callable([$value, "has"]) &&
             $value->has("id") &&
-            $value->get("id"));
+            $value->get("id");
     }
 
     private function addEntityObject($object)
     {
         $key = sprintf("%s:%s", $object->getObjectName(), $object->get("id"));
 
-        if (!isset($this->compactEntityList[$key]))
-        {
+        if (! isset($this->compactEntityList[$key])) {
             $this->compactEntityList[$key] = [
                 "idx" => sprintf("%s:%s", $this->keyPrefix, $this->idx++),
                 "obj" => new \stdClass()
             ];
 
-            foreach ($object->getValues() as $k => $v)
+            foreach ($object->getValues() as $k => $v) {
                 $this->compactEntityList[$key]["obj"]->$k = $this->processValue($v);
+            }
         }
 
         return $this->compactEntityList[$key]["idx"];

@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -17,8 +25,9 @@ trait MetaAwareTrait
     {
         $metaContainer = new MetaContainer();
 
-        foreach ($metaList as $name => $meta)
+        foreach ($metaList as $name => $meta) {
             $metaContainer->set($name, $this->composeMeta($meta));
+        }
 
         return $metaContainer;
     }
@@ -27,6 +36,7 @@ trait MetaAwareTrait
     protected function composeMeta($rawMeta)
     {
         $className = $rawMeta['class'];
+
         return new $className($rawMeta['options']);
     }
 }

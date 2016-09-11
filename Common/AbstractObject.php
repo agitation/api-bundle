@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,14 +17,13 @@
 
 namespace Agit\ApiBundle\Common;
 
-use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Tool\Translate;
+use Agit\ApiBundle\Annotation\MetaContainer;
+use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
-use Agit\ApiBundle\Annotation\MetaContainer;
-use Agit\ApiBundle\Annotation\Property\AbstractType;
-use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\ApiBundle\Service\ObjectMetaService;
+use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\IntlBundle\Tool\Translate;
 
 abstract class AbstractObject implements \JsonSerializable
 {
@@ -40,9 +47,9 @@ abstract class AbstractObject implements \JsonSerializable
      */
     protected $apiNamespace;
 
-    /**
-     * @var ObjectMetaService instance
-     */
+     /**
+      * @var ObjectMetaService instance
+      */
      private $objectMetaService;
 
     public function __construct(MetaContainer $objectMeta, array $propMetaList, ObjectMetaService $objectMetaService)
@@ -72,6 +79,7 @@ abstract class AbstractObject implements \JsonSerializable
     public function get($key)
     {
         $this->checkHasProperty($key);
+
         return $this->$key;
     }
 
@@ -79,17 +87,16 @@ abstract class AbstractObject implements \JsonSerializable
     {
         $values = [];
 
-        foreach ($this->propMetaList as $key => $meta)
-        {
+        foreach ($this->propMetaList as $key => $meta) {
             $metaField = $meta->get("Type")->get("meta");
 
-            if ($metaField)
-            {
-                if ($metaField === "class")
+            if ($metaField) {
+                if ($metaField === "class") {
                     $values[$key] = $this->objectName;
-            }
-            elseif (isset($this->$key)) // filter null and unset values
-            {
+                }
+            } elseif (isset($this->$key)) {
+                // filter null and unset values
+
                 $values[$key] = $this->$key;
             }
         }
@@ -108,19 +115,15 @@ abstract class AbstractObject implements \JsonSerializable
         $this->checkHasProperty($key);
         $type = $this->getPropertyMeta($key, "Type");
 
-        if ($type->isListType())
-        {
-            if (!is_array($this->$key))
+        if ($type->isListType()) {
+            if (! is_array($this->$key)) {
                 $this->$key = [];
+            }
 
             array_push($this->$key, $value);
-        }
-        elseif ($type->getType() === "number")
-        {
+        } elseif ($type->getType() === "number") {
             $this->$key += $value;
-        }
-        else
-        {
+        } else {
             throw new InternalErrorException("Cannot use `add` with this property type.");
         }
     }
@@ -128,17 +131,19 @@ abstract class AbstractObject implements \JsonSerializable
     public function getPropertyMeta($propKey, $metaName)
     {
         $this->checkHasProperty($propKey);
+
         return $this->propMetaList[$propKey]->get($metaName);
     }
 
     protected function checkHasProperty($key)
     {
-        if (!$this->has($key))
+        if (! $this->has($key)) {
             throw new InvalidObjectException(sprintf(
                 Translate::t("The `%s` object does not have a `%s` property."),
                 $this->getObjectName(),
                 $key
             ));
+        }
     }
 
     public function jsonSerialize()
@@ -148,18 +153,16 @@ abstract class AbstractObject implements \JsonSerializable
 
     public function validate()
     {
-        foreach ($this->propMetaList as $key => $metaContainer)
+        foreach ($this->propMetaList as $key => $metaContainer) {
             $this->validateValue($key, $this->$key);
+        }
     }
 
     protected function validateValue($key, $value)
     {
-        try
-        {
+        try {
             $this->getPropertyMeta($key, "Type")->check($value);
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             throw new InvalidObjectValueException(sprintf(
                 Translate::t("Invalid value in object `%s` for property `%s`: %s"),
                 $this->getObjectName(), $this->getPropertyMeta($key, "Name")->getName(), $e->getMessage()));
@@ -168,8 +171,9 @@ abstract class AbstractObject implements \JsonSerializable
 
     protected function createObject($name)
     {
-        if (strpos($name, '/') === false)
+        if (strpos($name, '/') === false) {
             $name = "{$this->apiNamespace}/$name";
+        }
 
         return $this->objectMetaService->createObject($name);
     }

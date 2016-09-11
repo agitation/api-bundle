@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -23,11 +31,10 @@ class Date extends AbstractValueObject
 
     public function fill($dateTime)
     {
-        if ($dateTime instanceof \DateTime)
-        {
-            $this->year = (int)$dateTime->format("Y");
-            $this->month = (int)$dateTime->format("m");
-            $this->day = (int)$dateTime->format("d");
+        if ($dateTime instanceof \DateTime) {
+            $this->year = (int) $dateTime->format("Y");
+            $this->month = (int) $dateTime->format("m");
+            $this->day = (int) $dateTime->format("d");
         }
     }
 
@@ -40,5 +47,4 @@ class Date extends AbstractValueObject
     {
         return new \DateTime($this->__toString() . "00:00:00");
     }
-
 }

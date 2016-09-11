@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -28,27 +36,27 @@ class ArrayType extends AbstractType
     {
         $this->init($value);
 
-        if ($this->mustCheck())
-        {
+        if ($this->mustCheck()) {
             static::$_ValidationService->validate('array', $value, $this->minLength, $this->maxLength);
 
-            if (is_array($this->allowedValues))
+            if (is_array($this->allowedValues)) {
                 static::$_ValidationService->validate('multiSelection', $value, $this->allowedValues);
+            }
 
-            foreach ($value as $k => $val)
-            {
+            foreach ($value as $k => $val) {
                 $this->checkKey($k);
 
-                if ($this->elemtype === 'integer')
+                if ($this->elemtype === 'integer') {
                     static::$_ValidationService->validate('integer', $val);
-                elseif ($this->elemtype === 'string')
+                } elseif ($this->elemtype === 'string') {
                     static::$_ValidationService->validate('string', $val);
-                elseif ($this->elemtype === 'float')
+                } elseif ($this->elemtype === 'float') {
                     static::$_ValidationService->validate('float', $val);
-                elseif ($this->elemtype === 'boolean')
+                } elseif ($this->elemtype === 'boolean') {
                     static::$_ValidationService->validate('boolean', $val);
-                else
+                } else {
                     static::$_ValidationService->validate('scalar', $val);
+                }
             }
         }
     }

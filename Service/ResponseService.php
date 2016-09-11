@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -13,7 +21,6 @@ use Agit\ApiBundle\Common\AbstractObject;
 use Agit\ApiBundle\Common\ResponseObjectInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Tool\StringHelper;
-use Agit\IntlBundle\Tool\Translate;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
@@ -43,12 +50,12 @@ class ResponseService extends AbstractObjectService
 
     public function createResponseObject($objectName, $data = null)
     {
-        if (!$object = $this->cacheGet($objectName, $data))
-        {
+        if (! $object = $this->cacheGet($objectName, $data)) {
             $object = $this->objectMetaService->createObject($objectName);
 
-            if (!($object instanceof ResponseObjectInterface))
-            throw new InternalErrorException("Object $objectName must implement ResponseObjectInterface!");
+            if (! ($object instanceof ResponseObjectInterface)) {
+                throw new InternalErrorException("Object $objectName must implement ResponseObjectInterface!");
+            }
 
             $object->setResponseService($this);
 
@@ -67,24 +74,17 @@ class ResponseService extends AbstractObjectService
 
     public function fillObjectFromPlain(ResponseObjectInterface $object, $data)
     {
-        if ($object instanceof DataAwareResponseObjectInterface)
-        {
+        if ($object instanceof DataAwareResponseObjectInterface) {
             $object->fill($data);
-        }
-        elseif ($this->isEntity($data))
-        {
+        } elseif ($this->isEntity($data)) {
             $object = $this->fillObjectFromEntity($object, $data);
-        }
-        elseif (is_object($data))
-        {
+        } elseif (is_object($data)) {
             $values = get_object_vars($data) + $object->getValues();
 
-            foreach ($values as $propName => $value)
-            {
+            foreach ($values as $propName => $value) {
                 $metas = $this->getPropertyMetas($object, $propName);
 
-                if (!$this->doInclude($metas["View"], $propName))
-                {
+                if (! $this->doInclude($metas["View"], $propName)) {
                     unset($object->$propName);
                     continue;
                 }
@@ -100,15 +100,14 @@ class ResponseService extends AbstractObjectService
     {
         $metadata = $this->entityManager->getClassMetadata(get_class($entity));
 
-        if ($entity instanceof Proxy)
+        if ($entity instanceof Proxy) {
             $entity->__load();
+        }
 
-        foreach ($object->getKeys() as $propName)
-        {
+        foreach ($object->getKeys() as $propName) {
             $metas = $this->getPropertyMetas($object, $propName);
 
-            if (!$this->doInclude($metas["View"], $propName))
-            {
+            if (! $this->doInclude($metas["View"], $propName)) {
                 unset($object->$propName);
                 continue;
             }
@@ -117,44 +116,40 @@ class ResponseService extends AbstractObjectService
             $value = null;
 
             // check if a getter exists, otherwise access value through metadata
-            if (is_callable([$entity, $getter]))
+            if (is_callable([$entity, $getter])) {
                 $value = $entity->$getter();
-            elseif ($metadata->hasField($propName) || $metadata->hasAssociation($propName))
+            } elseif ($metadata->hasField($propName) || $metadata->hasAssociation($propName)) {
                 $value = $metadata->getFieldValue($entity, $propName);
-
-            if ($metadata->hasField($propName))
-            {
-                $object->set($propName, $value);
             }
-            elseif ($metadata->hasAssociation($propName))
-            {
+
+            if ($metadata->hasField($propName)) {
+                $object->set($propName, $value);
+            } elseif ($metadata->hasAssociation($propName)) {
                 $mapping = $metadata->getAssociationMapping($propName);
                 $typeMeta = $metas["Type"];
 
-                if (!$typeMeta->isObjectType() && !$typeMeta->isEntityType())
+                if (! $typeMeta->isObjectType() && ! $typeMeta->isEntityType()) {
                     throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be an object/entity type.", $propName, $object->getObjectName()));
+                }
 
-                if ($mapping["type"] & ClassMetadataInfo::TO_ONE)
-                {
-                    if ($value)
-                    {
+                if ($mapping["type"] & ClassMetadataInfo::TO_ONE) {
+                    if ($value) {
                         $targetClass = $this->getRealTargetClass($value, $typeMeta);
                         $object->set($propName, $this->createResponseObject($targetClass, $value));
                     }
-                }
-                elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY)
-                {
-                    if (!$typeMeta->isListType())
+                } elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY) {
+                    if (! $typeMeta->isListType()) {
                         throw new InternalErrorException(sprintf("Wrong type for the `%s` field of the `%s` object: Must be a list type.", $propName, $object->getObjectName()));
+                    }
 
                     $values = $value->getValues();
 
-                    if (count($values))
-                    {
+                    if (count($values)) {
                         $targetClass = $this->getRealTargetClass(reset($values), $typeMeta);
 
-                        foreach ($value->getValues() as $val)
+                        foreach ($value->getValues() as $val) {
                             $object->add($propName, $this->createResponseObject($targetClass, $val));
+                        }
                     }
                 }
             }
@@ -165,16 +160,17 @@ class ResponseService extends AbstractObjectService
     {
         $isEntity = false;
 
-        if (is_object($data))
-        {
-            if (!$this->entities)
+        if (is_object($data)) {
+            if (! $this->entities) {
                 $this->entities = $this->entityManager->getConfiguration()
                     ->getMetadataDriverImpl()->getAllClassNames();
+            }
 
             $className = get_class($data);
 
-            if ($data instanceof Proxy)
+            if ($data instanceof Proxy) {
                 $className = get_parent_class($data);
+            }
 
             $isEntity = in_array($className, $this->entities);
         }
@@ -198,8 +194,7 @@ class ResponseService extends AbstractObjectService
         $objectMeta = $this->objectMetaService->getObjectMetas($typeMeta->getTargetClass())->get("Object");
         $targetClass = $typeMeta->getTargetClass();
 
-        if ($objectMeta->get("super") && $metadata->name !== $metadata->rootEntityName)
-        {
+        if ($objectMeta->get("super") && $metadata->name !== $metadata->rootEntityName) {
             // we try to resolve the real target object by the entity name.
             // we expect the target object to be in the same API namespace and have the same name as the entity.
 
@@ -207,13 +202,15 @@ class ResponseService extends AbstractObjectService
             $namespace = strstr($typeMeta->getTargetClass(), "/", true);
             $targetClass = "$namespace/$entityName";
 
-            if (!$this->objectMetaService->objectExists($targetClass))
+            if (! $this->objectMetaService->objectExists($targetClass)) {
                 throw new InternalErrorException("Failed to resolve the target class for a $entityName entity.");
+            }
 
             $targetObjectMeta = $this->objectMetaService->getObjectMetas($targetClass)->get("Object");
 
-            if ($objectMeta->get("objectName") !== $targetObjectMeta->get("parentObjectName"))
+            if ($objectMeta->get("objectName") !== $targetObjectMeta->get("parentObjectName")) {
                 throw new InternalErrorException("Failed to resolve the target class for a $entityName entity.");
+            }
         }
 
         return $targetClass;
@@ -221,27 +218,27 @@ class ResponseService extends AbstractObjectService
 
     private function doInclude($viewMeta, $propName)
     {
-        return (
-            !$viewMeta ||
+        return
+            ! $viewMeta ||
             in_array($this->view, $viewMeta->get("only")) ||
-            (!$viewMeta->get("only") && !in_array($this->view, $viewMeta->get("not")))
-        );
+            (! $viewMeta->get("only") && ! in_array($this->view, $viewMeta->get("not")));
     }
     private function cacheGet($objectName, $data)
     {
         $id = $object = null;
 
-        if ($this->isEntity($data) && method_exists($data, "getId"))
+        if ($this->isEntity($data) && method_exists($data, "getId")) {
             $id = $data->getId();
-        elseif ($data instanceof AbstractObject && $data->has("id"))
+        } elseif ($data instanceof AbstractObject && $data->has("id")) {
             $id = $data->get("id");
+        }
 
-        if ($id)
-        {
+        if ($id) {
             $key = "$objectName:$id";
 
-            if (isset($this->objects[$key]))
+            if (isset($this->objects[$key])) {
                 $object = $this->objects[$key];
+            }
         }
 
         return $object;
@@ -249,8 +246,7 @@ class ResponseService extends AbstractObjectService
 
     private function cachePut($object)
     {
-        if ($object instanceof AbstractObject && $object->has("id") && $object->get("id"))
-        {
+        if ($object instanceof AbstractObject && $object->has("id") && $object->get("id")) {
             $key = sprintf("%s:%s", $object->getObjectName(), $object->get("id"));
             $this->objects[$key] = $object;
         }

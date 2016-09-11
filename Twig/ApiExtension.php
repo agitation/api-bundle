@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -9,8 +17,8 @@
 
 namespace Agit\ApiBundle\Twig;
 
-use Agit\BaseBundle\Service\UrlService;
 use Agit\ApiBundle\Service\CsrfTokenService;
+use Agit\BaseBundle\Service\UrlService;
 
 class ApiExtension extends \Twig_Extension
 {
@@ -23,7 +31,7 @@ class ApiExtension extends \Twig_Extension
     }
 
     /**
-     * name of the extension
+     * name of the extension.
      */
     public function getName()
     {
@@ -31,13 +39,13 @@ class ApiExtension extends \Twig_Extension
     }
 
     /**
-     * registering the template function
+     * registering the template function.
      */
     public function getFunctions()
     {
         return [
             'getApiUrlBase' => new \Twig_Function_Method($this, 'getApiUrlBase'),
-            'getCsrfToken' => new \Twig_Function_Method($this, 'getCsrfToken')
+            'getCsrfToken'  => new \Twig_Function_Method($this, 'getCsrfToken')
         ];
     }
 

@@ -1,7 +1,15 @@
 <?php
+
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 /**
- * @package    agitation/api
  * @link       http://github.com/agitation/AgitApiBundle
+ *
  * @author     Alex Günsche <http://www.agitsol.com/>
  * @copyright  2012-2015 AGITsol GmbH
  * @license    http://opensource.org/licenses/MIT
@@ -35,8 +43,9 @@ abstract class AbstractApiProcessor implements ProcessorInterface
         // we'd have to unserialize hundreds of them on every API access.
         // Therefore we store class names and options separately.
 
-        foreach ($metaList as $name => $meta)
+        foreach ($metaList as $name => $meta) {
             $newList[$name] = $this->dissectMeta($meta);
+        }
 
         return $newList;
     }
@@ -50,8 +59,9 @@ abstract class AbstractApiProcessor implements ProcessorInterface
     {
         $nsParts = array_reverse(explode('\\', $classRefl->getNamespaceName()));
 
-        if (!preg_match('|^[A-Z][A-Za-z]+V\d+$|', $nsParts[1]))
+        if (! preg_match('|^[A-Z][A-Za-z]+V\d+$|', $nsParts[1])) {
             throw new InternalErrorException(sprintf("Error in %s: API object and endpoint class namespaces must follow the pattern \Foo\Bar\NamespaceVxx\Type\Class.", $classRefl->getName()));
+        }
 
         $namespace = strtolower(preg_replace('|(V\d+)$|', '.\1', $nsParts[1]));
         $name = $classRefl->getShortName();
