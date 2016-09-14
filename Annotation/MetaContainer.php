@@ -9,29 +9,28 @@
 
 namespace Agit\ApiBundle\Annotation;
 
-use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
 
 class MetaContainer
 {
-    private $metaList = [];
+    private $metas = [];
 
     public function has($name)
     {
-        return isset($this->metaList[$name]);
+        return isset($this->metas[$name]);
     }
 
-    public function set($name, SerializableAnnotationInterface $meta)
+    public function set($name, Annotation $meta)
     {
-        $this->metaList[$name] = $meta;
+        $this->metas[$name] = $meta;
     }
 
     public function get($name)
     {
-        if (! isset($this->metaList[$name])) {
+        if (! isset($this->metas[$name])) {
             throw new InternalErrorException("No meta named `$name` found.");
         }
 
-        return $this->metaList[$name];
+        return $this->metas[$name];
     }
 }

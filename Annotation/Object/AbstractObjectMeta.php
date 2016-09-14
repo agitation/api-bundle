@@ -9,13 +9,11 @@
 
 namespace Agit\ApiBundle\Annotation\Object;
 
-use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
-use Agit\BaseBundle\Annotation\SerializableAnnotationTrait;
+use Agit\ApiBundle\Annotation\Annotation;
 
 /**
  * @Annotation
  */
-abstract class AbstractObjectMeta implements SerializableAnnotationInterface
+abstract class AbstractObjectMeta extends Annotation
 {
-    use SerializableAnnotationTrait;
 }

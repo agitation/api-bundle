@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Pluggable;
 
-use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
+use Agit\ApiBundle\Annotation\Annotation;
 use Agit\BaseBundle\Pluggable\ProcessorInterface;
 
 abstract class AbstractApiProcessor implements ProcessorInterface
@@ -41,7 +41,7 @@ abstract class AbstractApiProcessor implements ProcessorInterface
         return $newList;
     }
 
-    protected function dissectMeta(SerializableAnnotationInterface $meta)
+    protected function dissectMeta(Annotation $meta)
     {
         return ["class" => get_class($meta), "options" => $meta->getOptions()];
     }

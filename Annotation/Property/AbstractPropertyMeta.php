@@ -9,10 +9,8 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
-use Agit\BaseBundle\Annotation\SerializableAnnotationTrait;
+use Agit\ApiBundle\Annotation\Annotation;
 
-abstract class AbstractPropertyMeta implements SerializableAnnotationInterface
+abstract class AbstractPropertyMeta extends Annotation
 {
-    use SerializableAnnotationTrait;
 }
