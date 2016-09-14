@@ -17,6 +17,11 @@ use Agit\BaseBundle\Pluggable\PluginInterface;
 class Object extends AbstractObjectMeta implements PluginInterface
 {
     /**
+     * @var the API namespace, e.g. `foobar.v1`
+     */
+    public $namespace;
+
+    /**
      * @var service dependencies
      */
     public $depends = [];
@@ -32,7 +37,7 @@ class Object extends AbstractObjectMeta implements PluginInterface
     protected $scalar = false;
 
     /**
-     * @var full object name with namespace prefix, e.g. `common.v1/SomeObject`.
+     * @var full object name with namespace prefix, e.g. `foobar.v1/SomeObject`.
      *
      * @internal Do not set this field, it will be filled automatically.
      */

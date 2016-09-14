@@ -9,7 +9,6 @@
 
 namespace Agit\ApiBundle\Pluggable;
 
-use Agit\ApiBundle\Annotation\Object\AbstractObjectMeta;
 use Agit\ApiBundle\Annotation\Object\Object;
 use Agit\ApiBundle\Annotation\Property\AbstractPropertyMeta;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
@@ -23,6 +22,7 @@ use Agit\BaseBundle\Pluggable\ProcessorInterface;
 use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\CacheProvider;
+use ReflectionClass;
 
 class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
 {
@@ -48,32 +48,26 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
             throw new InternalErrorException("Error in Object annotation on $class: You must not set the `objectName` parameter, it will be set automatically.");
         }
 
+        $classRefl = new ReflectionClass($class);
+        $namespace = $plugin->get("namespace");
+
+        if (! $namespace) {
+            return;
+        } // TODO: throw exception after full migration of business code
+
+        $objectName = "$namespace/" . StringHelper::getBareClassName($class);
         $objectMeta = [];
         $propMetaList = [];
-        $classRefl = new \ReflectionClass($class);
-        $objectName = $this->translateName($classRefl);
-        $namespace = strstr($objectName, "/", true);
-
-        $objAnnotations = $this->annotationReader->getClassAnnotations($classRefl);
-
-        foreach ($objAnnotations as $annotation) {
-            if (! ($annotation instanceof AbstractObjectMeta)) {
-                continue;
-            }
-
-            $objMetaName = StringHelper::getBareClassName($annotation);
-            $objectMeta[$objMetaName] = $annotation;
-        }
 
         $plugin->set("objectName", $objectName);
         $objectMeta["Object"] = $plugin;
 
         foreach ($classRefl->getProperties() as $propertyRefl) {
-            $annotationList = $this->annotationReader->getPropertyAnnotations($propertyRefl);
+            $annotations = $this->annotationReader->getPropertyAnnotations($propertyRefl);
             $propName = $propertyRefl->getName();
             $propMeta = [];
 
-            foreach ($annotationList as $annotation) {
+            foreach ($annotations as $annotation) {
                 if (! ($annotation instanceof AbstractPropertyMeta)) {
                     continue;
                 }
@@ -111,7 +105,7 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
 
         // handle super-class children
         if ($superParent = $this->getSuperParent($classRefl)) {
-            $objectMeta["Object"]->set("parentObjectName", $superParent);
+            $objectMeta["Object"]->set("parentObjectName", strpos($superParent, "/") ? "" : "$namespace/" . $superParent);
 
             $propMetaList["_class"] = $this->dissectMetaList([
                 "Type" => new StringType(["meta" => "class"])
@@ -135,12 +129,11 @@ class ObjectProcessor extends AbstractApiProcessor implements ProcessorInterface
         $super = null;
 
         while ($refl = $refl->getParentClass()) {
-            $annotations = $this->annotationReader->getClassAnnotations($refl);
+            $annotation = $this->annotationReader->getClassAnnotation($refl, "Agit\ApiBundle\Annotation\Object\Object");
 
-            foreach ($annotations as $annotation) {
-                if ($annotation instanceof Object && $annotation->get("super")) {
-                    $super = $this->translateName($refl);
-                }
+            if ($annotation && $annotation->get("super")) {
+                $super = $annotation->get("super");
+                break;
             }
         }
 

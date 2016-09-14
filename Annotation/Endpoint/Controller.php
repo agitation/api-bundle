@@ -17,6 +17,11 @@ use Agit\BaseBundle\Pluggable\PluginInterface;
 class Controller extends AbstractEndpointMeta implements PluginInterface
 {
     /**
+     * @var the API namespace, e.g. `foobar.v1`
+     */
+    public $namespace;
+
+    /**
      * @var service dependencies
      */
     public $depends = [];

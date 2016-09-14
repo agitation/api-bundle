@@ -10,7 +10,6 @@
 namespace Agit\ApiBundle\Pluggable;
 
 use Agit\BaseBundle\Annotation\SerializableAnnotationInterface;
-use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Pluggable\ProcessorInterface;
 
 abstract class AbstractApiProcessor implements ProcessorInterface
@@ -32,7 +31,7 @@ abstract class AbstractApiProcessor implements ProcessorInterface
         $newList = [];
 
         // While we could store the Meta objects as they are,
-        // we'd have to unserialize hundreds of them on every API access.
+        // we’d have to unserialize hundreds of them on every API access.
         // Therefore we store class names and options separately.
 
         foreach ($metaList as $name => $meta) {
@@ -44,21 +43,7 @@ abstract class AbstractApiProcessor implements ProcessorInterface
 
     protected function dissectMeta(SerializableAnnotationInterface $meta)
     {
-        return ['class' => get_class($meta), 'options' => $meta->getOptions()];
-    }
-
-    protected function translateName(\ReflectionClass $classRefl)
-    {
-        $nsParts = array_reverse(explode('\\', $classRefl->getNamespaceName()));
-
-        if (! preg_match('|^[A-Z][A-Za-z]+V\d+$|', $nsParts[1])) {
-            throw new InternalErrorException(sprintf("Error in %s: API object and endpoint class namespaces must follow the pattern \Foo\Bar\NamespaceVxx\Type\Class.", $classRefl->getName()));
-        }
-
-        $namespace = strtolower(preg_replace('|(V\d+)$|', '.\1', $nsParts[1]));
-        $name = $classRefl->getShortName();
-
-        return "$namespace/$name";
+        return ["class" => get_class($meta), "options" => $meta->getOptions()];
     }
 
     protected function fixObjectName($namespace, $name)
