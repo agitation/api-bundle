@@ -17,19 +17,15 @@ namespace Agit\ApiBundle\Annotation\Controller;
 class EntityController extends Controller
 {
     /**
-     * @var the entity this class refers to
+     * @var the entity this class refers to.
      */
     public $entity;
 
     /**
-     * @var the endpoints this class offers. One or more of "get", "create", "update", "delete", "search".
-     */
-    public $endpoints;
-
-    /**
      * @var a prefix for xxx.read and xxx.write capabilities
      *
-     * xxx.read is for "get" and "search", xxx.write is for "create", "update", "delete"
+     * xxx.read is for `get` and `search`, xxx.write is for `create`, `update`,
+     * `delete`, `undelete`, `remove`.
      */
     public $cap;
 

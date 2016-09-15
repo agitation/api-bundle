@@ -51,7 +51,7 @@ class ControllerProcessor extends AbstractProcessor
         $controllerName = "$namespace/" . $classRefl->getShortName();
         $deps = $this->annotationReader->getClassAnnotation($classRefl, "Agit\ApiBundle\Annotation\Depends") ?: new Depends();
 
-        if (!$namespace) { // TODO: transitonal. throw exception after migration
+        if (! $namespace) { // TODO: transitonal. throw exception after migration
             printf("ATTENTION: missing namespace on %s\n", $class);
         }
 
@@ -107,13 +107,13 @@ class ControllerProcessor extends AbstractProcessor
 
         // TODO: Make this a constant as soon as we’re on PHP >= 5.6
         $supportedTraits = [
-            "search" => "EntitySearchTrait",
-            "get" => "EntityGetTrait",
-            "create" => "EntityCreateTrait",
-            "update" => "EntityUpdateTrait",
-            "delete" => "EntityDeleteTrait",
+            "search"   => "EntitySearchTrait",
+            "get"      => "EntityGetTrait",
+            "create"   => "EntityCreateTrait",
+            "update"   => "EntityUpdateTrait",
+            "delete"   => "EntityDeleteTrait",
             "undelete" => "EntityUndeleteTrait",
-            "remove" => "EntityRemoveTrait"
+            "remove"   => "EntityRemoveTrait"
         ];
 
         $usedTraits = [];

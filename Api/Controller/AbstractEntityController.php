@@ -12,18 +12,14 @@ namespace Agit\ApiBundle\Api\Controller;
 use Agit\ApiBundle\Annotation\Depends;
 use Agit\ApiBundle\Api\Object\AbstractEntityObject;
 use Agit\ApiBundle\Api\Object\RequestObjectInterface;
-use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Service\PersistenceService;
-use Agit\BaseBundle\Entity\DeletableInterface;
-use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\LoggingBundle\Service\Logger;
 use Agit\MultilangBundle\Multilang;
 use Doctrine\ORM\EntityManager;
-use Exception;
-use Psr\Log\LogLevel;
+use stdClass;
 
 /**
  * @Depends({"@doctrine.orm.entity_manager", "@agit.api.persistence"});
@@ -139,7 +135,7 @@ abstract class AbstractEntityController extends AbstractController
         $output = null;
 
         if (is_object($input)) {
-            $output = new \stdClass();
+            $output = new stdClass();
             $reqObj = null;
 
             if ($input instanceof AbstractEntityObject || $input instanceof AbstractValueObject || $input instanceof AbstractRequestObject) {
