@@ -13,7 +13,7 @@ use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
 
 /**
- * @Object\Object(namespace="common.v1")(scalar=true)
+ * @Object\Object(namespace="common.v1", scalar=true)
  *
  * A simple string value.
  */
