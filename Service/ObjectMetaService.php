@@ -19,11 +19,13 @@ class ObjectMetaService
 {
     use MetaAwareTrait;
 
-    private $cache;
-
     private $validationService;
 
     protected $factory;
+
+    private $objectMetaCache = [];
+
+    private $objectPropMetasCache = [];
 
     public function __construct(Cache $cache, ValidationService $validationService, Factory $factory = null)
     {
@@ -73,9 +75,11 @@ class ObjectMetaService
             throw new InvalidObjectException("Invalid object: $objectName");
         }
 
-        // TODO: Cache
+        if (!isset($this->objectMetaCache[$objectName])) {
+            $this->objectMetaCache[$objectName] = $this->createMetaContainer($this->objects[$objectName]["objectMeta"]);
+        }
 
-        return $this->createMetaContainer($this->objects[$objectName]["objectMeta"]);
+        return $this->objectMetaCache[$objectName];
     }
 
     public function getObjectPropertyMetas($objectName)
@@ -84,15 +88,15 @@ class ObjectMetaService
             throw new InvalidObjectException("Invalid object: $objectName");
         }
 
-        $propMetaContainerList = [];
+        if (!isset($this->objectPropMetasCache[$objectName])) {
+            $this->objectPropMetasCache[$objectName] = [];
 
-        foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList) {
-            $propMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
+            foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList) {
+                $this->objectPropMetasCache[$objectName][$propName] = $this->createMetaContainer($propMetaList);
+            }
         }
 
-        // TODO: Cache
-
-        return $propMetaContainerList;
+        return $this->objectPropMetasCache[$objectName];
     }
 
     public function getPropertyMetas($objectName, $propName)
@@ -101,11 +105,13 @@ class ObjectMetaService
             throw new InvalidObjectException("Invalid object: $objectName");
         }
 
-        if (! isset($this->objects[$objectName]["propMetaList"][$propName])) {
+        $objectPropsMetas = $this->getObjectPropertyMetas($objectName);
+
+        if (! isset($objectPropsMetas[$propName])) {
             throw new InvalidObjectException("Invalid object property: $objectName.$propName");
         }
 
-        return $this->createMetaContainer($this->objects[$objectName]["propMetaList"][$propName]);
+        return $objectPropsMetas[$propName];
     }
 
     public function getPropertyMeta($objectName, $propName, $metaName)
@@ -114,15 +120,13 @@ class ObjectMetaService
             throw new InvalidObjectException("Invalid object: $objectName");
         }
 
-        if (! isset($this->objects[$objectName]["propMetaList"][$propName])) {
-            throw new InvalidObjectException("Invalid object property: $objectName.$propName");
-        }
+        $propMetas = $this->getPropertyMetas($objectName, $propName);
 
-        if (! $this->objects[$objectName]["propMetaList"][$propName][$metaName]) {
+        if (! $propMetas->has($metaName)) {
             throw new InvalidObjectException("Invalid object property meta: $objectName.$propName.$metaName");
         }
 
-        return $this->composeMeta($this->objects[$objectName]["propMetaList"][$propName][$metaName]);
+        return $propMetas->get($metaName);
     }
 
     public function getObjectNameFromClass($class)
