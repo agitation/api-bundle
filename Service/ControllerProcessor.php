@@ -52,6 +52,8 @@ class ControllerProcessor extends AbstractProcessor
         $controllerName = "$namespace/" . $classRefl->getShortName();
         $deps = $this->annotationReader->getClassAnnotation($classRefl, "Agit\ApiBundle\Annotation\Depends") ?: new Depends();
 
+        $this->checkConstructor($classRefl, $deps);
+
         if (! $namespace) { // TODO: transitonal. throw exception after migration
             printf("ATTENTION: missing namespace on %s\n", $class);
         }

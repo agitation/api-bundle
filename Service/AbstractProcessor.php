@@ -10,6 +10,8 @@
 namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Annotation\Annotation;
+use Agit\ApiBundle\Annotation\Depends;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Service\ClassCollector;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\Cache;
@@ -95,6 +97,13 @@ abstract class AbstractProcessor
         return (preg_match("|^[a-z0-9]+\.v\d+/[a-z0-9\.]+(\[\])?$|i", $name))
             ? $name
             : "$namespace/$name";
+    }
+
+    protected function checkConstructor(ReflectionClass $classRefl, Depends $deps)
+    {
+        if (count($deps->get("value")) && ! $classRefl->getConstructor()) {
+            throw new InternalErrorException(sprintf("Class %s has dependencies, but doesn’t have a constructor to inject them!", $classRefl->name));
+        }
     }
 
     abstract protected function processClass(ReflectionClass $classRefl, Annotation $desc);

@@ -9,7 +9,6 @@
 
 namespace Agit\ApiBundle\Api\Controller;
 
-use Agit\ApiBundle\Annotation\Depends;
 use Agit\ApiBundle\Api\Object\AbstractEntityObject;
 use Agit\ApiBundle\Api\Object\RequestObjectInterface;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
@@ -22,8 +21,6 @@ use Doctrine\ORM\EntityManager;
 use stdClass;
 
 /**
- * @Depends({"@doctrine.orm.entity_manager", "@agit.api.persistence"});
- *
  * Endpoint class providing CRUD operations for entities.
  *
  * NOTE: The `get`, `create`, `update`, `delete`, `undelete`, `remove` and `search`
@@ -108,10 +105,7 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function saveEntity($entity, $request)
     {
-        $this->getService("agit.api.persistence")->saveEntity(
-            $entity,
-            $this->getPersistableData($request)
-        );
+        $this->persistenceService->saveEntity($entity, $this->getPersistableData($request));
 
         return $entity;
     }
