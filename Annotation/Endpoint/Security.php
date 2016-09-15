@@ -9,10 +9,12 @@
 
 namespace Agit\ApiBundle\Annotation\Endpoint;
 
+use Agit\ApiBundle\Annotation\Annotation;
+
 /**
  * @Annotation
  */
-class Security extends AbstractEndpointMeta
+class Security extends Annotation
 {
     /**
      * @var user capability required for this call.

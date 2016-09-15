@@ -92,7 +92,7 @@ class GenerateObjectCommand extends ContainerAwareCommand
                     "namespace %s\Plugin\Api\%s\Object;\n\n" .
                     "use Agit\ApiBundle\Annotation\Object;\n" .
                     "use Agit\ApiBundle\Annotation\Property;\n" .
-                    "use Agit\ApiBundle\Common\AbstractEntityObject;\n\n" .
+                    "use Agit\ApiBundle\Api\Object\AbstractEntityObject;\n\n" .
                     "/**\n" .
                     " * @Object\Object\n" .
                     " */\n" .

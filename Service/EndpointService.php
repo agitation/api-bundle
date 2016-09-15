@@ -9,103 +9,106 @@
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\ApiBundle\Common\AbstractController;
+use Agit\ApiBundle\Api\Controller\AbstractEntityController;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\ApiBundle\Exception\UnauthorizedException;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\BaseBundle\Pluggable\Cache\CacheLoaderFactory;
-use Agit\BaseBundle\Pluggable\ServiceInjectorTrait;
 use Agit\IntlBundle\Tool\Translate;
+use Agit\LoggingBundle\Service\Logger;
 use Agit\UserBundle\Service\UserService;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\Common\Cache\Cache;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class EndpointService
 {
-    use ServiceInjectorTrait;
     use MetaAwareTrait;
+
+    private $endpoints = [];
+
+    private $endpointMetas = [];
+
+    protected $responseService;
+
+    protected $persistenceService;
+
+    protected $logger;
+
+    protected $entityManager;
+
+    protected $factory;
 
     protected $userService;
 
-    protected $cacheLoader;
-
-    protected $container;
-
-    private $endpoints;
-
-    public function __construct(CacheLoaderFactory $cacheLoaderFactory, UserService $userService = null, ContainerInterface $container)
-    {
-        $this->cacheLoader = $cacheLoaderFactory->create("agit.api.endpoint");
+    public function __construct(
+        Cache $cache,
+        ResponseService $responseService,
+        PersistenceService $persistenceService,
+        EntityManager $entityManager,
+        Factory $factory,
+        Logger $logger = null,
+        UserService $userService = null
+    ) {
+        $this->endpoints = $cache->fetch("agit.api.endpoint") ?: [];
+        $this->responseService = $responseService;
+        $this->persistenceService = $persistenceService;
+        $this->entityManager = $entityManager;
+        $this->factory = $factory;
         $this->userService = $userService;
-        $this->container = $container;
+        $this->logger = $logger;
     }
 
-    public function createEndpoint($name, Request $request = null)
+    public function createEndpointController($name, Request $request = null)
     {
-        $this->loadEndpoints();
-
         if (! isset($this->endpoints[$name])) {
             throw new InvalidEndpointException("Invalid endpoint: $name");
         }
 
-        $metaContainer = $this->createMetaContainer($this->endpoints[$name]["meta"]);
+        $metaContainer = $this->getEndpointMetaContainer($name);
+        $this->checkAuthorisation($metaContainer);
 
-        $class = $this->endpoints[$name]["class"];
-        $endpoint = new $class(
-            $name,
-            $metaContainer,
-            $this->container->get("agit.api.request"),
-            $this->container->get("agit.api.response"),
-            $this->container->get("agit.logger"),
-            $request
-        );
+        $deps = $this->composeMeta($this->endpoints[$name]["deps"]);
+        $controller = $this->factory->create($this->endpoints[$name]["class"], $deps);
 
-        $this->checkAuthorisation($endpoint);
+        $controller->init($name, $metaContainer, $this->responseService);
 
-        $this->injectServices($endpoint, $metaContainer->get("Endpoint")->get("depends"));
+        if ($controller instanceof AbstractEntityController) {
+            $controller->initExtra($this->persistenceService, $this->entityManager, $this->logger);
+        }
 
-        return $endpoint;
+        return $controller;
     }
 
     public function getEndpointNames()
     {
-        $this->loadEndpoints();
-
         return array_keys($this->endpoints);
     }
 
-    public function getController($name)
-    {
-        $this->loadEndpoints();
-
-        if (! isset($this->endpoints[$name])) {
-            throw new InternalErrorException("This endpoint does not exist.");
-        }
-
-        return $this->endpoints[$name]["class"];
-    }
+    // public function getEndpoint($name)
+    // {
+    //     if (! isset($this->endpoints[$name])) {
+    //         throw new InternalErrorException("This endpoint does not exist.");
+    //     }
+    //
+    //     return $this->endpoints[$name]["class"];
+    // }
 
     public function getEndpointMetaContainer($name)
     {
-        $this->loadEndpoints();
-
         if (! isset($this->endpoints[$name])) {
             throw new InternalErrorException("This endpoint does not exist.");
         }
 
-        return $this->createMetaContainer($this->endpoints[$name]["meta"]);
-    }
-
-    protected function loadEndpoints()
-    {
-        if (is_null($this->endpoints)) {
-            $this->endpoints = $this->cacheLoader->load();
+        if (! isset($this->endpointMetas[$name])) {
+            $this->endpointMetas[$name] = $this->createMetaContainer($this->endpoints[$name]["meta"]);
         }
+
+        return $this->endpointMetas[$name];
     }
 
-    private function checkAuthorisation(AbstractController $endpoint)
+    private function checkAuthorisation($metaContainer)
     {
-        $reqCapibilty = $endpoint->getMeta("Security")->get("capability");
+        $reqCapibilty = $metaContainer->get("Security")->get("capability");
 
         if (is_null($reqCapibilty)) {
             throw new InternalErrorException("The endpoint call must specify the required capabilities.");

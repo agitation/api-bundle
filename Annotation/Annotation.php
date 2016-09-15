@@ -9,8 +9,8 @@
 
 namespace Agit\ApiBundle\Annotation;
 
-use Serializable;
 use Agit\BaseBundle\Exception\InternalErrorException;
+use Serializable;
 
 abstract class Annotation implements Serializable
 {

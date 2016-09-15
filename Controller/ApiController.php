@@ -9,10 +9,10 @@
 
 namespace Agit\ApiBundle\Controller;
 
-use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\BaseBundle\Exception\AgitException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,32 +28,30 @@ class ApiController extends Controller
             $this->setLocale();
             $this->checkHeaderAuth();
 
+            $formatter = $this->container->get("agit.api.formatter")->getFormatter($_ext);
             $endpointService = $this->container->get("agit.api.endpoint");
-            $formatterService = $this->container->get("agit.api.formatter");
+            $endpointName = "$namespace/$class.$method";
 
-            if (! $formatterService->formatExists($_ext)) {
-                throw new BadRequestException("Invalid format.");
-            }
+            $endpointMeta = $endpointService->getEndpointMetaContainer($endpointName);
+            $controller = $endpointService->createEndpointController($endpointName);
 
-            $endpoint = $endpointService->createEndpoint("$namespace/$class.$method", $request);
-
-            if (! $isDev && ! $endpoint->getMeta("Security")->get("allowCrossOrigin")) {
+            if (! $isDev && ! $endpointMeta->get("Security")->get("allowCrossOrigin")) {
                 $this->container->get("agit.api.csrf")->checkToken($this->getCsrfToken());
             }
 
-            $endpoint->setupEnvironment();
-
             if ($request->getMethod() !== "OPTIONS") {
-                $endpoint->executeCall();
+                $result = $controller->$method($this->createRequestObject(
+                    $endpointMeta->get("Endpoint")->get("request"),
+                    $request->get("request")
+                ));
 
-                $response = $this->container->get("agit.api.formatter")
-                    ->getFormatter($_ext, $endpoint, $request)->getResponse();
+                $response = $formatter->createResponse($request, $result);
             }
 
-            if ($endpoint->getMeta("Security")->get("allowCrossOrigin")) {
+            if ($endpointMeta->get("Security")->get("allowCrossOrigin")) {
                 $response->headers->set("Access-Control-Allow-Origin", "*");
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $publicException = $e instanceof AgitException && ! ($e instanceof InternalErrorException);
 
             $content = $isDev || $publicException
@@ -109,5 +107,18 @@ class ApiController extends Controller
         }
 
         return (string) $submittedCsrfToken;
+    }
+
+    private function createRequestObject($objectName, $rawRequest)
+    {
+        $request = json_decode($rawRequest);
+
+        // allow literal strings without quotes
+        if (is_null($request) && strlen($rawRequest)) {
+            $request = $rawRequest;
+        }
+
+        return $this->container->get("agit.api.request")
+            ->createRequestObject($objectName, $request);
     }
 }

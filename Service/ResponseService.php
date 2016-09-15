@@ -9,8 +9,8 @@
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\ApiBundle\Common\AbstractObject;
-use Agit\ApiBundle\Common\ResponseObjectInterface;
+use Agit\ApiBundle\Api\Object\AbstractObject;
+use Agit\ApiBundle\Api\Object\ResponseObjectInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\ORM\EntityManager;

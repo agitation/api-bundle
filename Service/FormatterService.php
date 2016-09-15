@@ -9,67 +9,29 @@
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\ApiBundle\Common\AbstractController;
-use Agit\ApiBundle\Exception\IncompatibleFormatterException;
-use Agit\BaseBundle\Pluggable\Cache\CacheLoaderFactory;
-use Agit\BaseBundle\Pluggable\ServiceInjectorTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Agit\ApiBundle\Exception\FormatterNotFoundException;
+use Agit\IntlBundle\Tool\Translate;
 
 class FormatterService
 {
-    use ServiceInjectorTrait;
-    use MetaAwareTrait;
+    private $formatters = [];
 
-    /**
-     * @var service container instance.
-     */
-    protected $container;
-
-    /**
-     * @var CacheLoader instance.
-     */
-    protected $cacheLoader;
-
-    private $debug;
-
-    private $formats;
-
-    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ContainerInterface $container, $debug)
+    public function addFormatter($extension, AbstractFormatter $formatter)
     {
-        $this->cacheLoader = $cacheLoaderFactory->create("agit.api.formatter");
-        $this->container = $container;
-        $this->debug = $debug;
+        $this->formatters[$extension] = $formatter;
     }
 
-    public function formatExists($format)
+    public function formatExists($extension)
     {
-        $this->loadFormats();
-
-        return is_array($this->formats) && isset($this->formats[$format]);
+        return isset($this->formatters[$extension]);
     }
 
-    public function getFormatter($format, AbstractController $controller, Request $request)
+    public function getFormatter($extension)
     {
-        if (! $this->formatExists($format)) {
-            throw new IncompatibleFormatterException("Unknown data format.");
+        if (! $this->formatExists($extension)) {
+            throw new FormatterNotFoundException(Translate::t("The requested format is not supported."));
         }
 
-        $class = $this->formats[$format]["class"];
-        $meta = $this->formats[$format]["meta"];
-
-        $metaContainer = $this->createMetaContainer(["Formatter" => $meta]);
-        $formatter = new $class($metaContainer, $controller, $request, $this->debug);
-
-        $this->injectServices($formatter, $metaContainer->get("Formatter")->get("depends"));
-
-        return $formatter;
-    }
-
-    private function loadFormats()
-    {
-        if (is_null($this->formats)) {
-            $this->formats = $this->cacheLoader->load();
-        }
+        return $this->formatters[$extension];
     }
 }

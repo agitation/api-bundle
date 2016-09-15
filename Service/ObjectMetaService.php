@@ -12,27 +12,24 @@ namespace Agit\ApiBundle\Service;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\BaseBundle\Pluggable\Cache\CacheLoaderFactory;
-use Agit\BaseBundle\Pluggable\ServiceInjectorTrait;
 use Agit\ValidationBundle\ValidationService;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\Common\Cache\Cache;
 
 class ObjectMetaService
 {
-    use ServiceInjectorTrait;
     use MetaAwareTrait;
 
-    private $cacheLoaderFactory;
+    private $cache;
 
     private $validationService;
 
-    protected $container;
+    protected $factory;
 
-    public function __construct(CacheLoaderFactory $cacheLoaderFactory, ValidationService $validationService, ContainerInterface $container = null)
+    public function __construct(Cache $cache, ValidationService $validationService, Factory $factory = null)
     {
-        $this->objects = $cacheLoaderFactory->create("agit.api.object")->load();
+        $this->objects = $cache->fetch("agit.api.object") ?: [];
         AbstractType::setValidationService($validationService);
-        $this->container = $container;
+        $this->factory = $factory;
     }
 
     public function createObject($objectName, $force = false)
@@ -44,11 +41,9 @@ class ObjectMetaService
         }
 
         $objectClass = $this->getObjectClass($objectName);
-        $objectPropertyMetas = $this->getObjectPropertyMetas($objectName);
-
-        $object = new $objectClass($objectMetas, $objectPropertyMetas, $this);
-
-        $this->injectServices($object, $objectMetas->get("Object")->get("depends"));
+        $deps = $this->composeMeta($this->objects[$objectName]["deps"]);
+        $object = $this->factory->create($objectClass, $deps);
+        $object->init($objectName, $this);
 
         return $object;
     }
@@ -78,6 +73,8 @@ class ObjectMetaService
             throw new InvalidObjectException("Invalid object: $objectName");
         }
 
+        // TODO: Cache
+
         return $this->createMetaContainer($this->objects[$objectName]["objectMeta"]);
     }
 
@@ -92,6 +89,8 @@ class ObjectMetaService
         foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList) {
             $propMetaContainerList[$propName] = $this->createMetaContainer($propMetaList);
         }
+
+        // TODO: Cache
 
         return $propMetaContainerList;
     }

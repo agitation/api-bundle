@@ -7,22 +7,17 @@
  * @license    http://opensource.org/licenses/MIT
  */
 
-namespace Agit\ApiBundle\Annotation\Endpoint;
+namespace Agit\ApiBundle\Annotation\Controller;
 
 use Agit\ApiBundle\Annotation\Annotation;
 
 /**
  * @Annotation
  */
-class Endpoint extends Annotation
+class Controller extends Annotation
 {
     /**
-     * @var root request object namespace/name
+     * @var the API namespace, e.g. `foobar.v1`
      */
-    protected $request;
-
-    /**
-     * @var root response object namespace/name
-     */
-    protected $response;
+    public $namespace;
 }

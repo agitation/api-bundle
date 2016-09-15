@@ -1,53 +1,53 @@
 services:
-
     agit.api.endpoint:
         class: Agit\ApiBundle\Service\EndpointService
-        arguments: [ @agit.pluggable.cache.loader_factory, @?agit.user, @service_container ]
-        tags: [{ name: agit.pluggable, type: api.endpoint }]
+        arguments: [ "@agit.common.cache.persistent", "@agit.api.response", "@agit.api.persistence", "@doctrine.orm.entity_manager", "@agit.api.factory", "@?agit.logger", "@?agit.user" ]
 
     agit.api.objectmeta:
         class: Agit\ApiBundle\Service\ObjectMetaService
-        arguments: [ @agit.pluggable.cache.loader_factory, @agit.validation, @service_container ]
-        tags: [{ name: agit.pluggable, type: api.object }]
+        arguments: [ "@agit.common.cache.persistent", "@agit.validation", "@agit.api.factory" ]
 
     agit.api.request:
         class: Agit\ApiBundle\Service\RequestService
-        arguments: [ @agit.api.objectmeta ]
+        arguments: [ "@agit.api.objectmeta" ]
 
     agit.api.response:
         class: Agit\ApiBundle\Service\ResponseService
-        arguments: [ @agit.api.objectmeta, @doctrine.orm.entity_manager ]
+        arguments: [ "@agit.api.objectmeta", "@doctrine.orm.entity_manager" ]
 
     agit.api.formatter:
         class: Agit\ApiBundle\Service\FormatterService
-        arguments: [ @agit.pluggable.cache.loader_factory, @service_container, %kernel.debug% ]
-        tags: [{ name: agit.pluggable, type: api.formatter }]
+        arguments: [ "@agit.common.cache.persistent", "%kernel.debug%" ]
 
     agit.api.persistence:
         class: Agit\ApiBundle\Service\PersistenceService
-        arguments: [ @doctrine.orm.entity_manager, @validator ]
+        arguments: [ "@doctrine.orm.entity_manager", "@validator" ]
 
+    agit.api.factory:
+        class: Agit\ApiBundle\Service\Factory
+        arguments: [ "@service_container" ]
 
-    # Processor factories for pluggable API services
+    # processors
 
-    agit.api.pluggable.processor_factory.endpoint:
-        private: true
-        class: Agit\ApiBundle\Pluggable\EndpointProcessorFactory
-        arguments: [ @annotation_reader, @agit.common.cache.persistent, @doctrine.orm.entity_manager ]
-        tags: [{ name: agit.pluggable.processor_factory, type: api.endpoint }]
+    agit.api.controller_processor:
+        class: Agit\ApiBundle\Service\ControllerProcessor
+        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.common.cache.persistent", "@doctrine.orm.entity_manager" ]
 
-    agit.api.pluggable.processor_factory.object:
-        private: true
-        class: Agit\ApiBundle\Pluggable\ObjectProcessorFactory
-        arguments: [ @annotation_reader, @agit.common.cache.persistent ]
-        tags: [{ name: agit.pluggable.processor_factory, type: api.object }]
+    agit.api.object_processor:
+        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.common.cache.persistent" ]
+        class: Agit\ApiBundle\Service\ObjectProcessor
 
-    agit.api.pluggable.processor_factory.formatter:
-        private: true
-        class: Agit\ApiBundle\Pluggable\FormatterProcessorFactory
-        arguments: [ @annotation_reader, @agit.common.cache.persistent ]
-        tags: [{ name: agit.pluggable.processor_factory, type: api.formatter }]
+    # formatters
 
+    agit.api.json_formatter:
+        class: Agit\ApiBundle\Service\JsonFormatter
+        arguments: [ "@agit.api.objectmeta", "%kernel.debug%" ]
+        tags: [{ name: agit.api.formatter, extension: json }]
+
+    agit.api.jsonp_formatter:
+        class: Agit\ApiBundle\Service\JsonpFormatter
+        arguments: [ "@agit.api.objectmeta", "%kernel.debug%" ]
+        tags: [{ name: agit.api.formatter, extension: jsonp }]
 
     # various other services
 
@@ -61,6 +61,6 @@ services:
         arguments: [@session]
 
     agit.api.twig:
-        class: Agit\ApiBundle\Twig\ApiExtension
+        class: Agit\ApiBundle\Service\TwigExtension
         arguments:  [ @agit.common.url, @agit.api.csrf ]
         tags: [{ name: twig.extension }]

@@ -9,22 +9,15 @@
 
 namespace Agit\ApiBundle\Annotation\Object;
 
-use Agit\BaseBundle\Pluggable\PluginInterface;
-
 /**
  * @Annotation
  */
-class Object extends AbstractObjectMeta implements PluginInterface
+class Object extends AbstractObjectMeta
 {
     /**
      * @var the API namespace, e.g. `foobar.v1`
      */
     public $namespace;
-
-    /**
-     * @var service dependencies
-     */
-    public $depends = [];
 
     /**
      * @var this is a super object and cannot be instantiated as such

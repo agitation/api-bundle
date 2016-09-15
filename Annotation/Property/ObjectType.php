@@ -9,7 +9,7 @@
 
 namespace Agit\ApiBundle\Annotation\Property;
 
-use Agit\ApiBundle\Common\AbstractObject;
+use Agit\ApiBundle\Api\Object\AbstractObject;
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
 
 /**
