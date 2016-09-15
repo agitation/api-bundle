@@ -9,6 +9,7 @@
 
 namespace Agit\ApiBundle\Service;
 
+use Twig_SimpleFunction;
 use Agit\BaseBundle\Service\UrlService;
 use Twig_Extension;
 
@@ -36,8 +37,8 @@ class TwigExtension extends Twig_Extension
     public function getFunctions()
     {
         return [
-            "getApiUrlBase" => new \Twig_Function_Method($this, "getApiUrlBase"),
-            "getCsrfToken"  => new \Twig_Function_Method($this, "getCsrfToken")
+            new Twig_SimpleFunction("getApiUrlBase", [$this, "getApiUrlBase"]),
+            new Twig_SimpleFunction("getCsrfToken", [$this, "getCsrfToken"])
         ];
     }
 
