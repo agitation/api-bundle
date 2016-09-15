@@ -9,10 +9,9 @@
 
 namespace Agit\ApiBundle\Annotation\Endpoint;
 
-/**
- * @Annotation
- */
-class Endpoint extends AbstractEndpointMeta
+use Agit\ApiBundle\Annotation\Annotation;
+
+class AbstractEndpointMeta extends Annotation
 {
     /**
      * @var root request object namespace/name

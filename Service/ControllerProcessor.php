@@ -13,6 +13,7 @@ use Agit\ApiBundle\Annotation\Annotation;
 use Agit\ApiBundle\Annotation\Controller\Controller;
 use Agit\ApiBundle\Annotation\Controller\EntityController;
 use Agit\ApiBundle\Annotation\Depends;
+use Agit\ApiBundle\Annotation\Endpoint\AbstractEndpointMeta;
 use Agit\ApiBundle\Annotation\Endpoint\EntityEndpoint;
 use Agit\ApiBundle\Annotation\Endpoint\Security;
 use Agit\BaseBundle\Service\ClassCollector;
@@ -64,7 +65,7 @@ class ControllerProcessor extends AbstractProcessor
             $endpointMeta = [];
 
             foreach ($annotationList as $annotation) {
-                if ($annotation instanceof Controller) {
+                if ($annotation instanceof AbstractEndpointMeta) {
                     $endpointMetaName = StringHelper::getBareClassName($annotation);
                     $endpointMeta[$endpointMetaName] = $annotation;
                 }

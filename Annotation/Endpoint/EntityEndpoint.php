@@ -12,7 +12,7 @@ namespace Agit\ApiBundle\Annotation\Endpoint;
 /**
  * @Annotation
  */
-class EntityEndpoint extends Endpoint
+class EntityEndpoint extends AbstractEndpointMeta
 {
     /**
      * @var name of the entity to process
