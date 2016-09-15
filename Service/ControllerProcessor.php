@@ -25,6 +25,8 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class ControllerProcessor extends AbstractProcessor
 {
+    const ENTITY_TRAIT_NAMESPACE = "Agit\ApiBundle\Api\Controller";
+
     private $entityManager;
 
     public function __construct(Kernel $kernel, ClassCollector $classCollector, Reader $annotationReader, Cache $cacheProvider, EntityManager $entityManager)
@@ -49,8 +51,12 @@ class ControllerProcessor extends AbstractProcessor
         $controllerName = "$namespace/" . $classRefl->getShortName();
         $deps = $this->annotationReader->getClassAnnotation($classRefl, "Agit\ApiBundle\Annotation\Depends") ?: new Depends();
 
+        if (!$namespace) { // TODO: transitonal. throw exception after migration
+            printf("ATTENTION: missing namespace on %s\n", $class);
+        }
+
         if ($desc instanceof EntityController) {
-            $this->processEntityController($desc, $class, $controllerName, $deps);
+            $this->processEntityController($desc, $classRefl, $controllerName, $deps);
         }
 
         foreach ($classRefl->getMethods() as $methodRefl) {
@@ -68,7 +74,7 @@ class ControllerProcessor extends AbstractProcessor
                 continue;
             }
 
-            if (! $methodRefl->isPublic()) {
+            if (! $methodRefl->isPublic()) { // TODO: transitonal. throw exception after migration
                 printf("ATTENTION: %s->%s must be public!\n", $class, $methodRefl->getName());
             }
 
@@ -90,19 +96,40 @@ class ControllerProcessor extends AbstractProcessor
         }
     }
 
-    protected function processEntityController($desc, $class, $controllerName, $deps)
+    protected function processEntityController($desc, $classRefl, $controllerName, $deps)
     {
+        $class = $classRefl->getName();
         $capPrefix = $desc->get("cap");
         $entityMeta = $this->entityManager->getClassMetadata($desc->get("entity"));
         $entityIdFieldMeta = $entityMeta->getFieldMapping($entityMeta->getSingleIdentifierFieldName());
         $idObject = ($entityIdFieldMeta["type"] === "integer") ? "common.v1/Integer" : "common.v1/String";
         $crossOrigin = $desc->get("crossOrigin");
 
-        foreach ($desc->get("endpoints") as $method) {
-            if (! in_array($method, ["search", "get", "create", "update", "delete", "undelete", "remove"])) {
-                continue;
-            }
+        // TODO: Make this a constant as soon as we’re on PHP >= 5.6
+        $supportedTraits = [
+            "search" => "EntitySearchTrait",
+            "get" => "EntityGetTrait",
+            "create" => "EntityCreateTrait",
+            "update" => "EntityUpdateTrait",
+            "delete" => "EntityDeleteTrait",
+            "undelete" => "EntityUndeleteTrait",
+            "remove" => "EntityRemoveTrait"
+        ];
 
+        $usedTraits = [];
+
+        foreach ($classRefl->getTraits() as $usedTrait) {
+            foreach ($supportedTraits as $method => $supportedTrait) {
+                $traitClass = self::ENTITY_TRAIT_NAMESPACE . "\\$supportedTrait";
+
+                if ($usedTrait->name === $traitClass || $usedTrait->isSubclassOf($traitClass)) {
+                    $usedTraits[] = $method;
+                    break;
+                }
+            }
+        }
+
+        foreach ($usedTraits as $method) {
             $endpointMeta = [];
             $endpointMeta["Security"] = new Security();
             $endpointMeta["Endpoint"] = new EntityEndpoint([
