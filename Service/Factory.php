@@ -32,15 +32,16 @@ class Factory
         foreach ($depends->get("value") as $dep) {
             if ($dep[0] === "@") {
                 $dep = substr($dep, 1);
-                $deps[] = $this->getContainer()->get($dep);
+                $deps[] = $this->container->get($dep);
             } elseif ($dep[0] === "%") {
                 $dep = substr($dep, 1, -1);
-                $deps[] = $this->getContainer()->getParameter($dep);
+                $deps[] = $this->container->getParameter($dep);
             } else {
                 throw new InternalErrorException("Invalid dependency: $dep.");
             }
         }
 
+        // TODO: PHP >= 5.6
         if (PHP_VERSION_ID > 50600) {
             $instance = new $class(...$deps);
         } else {
