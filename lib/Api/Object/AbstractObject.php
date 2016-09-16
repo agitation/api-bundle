@@ -139,8 +139,9 @@ abstract class AbstractObject implements JsonSerializable
         // as meta field. This is because the client must know which
         // implementation of the super class it is processing here.
 
-        if ($this->objectMeta->get("Object")->get("parentObjectName"))
+        if ($this->objectMeta->get("Object")->get("parentObjectName")) {
             $values["_class"] = $this->objectName;
+        }
 
         return $values;
     }

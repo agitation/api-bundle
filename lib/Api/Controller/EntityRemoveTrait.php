@@ -12,8 +12,6 @@ namespace Agit\ApiBundle\Api\Controller;
 use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
-use Agit\LoggingBundle\Service\Logger;
-use Doctrine\ORM\EntityManager;
 use Exception;
 use Psr\Log\LogLevel;
 

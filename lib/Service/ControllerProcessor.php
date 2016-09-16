@@ -24,7 +24,6 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\EntityManager;
 use ReflectionClass;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class ControllerProcessor extends AbstractProcessor
 {

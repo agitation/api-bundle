@@ -16,15 +16,13 @@ use Agit\ApiBundle\Annotation\Property\AbstractPropertyMeta;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\ApiBundle\Annotation\Property\ObjectType;
-use Agit\ApiBundle\Annotation\Property\MetaType;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Service\ClassCollector;
 use Agit\BaseBundle\Tool\StringHelper;
-use ReflectionClass;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\Cache;
+use ReflectionClass;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class ObjectProcessor extends AbstractProcessor
 {
@@ -98,8 +96,9 @@ class ObjectProcessor extends AbstractProcessor
 
             $defaults[$propName] = $allDefaults[$propName];
 
-            if ($propMeta["Type"]->isListType() && !is_array($defaults[$propName]))
+            if ($propMeta["Type"]->isListType() && ! is_array($defaults[$propName])) {
                 $defaults[$propName] = [];
+            }
 
             if ($propMeta["Type"] instanceof ObjectType) {
                 $targetClass = $propMeta["Type"]->get("class");

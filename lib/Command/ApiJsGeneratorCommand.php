@@ -9,8 +9,6 @@
 
 namespace Agit\ApiBundle\Command;
 
-use ReflectionClass;
-use ReflectionObject;
 use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -113,8 +111,9 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
             $objMeta = $objectService->getObjectMetas($objectName)->get("Object");
             $meta = [];
 
-            if ($objMeta->get("parentObjectName"))
+            if ($objMeta->get("parentObjectName")) {
                 $meta["parent"] = $objMeta->get("parentObjectName");
+            }
 
             $propsMetas = $objectService->getObjectPropertyMetas($objectName);
             $defaults = $objectService->getDefaultValues($objectName);
@@ -128,10 +127,11 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
                 }
             }
 
-            $list[$objectName] = [ "props" => $properties ];
+            $list[$objectName] = ["props" => $properties];
 
-            if (count($meta))
+            if (count($meta)) {
                 $list[$objectName]["meta"] = $meta;
+            }
         }
 
         $this->output->writeln(sprintf(" %s found.", count($list)));

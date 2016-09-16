@@ -84,7 +84,7 @@ class ObjectMetaService
             throw new InvalidObjectException("Invalid object: $objectName");
         }
 
-        if (!isset($this->objectMetaCache[$objectName])) {
+        if (! isset($this->objectMetaCache[$objectName])) {
             $this->objectMetaCache[$objectName] = $this->createMetaContainer($this->objects[$objectName]["objectMeta"]);
         }
 
@@ -97,7 +97,7 @@ class ObjectMetaService
             throw new InvalidObjectException("Invalid object: $objectName");
         }
 
-        if (!isset($this->objectPropMetasCache[$objectName])) {
+        if (! isset($this->objectPropMetasCache[$objectName])) {
             $this->objectPropMetasCache[$objectName] = [];
 
             foreach ($this->objects[$objectName]["propMetaList"] as $propName => $propMetaList) {

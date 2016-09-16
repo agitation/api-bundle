@@ -13,11 +13,10 @@ use Agit\ApiBundle\Annotation\Annotation;
 use Agit\ApiBundle\Annotation\Depends;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Service\ClassCollector;
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\Cache;
 use ReflectionClass;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 abstract class AbstractProcessor implements CacheWarmerInterface
 {

@@ -9,9 +9,9 @@
 
 namespace Agit\ApiBundle\Service;
 
-use Twig_SimpleFunction;
 use Agit\BaseBundle\Service\UrlService;
 use Twig_Extension;
+use Twig_SimpleFunction;
 
 class TwigExtension extends Twig_Extension
 {
