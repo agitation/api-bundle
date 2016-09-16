@@ -9,6 +9,8 @@
 
 namespace Agit\ApiBundle\Command;
 
+use ReflectionClass;
+use ReflectionObject;
 use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -76,7 +78,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         foreach ($names as $name) {
             $metaContainer = $endpointService->getEndpointMetaContainer($name);
 
-            if (strpos($endpointService->getController($name), $bundleNamespace) !== 0) {
+            if (strpos($endpointService->getControllerClass($name), $bundleNamespace) !== 0) {
                 continue;
             }
 
@@ -108,21 +110,28 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
                 continue;
             }
 
-            $objData = $object->getValues();
-            $objProps = [];
+            $objMeta = $objectService->getObjectMetas($objectName)->get("Object");
+            $meta = [];
 
-            $objRefl = new \ReflectionClass(get_class($object));
+            if ($objMeta->get("parentObjectName"))
+                $meta["parent"] = $objMeta->get("parentObjectName");
 
-            foreach ($objData as $key => $value) {
-                $typeMeta = $objectService->getPropertyMetas($objectName, $key)->get("Type");
-                $objProps[$key] = $this->extractTypeMeta($typeMeta);
+            $propsMetas = $objectService->getObjectPropertyMetas($objectName);
+            $defaults = $objectService->getDefaultValues($objectName);
+            $properties = [];
 
-                if ($value !== null) {
-                    $objProps[$key]["default"] = $value;
+            foreach ($propsMetas as $key => $propMeta) {
+                $properties[$key] = $this->extractTypeMeta($propMeta->get("Type"));
+
+                if ($defaults[$key] !== null) {
+                    $properties[$key]["default"] = $defaults[$key];
                 }
             }
 
-            $list[$objectName] = $objProps;
+            $list[$objectName] = [ "props" => $properties ];
+
+            if (count($meta))
+                $list[$objectName]["meta"] = $meta;
         }
 
         $this->output->writeln(sprintf(" %s found.", count($list)));
@@ -135,7 +144,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         $meta = ["type" => $typeMeta->getType()];
 
         $keywords = ["minLength", "nullable", "readonly", "maxLength", "minValue",
-            "maxValue", "positive", "allowFloat", "allowLineBreaks", "class", "meta"];
+            "maxValue", "positive", "allowFloat", "allowLineBreaks", "class"];
 
         foreach ($typeMeta->getOptions() as $key => $value) {
             if (in_array($key, $keywords) && $value !== null && $value !== false) {
