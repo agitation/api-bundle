@@ -32,10 +32,12 @@ services:
     agit.api.controller_processor:
         class: Agit\ApiBundle\Service\ControllerProcessor
         arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.common.cache.persistent", "@doctrine.orm.entity_manager" ]
+        tags: [{ name: kernel.cache_warmer }]
 
     agit.api.object_processor:
-        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.common.cache.persistent" ]
         class: Agit\ApiBundle\Service\ObjectProcessor
+        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.common.cache.persistent" ]
+        tags: [{ name: kernel.cache_warmer }]
 
     # formatters
 

@@ -17,27 +17,10 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\Cache;
 use ReflectionClass;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
-abstract class AbstractProcessor
+abstract class AbstractProcessor implements CacheWarmerInterface
 {
-    private $kernel;
-
-    private $classCollector;
-
-    private $cacheProvider;
-
-    protected $annotationReader;
-
-    private $entryList = [];
-
-    public function __construct(Kernel $kernel, ClassCollector $classCollector, Reader $annotationReader, Cache $cacheProvider)
-    {
-        $this->kernel = $kernel;
-        $this->classCollector = $classCollector;
-        $this->cacheProvider = $cacheProvider;
-        $this->annotationReader = $annotationReader;
-    }
-
     public function collect($subdir, $annotationClass, $cacheKey)
     {
         $classes = [];
@@ -62,6 +45,21 @@ abstract class AbstractProcessor
         }
     }
 
+    /**
+     * Warms up the cache, required by CacheWarmerInterface.
+     */
+    public function warmUp($cacheDir)
+    {
+        $this->process();
+    }
+
+    /**
+     * required by CacheWarmerInterface.
+     */
+    public function isOptional()
+    {
+        return true;
+    }
     protected function addEntry($key, $entry)
     {
         $this->entryList[$key] = $entry;

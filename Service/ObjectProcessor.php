@@ -18,11 +18,34 @@ use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\ApiBundle\Annotation\Property\ObjectType;
 use Agit\ApiBundle\Annotation\Property\StringType;
 use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Service\ClassCollector;
 use Agit\BaseBundle\Tool\StringHelper;
 use ReflectionClass;
+use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Cache\Cache;
+use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class ObjectProcessor extends AbstractProcessor
 {
+    protected $kernel;
+
+    protected $classCollector;
+
+    protected $cacheProvider;
+
+    protected $annotationReader;
+
+    private $cnt = [];
+
+    public function __construct(Kernel $kernel, ClassCollector $classCollector, Reader $annotationReader, Cache $cacheProvider)
+    {
+        $this->kernel = $kernel;
+        $this->classCollector = $classCollector;
+        $this->cacheProvider = $cacheProvider;
+        $this->annotationReader = $annotationReader;
+    }
+
     public function process()
     {
         $this->collect(
@@ -42,9 +65,8 @@ class ObjectProcessor extends AbstractProcessor
         }
 
         if (! $namespace) {
-            return;
-        } // TODO: throw exception after full migration of business code
-
+            throw new InternalErrorException(sprintf("ATTENTION: missing namespace on %s\n", $class));
+        }
         $objectName = "$namespace/" . $classRefl->getShortName();
         $objectMeta = [];
         $propMetaList = [];

@@ -16,6 +16,7 @@ use Agit\ApiBundle\Annotation\Depends;
 use Agit\ApiBundle\Annotation\Endpoint\AbstractEndpointMeta;
 use Agit\ApiBundle\Annotation\Endpoint\EntityEndpoint;
 use Agit\ApiBundle\Annotation\Endpoint\Security;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Service\ClassCollector;
 use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\Common\Annotations\Reader;
@@ -23,16 +24,28 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\EntityManager;
 use ReflectionClass;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class ControllerProcessor extends AbstractProcessor
 {
     const ENTITY_TRAIT_NAMESPACE = "Agit\ApiBundle\Api\Controller";
 
-    private $entityManager;
+    protected $kernel;
+
+    protected $classCollector;
+
+    protected $cacheProvider;
+
+    protected $annotationReader;
+
+    protected $entityManager;
 
     public function __construct(Kernel $kernel, ClassCollector $classCollector, Reader $annotationReader, Cache $cacheProvider, EntityManager $entityManager)
     {
-        parent::__construct($kernel, $classCollector, $annotationReader, $cacheProvider);
+        $this->kernel = $kernel;
+        $this->classCollector = $classCollector;
+        $this->cacheProvider = $cacheProvider;
+        $this->annotationReader = $annotationReader;
         $this->entityManager = $entityManager;
     }
 
@@ -54,8 +67,8 @@ class ControllerProcessor extends AbstractProcessor
 
         $this->checkConstructor($classRefl, $deps);
 
-        if (! $namespace) { // TODO: transitonal. throw exception after migration
-            printf("ATTENTION: missing namespace on %s\n", $class);
+        if (! $namespace) {
+            throw new InternalErrorException(sprintf("ATTENTION: missing namespace on %s\n", $class));
         }
 
         if ($desc instanceof EntityController) {
@@ -77,8 +90,8 @@ class ControllerProcessor extends AbstractProcessor
                 continue;
             }
 
-            if (! $methodRefl->isPublic()) { // TODO: transitonal. throw exception after migration
-                printf("ATTENTION: %s->%s must be public!\n", $class, $methodRefl->getName());
+            if (! $methodRefl->isPublic()) {
+                throw new InternalErrorException(sprintf("ATTENTION: %s->%s must be public!\n", $class, $methodRefl->getName()));
             }
 
             // fix implicit namespaces in request and response
