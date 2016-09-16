@@ -84,14 +84,14 @@ class EndpointService
         return array_keys($this->endpoints);
     }
 
-    // public function getEndpoint($name)
-    // {
-    //     if (! isset($this->endpoints[$name])) {
-    //         throw new InternalErrorException("This endpoint does not exist.");
-    //     }
-    //
-    //     return $this->endpoints[$name]["class"];
-    // }
+    public function getControllerClass($endpointName)
+    {
+        if (! isset($this->endpoints[$endpointName])) {
+            throw new InternalErrorException("This endpoint does not exist.");
+        }
+
+        return $this->endpoints[$endpointName]["class"];
+    }
 
     public function getEndpointMetaContainer($name)
     {
