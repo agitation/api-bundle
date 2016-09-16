@@ -141,7 +141,7 @@ class ObjectProcessor extends AbstractProcessor
             $annotation = $this->annotationReader->getClassAnnotation($refl, "Agit\ApiBundle\Annotation\Object\Object");
 
             if ($annotation && $annotation->get("super")) {
-                $super = $annotation->get("super");
+                $super = StringHelper::getBareClassName($refl->name);
                 break;
             }
         }
