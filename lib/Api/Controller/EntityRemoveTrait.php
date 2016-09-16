@@ -30,21 +30,21 @@ trait EntityRemoveTrait
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
         try {
-            $this->entityManager->beginTransaction();
+            $this->getEntityManager()->beginTransaction();
 
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $this->getEntityManager()->remove($entity);
+            $this->getEntityManager()->flush();
 
-            $this->logger->log(
+            $this->getLogger()->log(
                 LogLevel::WARNING,
                 "agit.api.entity",
                 sprintf(Translate::tl("Object %s of type %s has been removed permanently."), $entity->getId(), $this->getEntityClassName($entity)),
                 true
             );
 
-            $this->entityManager->commit();
+            $this->getEntityManager()->commit();
         } catch (Exception $e) {
-            $this->entityManager->rollBack();
+            $this->getEntityManager()->rollBack();
             throw new BadRequestException(Translate::t("This object cannot be removed, because there are other objects depending on it."));
         }
     }

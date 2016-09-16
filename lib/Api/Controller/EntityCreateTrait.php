@@ -29,21 +29,21 @@ trait EntityCreateTrait
         $this->validate($requestObject);
 
         try {
-            $this->entityManager->beginTransaction();
+            $this->getEntityManager()->beginTransaction();
 
-            $className = $this->entityManager->getClassMetadata($this->getEntityClass())->getName();
+            $className = $this->getEntityManager()->getClassMetadata($this->getEntityClass())->getName();
             $entity = $this->saveEntity(new $className(), $requestObject);
 
-            $this->logger->log(
+            $this->getLogger()->log(
                 LogLevel::WARNING,
                 "agit.api.entity",
                 sprintf(Translate::tl("New object %s of type %s has been created."), $entity->getId(), $this->getEntityClassName($entity)),
                 true
             );
 
-            $this->entityManager->commit();
+            $this->getEntityManager()->commit();
         } catch (Exception $e) {
-            $this->entityManager->rollBack();
+            $this->getEntityManager()->rollBack();
             throw $e;
         }
 

@@ -15,9 +15,13 @@ use Agit\ApiBundle\Service\ResponseService;
 abstract class AbstractController
 {
     /**
+     * @var cached metadata of this controller.
+     */
+    protected $meta;
+    /**
      * @var full endpoint name, e.g. `foobar.v1/foo.bar`.
      */
-    protected $name;
+    protected $endpointName;
 
     /**
      * @var API namespace.
@@ -31,10 +35,15 @@ abstract class AbstractController
 
     public function init($name, MetaContainer $meta, ResponseService $responseService)
     {
-        $this->endpointName = $name;
         $this->meta = $meta;
+        $this->endpointName = $name;
         $this->apiNamespace = strstr($name, "/", true);
         $this->responseService = $responseService;
+    }
+
+    protected function getResponseService()
+    {
+        return $this->responseService;
     }
 
     protected function getMeta($name)

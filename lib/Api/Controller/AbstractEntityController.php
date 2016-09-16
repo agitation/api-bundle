@@ -45,6 +45,21 @@ abstract class AbstractEntityController extends AbstractController
         $this->logger = $logger;
     }
 
+    protected function getPersistenceService()
+    {
+        return $this->persistenceService;
+    }
+
+    protected function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    protected function getLogger()
+    {
+        return $this->logger;
+    }
+
     /**
      * Additional security checks, e.g. for entity endpoints which are not based
      * on the current user’s capabilities. To be overridden in the entity

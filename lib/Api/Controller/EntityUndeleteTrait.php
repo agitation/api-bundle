@@ -29,7 +29,7 @@ trait EntityUndeleteTrait
         $this->checkPermissions($id, __FUNCTION__);
 
         try {
-            $this->entityManager->beginTransaction();
+            $this->getEntityManager()->beginTransaction();
 
             $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
@@ -42,19 +42,19 @@ trait EntityUndeleteTrait
             }
 
             $entity->setDeleted(false);
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
+            $this->getEntityManager()->persist($entity);
+            $this->getEntityManager()->flush();
 
-            $this->logger->log(
+            $this->getLogger()->log(
                 LogLevel::WARNING,
                 "agit.api.entity",
                 sprintf(Translate::tl("Object %s of type %s has been undeleted."), $entity->getId(), $this->getEntityClassName($entity)),
                 true
             );
 
-            $this->entityManager->commit();
+            $this->getEntityManager()->commit();
         } catch (Exception $e) {
-            $this->entityManager->rollBack();
+            $this->getEntityManager()->rollBack();
             throw $e;
         }
 

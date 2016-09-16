@@ -29,21 +29,21 @@ trait EntityUpdateTrait
         $this->validate($requestObject);
 
         try {
-            $this->entityManager->beginTransaction();
+            $this->getEntityManager()->beginTransaction();
 
             $entity = $this->retrieveEntity($this->getEntityClass(), $requestObject->get("id"));
             $entity = $this->saveEntity($entity, $requestObject);
 
-            $this->logger->log(
+            $this->getLogger()->log(
                 LogLevel::WARNING,
                 "agit.api.entity",
                 sprintf(Translate::tl("Object “%s” of type “%s” has been updated."), $this->getEntityName($entity), $this->getEntityClassName($entity)),
                 true
             );
 
-            $this->entityManager->commit();
+            $this->getEntityManager()->commit();
         } catch (Exception $e) {
-            $this->entityManager->rollBack();
+            $this->getEntityManager()->rollBack();
             throw $e;
         }
 
