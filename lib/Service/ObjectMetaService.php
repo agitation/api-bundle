@@ -69,6 +69,15 @@ class ObjectMetaService
         return $this->objects[$objectName]["class"];
     }
 
+    public function getDefaultValues($objectName)
+    {
+        if (! isset($this->objects[$objectName])) {
+            throw new InvalidObjectException("Invalid object: $objectName");
+        }
+
+        return $this->objects[$objectName]["defaults"];
+    }
+
     public function getObjectMetas($objectName)
     {
         if (! isset($this->objects[$objectName])) {
