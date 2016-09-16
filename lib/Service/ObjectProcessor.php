@@ -16,7 +16,7 @@ use Agit\ApiBundle\Annotation\Property\AbstractPropertyMeta;
 use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\ApiBundle\Annotation\Property\ObjectType;
-use Agit\ApiBundle\Annotation\Property\StringType;
+use Agit\ApiBundle\Annotation\Property\MetaType;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Service\ClassCollector;
 use Agit\BaseBundle\Tool\StringHelper;
@@ -59,6 +59,8 @@ class ObjectProcessor extends AbstractProcessor
     {
         $class = $classRefl->getName();
         $namespace = $desc->get("namespace");
+        $allDefaults = $classRefl->getDefaultProperties();
+        $defaults = [];
 
         if ($desc->get("objectName") !== null) {
             throw new InternalErrorException("Error in Object annotation on $class: You must not set the `objectName` parameter, it will be set automatically.");
@@ -94,6 +96,11 @@ class ObjectProcessor extends AbstractProcessor
                 continue;
             }
 
+            $defaults[$propName] = $allDefaults[$propName];
+
+            if ($propMeta["Type"]->isListType() && !is_array($defaults[$propName]))
+                $defaults[$propName] = [];
+
             if ($propMeta["Type"] instanceof ObjectType) {
                 $targetClass = $propMeta["Type"]->get("class");
 
@@ -119,16 +126,13 @@ class ObjectProcessor extends AbstractProcessor
         // handle super-class children
         if ($superParent = $this->getSuperParent($classRefl)) {
             $objectMeta["Object"]->set("parentObjectName", strpos($superParent, "/") ? "" : "$namespace/" . $superParent);
-
-            $propMetaList["_class"] = $this->dissectMetaList([
-                "Type" => new StringType(["meta" => "class"])
-            ]);
         }
 
         $this->addEntry($objectName, [
             "class"        => $classRefl->getName(),
             "deps"         => $this->dissectMeta($deps),
             "objectMeta"   => $this->dissectMetaList($objectMeta),
+            "defaults"     => $defaults,
             "propMetaList" => $propMetaList
         ]);
     }
