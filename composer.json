@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Agit\\ApiBundle\\": ""
+            "Agit\\ApiBundle\\": "lib/"
         }
     },
     "license": "MIT",
