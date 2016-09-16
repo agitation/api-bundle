@@ -46,7 +46,7 @@ class GenerateObjectCommand extends ContainerAwareCommand
 
         $apiNs = $input->getArgument("namespace")
             ? $input->getArgument("namespace")
-            : "StuffV1";
+            : "stuff.v1";
 
         $em = $this->getContainer()->get("doctrine.orm.entity_manager");
         $metadata = $em->getClassMetadata($input->getArgument("entity"));
@@ -66,6 +66,8 @@ class GenerateObjectCommand extends ContainerAwareCommand
                     $attr = "@Property\NumberType(minValue=, maxValue=)";
                 } elseif ($type === "text" || $type === "string") {
                     $attr = "@Property\StringType(minLength=, maxLength=)";
+                } elseif ($type === "boolean") {
+                    $attr = "@Property\BooleanType";
                 }
             } else {
                 $mapping = $metadata->getAssociationMapping($prop);
@@ -89,16 +91,16 @@ class GenerateObjectCommand extends ContainerAwareCommand
         }
 
         $classTpl = sprintf("<?php\n\n" .
-                    "namespace %s\Plugin\Api\%s\Object;\n\n" .
-                    "use Agit\ApiBundle\Annotation\Object;\n" .
-                    "use Agit\ApiBundle\Annotation\Property;\n" .
-                    "use Agit\ApiBundle\Api\Object\AbstractEntityObject;\n\n" .
-                    "/**\n" .
-                    " * @Object\Object\n" .
-                    " */\n" .
-                    "class $className extends AbstractEntityObject\n" .
-                    "{\n%s}\n",
-                    $bundleName, $apiNs, implode("\n", $tpl));
+            "namespace $bundleName\Api\Object;\n\n" .
+            "use Agit\ApiBundle\Annotation\Object;\n" .
+            "use Agit\ApiBundle\Annotation\Property;\n" .
+            "use Agit\ApiBundle\Api\Object\AbstractEntityObject;\n\n" .
+            "/**\n" .
+            " * @Object\Object(namespace=\"$apiNs\")\n" .
+            " */\n" .
+            "class $className extends AbstractEntityObject\n" .
+            "{\n%s}\n",
+            implode("\n", $tpl));
 
         $output->write($classTpl);
     }
