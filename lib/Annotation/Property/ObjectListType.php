@@ -29,7 +29,7 @@ class ObjectListType extends ObjectType
         $this->init($value);
 
         if ($this->mustCheck()) {
-            static::$_ValidationService->validate('array', $value, $this->minLength, $this->maxLength);
+            static::$_validator->validate('array', $value, $this->minLength, $this->maxLength);
 
             foreach ($value as $val) {
                 $this->checkValue($val);

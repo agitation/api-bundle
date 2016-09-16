@@ -29,25 +29,25 @@ class ArrayType extends AbstractType
         $this->init($value);
 
         if ($this->mustCheck()) {
-            static::$_ValidationService->validate('array', $value, $this->minLength, $this->maxLength);
+            static::$_validator->validate('array', $value, $this->minLength, $this->maxLength);
 
             if (is_array($this->allowedValues)) {
-                static::$_ValidationService->validate('multiSelection', $value, $this->allowedValues);
+                static::$_validator->validate('multiSelection', $value, $this->allowedValues);
             }
 
             foreach ($value as $k => $val) {
                 $this->checkKey($k);
 
                 if ($this->elemtype === 'integer') {
-                    static::$_ValidationService->validate('integer', $val);
+                    static::$_validator->validate('integer', $val);
                 } elseif ($this->elemtype === 'string') {
-                    static::$_ValidationService->validate('string', $val);
+                    static::$_validator->validate('string', $val);
                 } elseif ($this->elemtype === 'float') {
-                    static::$_ValidationService->validate('float', $val);
+                    static::$_validator->validate('float', $val);
                 } elseif ($this->elemtype === 'boolean') {
-                    static::$_ValidationService->validate('boolean', $val);
+                    static::$_validator->validate('boolean', $val);
                 } else {
-                    static::$_ValidationService->validate('scalar', $val);
+                    static::$_validator->validate('scalar', $val);
                 }
             }
         }
@@ -56,6 +56,6 @@ class ArrayType extends AbstractType
     protected function checkKey($arrayKey)
     {
         // numeric array: keys must be integer values
-        static::$_ValidationService->validate('numeric', $arrayKey);
+        static::$_validator->validate('numeric', $arrayKey);
     }
 }

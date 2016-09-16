@@ -10,11 +10,15 @@
 namespace Agit\ApiBundle\Annotation\Property;
 
 use Agit\ApiBundle\Exception\InvalidObjectValueException;
+use Agit\ApiBundle\Service\ObjectMetaService;
 use Agit\BaseBundle\Exception\InternalErrorException;
+use Agit\ValidationBundle\ValidationService;
 
 abstract class AbstractType extends AbstractPropertyMeta
 {
-    protected static $_ValidationService;
+    protected static $_validator;
+
+    protected static $_objectMeta;
 
     /**
      * @var the annotated field may be `null` or unset
@@ -49,9 +53,14 @@ abstract class AbstractType extends AbstractPropertyMeta
     // makes life easier when nullable===true
     private $_mustCheck = true;
 
-    public static function setValidationService($validationService)
+    public static function setValidationService(ValidationService $validationService)
     {
-        self::$_ValidationService = $validationService;
+        self::$_validator = $validationService;
+    }
+
+    public static function setObjectMetaService(ObjectMetaService $objectMetaService)
+    {
+        self::$_objectMeta = $objectMetaService;
     }
 
     public function getType()
@@ -81,7 +90,7 @@ abstract class AbstractType extends AbstractPropertyMeta
 
     protected function init($value)
     {
-        if (! static::$_ValidationService) {
+        if (! static::$_validator) {
             throw new InternalErrorException("The container must be set.");
         }
 
@@ -95,7 +104,7 @@ abstract class AbstractType extends AbstractPropertyMeta
         }
 
         if (! $this->nullable) {
-            static::$_ValidationService->validate('notNull', $value);
+            static::$_validator->validate('notNull', $value);
         }
 
         if ($this->nullable === true && is_null($value)) {

@@ -30,8 +30,10 @@ class ObjectMetaService
     public function __construct(Cache $cache, ValidationService $validationService, Factory $factory = null)
     {
         $this->objects = $cache->fetch("agit.api.object") ?: [];
-        AbstractType::setValidationService($validationService);
         $this->factory = $factory;
+
+        AbstractType::setValidationService($validationService);
+        AbstractType::setObjectMetaService($this);
     }
 
     public function createObject($objectName, $force = false)

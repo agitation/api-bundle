@@ -25,10 +25,10 @@ class EntityListType extends EntityType
         $this->init($value);
 
         if ($this->mustCheck()) {
-            static::$_ValidationService->validate('array', $value);
+            static::$_validator->validate("array", $value);
 
             foreach ($value as $val) {
-                static::$_ValidationService->validate($this->keytype, $val, 1);
+                static::$_validator->validate($this->getChildKeyType(), $val, 1);
             }
         }
     }

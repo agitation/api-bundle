@@ -21,7 +21,7 @@ class BooleanType extends AbstractType
         $this->init($value);
 
         if ($this->mustCheck()) {
-            static::$_ValidationService->validate('boolean', $value);
+            static::$_validator->validate('boolean', $value);
         }
     }
 }

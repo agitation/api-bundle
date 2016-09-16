@@ -14,20 +14,31 @@ namespace Agit\ApiBundle\Annotation\Property;
  */
 class EntityType extends ObjectType
 {
-    protected $keytype = "integer";
-
     protected $class;
 
     protected $_isEntityType = true;
 
     protected $_isObjectType = false;
 
+    private $_keytype;
+
     public function check($value)
     {
         $this->init($value);
 
         if ($this->mustCheck()) {
-            static::$_ValidationService->validate($this->keytype, $value, 1);
+            static::$_validator->validate($this->getChildKeyType(), $value, 1);
         }
+    }
+
+    protected function getChildKeyType()
+    {
+        if (!$this->_keytype)
+        {
+            $type = self::$_objectMeta->getPropertyMeta($this->class, "id", "Type");
+            $this->_keytype = ($type instanceof StringType) ? "string" : "integer";
+        }
+
+        return $this->_keytype;
     }
 }

@@ -17,6 +17,6 @@ class MapType extends ArrayType
     protected function checkKey($arrayKey)
     {
         // associative array: keys must be string values
-        static::$_ValidationService->validate('string', $arrayKey);
+        static::$_validator->validate('string', $arrayKey);
     }
 }

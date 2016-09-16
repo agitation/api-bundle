@@ -37,10 +37,10 @@ class NumberType extends AbstractType
                 $this->minValue = 0;
             }
 
-            static::$_ValidationService->validate($this->allowFloat === true ? 'float' : 'integer', $value, $this->minValue, $this->maxValue);
+            static::$_validator->validate($this->allowFloat === true ? 'float' : 'integer', $value, $this->minValue, $this->maxValue);
 
             if (is_array($this->allowedValues)) {
-                static::$_ValidationService->validate('selection', $value, $this->allowedValues);
+                static::$_validator->validate('selection', $value, $this->allowedValues);
             }
         }
     }

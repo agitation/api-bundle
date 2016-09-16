@@ -35,15 +35,15 @@ class StringType extends AbstractType
 
         if ($this->mustCheck()) {
             if (is_array($this->allowedValues)) {
-                static::$_ValidationService->validate("selection", $value, array_keys($this->allowedValues));
+                static::$_validator->validate("selection", $value, array_keys($this->allowedValues));
             } else {
                 if ($this->minLength || $value !== "") {
-                    static::$_ValidationService->validate("string", $value, $this->minLength, $this->maxLength, $this->allowLineBreaks);
+                    static::$_validator->validate("string", $value, $this->minLength, $this->maxLength, $this->allowLineBreaks);
                     $this->checkForbiddenCharacters($value);
                 }
 
                 if ($this->pattern) {
-                    static::$_ValidationService->validate("regex", $value, $this->pattern);
+                    static::$_validator->validate("regex", $value, $this->pattern);
                     $this->checkForbiddenCharacters($value);
                 }
             }
