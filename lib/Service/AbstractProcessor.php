@@ -20,6 +20,8 @@ use Symfony\Component\HttpKernel\Kernel;
 
 abstract class AbstractProcessor implements CacheWarmerInterface
 {
+    private $entries = [];
+
     public function collect($subdir, $annotationClass, $cacheKey)
     {
         $classes = [];
@@ -61,12 +63,12 @@ abstract class AbstractProcessor implements CacheWarmerInterface
     }
     protected function addEntry($key, $entry)
     {
-        $this->entryList[$key] = $entry;
+        $this->entries[$key] = $entry;
     }
 
     protected function getEntries()
     {
-        return $this->entryList;
+        return $this->entries;
     }
 
     protected function dissectMetaList($metas)
