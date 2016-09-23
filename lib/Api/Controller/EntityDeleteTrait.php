@@ -47,7 +47,7 @@ trait EntityDeleteTrait
             $this->getLogger()->log(
                 LogLevel::WARNING,
                 "agit.api.entity",
-                sprintf(Translate::tl("Object %s of type %s has been deleted."), $entity->getId(), $this->getEntityClassName($entity)),
+                sprintf(Translate::tl("Object “%s” of type “%s” has been deleted."), $entity->getId(), $this->getEntityClassName($entity)),
                 true
             );
 
