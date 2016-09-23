@@ -42,15 +42,15 @@ class Factory
         }
 
         // TODO: PHP >= 5.6
-        if (PHP_VERSION_ID > 50600) {
-            $instance = new $class(...$deps);
-        } else {
+        // if (PHP_VERSION_ID > 50600) {
+        //     $instance = new $class(...$deps);
+        // } else {
             if (! isset($this->reflMap[$class])) {
                 $this->reflMap[$class] = new ReflectionClass($class);
             }
 
             $instance = $this->reflMap[$class]->newInstanceArgs($deps);
-        }
+        // }
 
         return $instance;
     }
