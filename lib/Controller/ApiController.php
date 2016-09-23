@@ -9,6 +9,7 @@
 
 namespace Agit\ApiBundle\Controller;
 
+use Locale;
 use Agit\BaseBundle\Exception\AgitException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
@@ -88,12 +89,7 @@ class ApiController extends Controller
     private function setLocale()
     {
         $localeService = $this->container->get("agit.intl.locale");
-
-        $locale = (isset($_REQUEST["locale"]) && in_array($_REQUEST["locale"], $localeService->getAvailableLocales()))
-            ? $_REQUEST["locale"]
-            : "en_GB";
-
-        $localeService->setLocale($locale);
+        $localeService->setLocale($localeService->getUserLocale());
     }
 
     private function getCsrfToken()
