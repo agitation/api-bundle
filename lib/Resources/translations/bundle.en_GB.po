@@ -96,5 +96,5 @@ msgid "This entity is already deleted."
 msgstr ""
 
 #: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:50
-msgid "Object %s of type %s has been deleted."
+msgid "Object “%s” of type “%s” has been deleted."
 msgstr ""

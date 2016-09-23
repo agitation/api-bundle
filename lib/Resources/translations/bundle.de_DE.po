@@ -6,18 +6,18 @@ msgstr ""
 #: @AgitApiBundle/Service/LogentryCategorySeed.php:20
 msgctxt "logging category"
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: @AgitApiBundle/Service/LogentryCategorySeed.php:21
 msgctxt "logging category"
 msgid "Entity API"
-msgstr ""
+msgstr "Enitäten-API"
 
 #: @AgitApiBundle/Service/AbstractObjectService.php:61
 #: @AgitApiBundle/Service/AbstractObjectService.php:68
 #, php-format
 msgid "Invalid value for the `%s` property."
-msgstr ""
+msgstr "Ungültiger Wert für die Eigenschaft `%s`."
 
 #: @AgitApiBundle/Service/RequestService.php:25
 msgid "The request is expected to be an array."
@@ -29,7 +29,7 @@ msgstr "Die Anfrage muss ein skalarer Wert sein."
 
 #: @AgitApiBundle/Service/FormatterService.php:32
 msgid "The requested format is not supported."
-msgstr ""
+msgstr "Das gewünschte Format wird nicht unterstützt."
 
 #: @AgitApiBundle/Service/EndpointService.php:125
 msgid "You must be logged in to perform this operation."
@@ -46,55 +46,55 @@ msgstr "Das Zeichen „%s“ darf nicht enthalten sein."
 
 #: @AgitApiBundle/Controller/ApiController.php:59
 msgid "Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible."
-msgstr ""
+msgstr "Leider gab es einen internen Fehler. Die Administratoren wurden benachrichtigt und werden das Problem umgehend beheben."
 
 #: @AgitApiBundle/Api/Object/AbstractObject.php:127
 #, php-format
 msgid "The `%s` object does not have a `%s` property."
-msgstr ""
+msgstr "Das Objekt `%s` hat keine Eigenschaft `%s`."
 
 #: @AgitApiBundle/Api/Object/AbstractObject.php:162
 #, php-format
 msgid "Invalid value in object `%s` for property `%s`: %s"
-msgstr ""
+msgstr "Ungültiger Wert im Objekt `%s` für die Eigenschaft `%s`: %s"
 
 #: @AgitApiBundle/Api/Object/Period.php:39
 msgid "The start date must be earlier than or equal to the end date."
-msgstr ""
+msgstr "Das Anfangsdatum muss vor dem Enddatum liegen."
 
 #: @AgitApiBundle/Api/Controller/EntityCreateTrait.php:38
 msgid "New object %s of type %s has been created."
-msgstr ""
+msgstr "Das Objekt %s vom Typ %s wurde neu angelegt."
 
 #: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:39
 msgid "Object %s of type %s has been removed permanently."
-msgstr ""
+msgstr "Das Objekt %s vom Typ %s wurde endgültig entfernt."
 
 #: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:46
 msgid "This object cannot be removed, because there are other objects depending on it."
-msgstr ""
+msgstr "Dieses Objekt kann nicht entfernt werden, da andere Objekte davon abhängig sind."
 
 #: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:39
 msgid "This entity is not deleted and hence cannot be undeleted."
-msgstr ""
+msgstr "Dieses Objekt ist nicht gelöscht und kann daher nicht wiederhergestellt werden."
 
 #: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:49
 msgid "Object %s of type %s has been undeleted."
-msgstr ""
+msgstr "Das Objekt %s vom Typ %s wurde wiederhergestellt."
 
 #: @AgitApiBundle/Api/Controller/AbstractEntityController.php:115
 #, php-format
 msgid "The requested object with ID `%s` was not found."
-msgstr ""
+msgstr "Das gewünschte Objekt mit der ID `%s` wurde nicht gefunden."
 
 #: @AgitApiBundle/Api/Controller/EntityUpdateTrait.php:38
 msgid "Object “%s” of type “%s” has been updated."
-msgstr ""
+msgstr "Das Objekt „%s“ vom Typ „%s“ wurde aktualisiert."
 
 #: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:39
 msgid "This entity is already deleted."
-msgstr ""
+msgstr "Dieses Objekt ist bereits gelöscht."
 
 #: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:50
-msgid "Object %s of type %s has been deleted."
-msgstr ""
+msgid "Object “%s” of type “%s” has been deleted."
+msgstr "Objekt „%s“ vom Typ „%s“ wurde gelöscht."
