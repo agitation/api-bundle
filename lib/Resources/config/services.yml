@@ -60,9 +60,9 @@ services:
 
     agit.api.csrf:
         class: Agit\ApiBundle\Service\CsrfTokenService
-        arguments: [@session]
+        arguments: [ "@session" ]
 
     agit.api.twig:
         class: Agit\ApiBundle\Service\TwigExtension
-        arguments:  [ @agit.common.url, @agit.api.csrf ]
+        arguments:  [ "@agit.common.url", "@agit.api.csrf" ]
         tags: [{ name: twig.extension }]
