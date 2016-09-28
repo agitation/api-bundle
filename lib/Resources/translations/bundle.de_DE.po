@@ -44,7 +44,7 @@ msgstr "Ihre Zugriffsrechte reichen für diese Aktion nicht aus."
 msgid "The “%s” character must not be contained."
 msgstr "Das Zeichen „%s“ darf nicht enthalten sein."
 
-#: @AgitApiBundle/Controller/ApiController.php:59
+#: @AgitApiBundle/Controller/ApiController.php:60
 msgid "Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible."
 msgstr "Leider gab es einen internen Fehler. Die Administratoren wurden benachrichtigt und werden das Problem umgehend beheben."
 

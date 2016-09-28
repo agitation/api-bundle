@@ -44,7 +44,7 @@ msgstr ""
 msgid "The “%s” character must not be contained."
 msgstr ""
 
-#: @AgitApiBundle/Controller/ApiController.php:59
+#: @AgitApiBundle/Controller/ApiController.php:60
 msgid "Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible."
 msgstr ""
 
