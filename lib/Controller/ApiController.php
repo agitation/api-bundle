@@ -10,6 +10,8 @@
 namespace Agit\ApiBundle\Controller;
 
 use Locale;
+use Agit\ApiBundle\Event\ApiRequestErrorEvent;
+use Agit\ApiBundle\Event\ApiRequestSuccessEvent;
 use Agit\BaseBundle\Exception\AgitException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
@@ -22,8 +24,15 @@ class ApiController extends Controller
 {
     public function callAction(Request $request, $namespace, $class, $method, $_ext)
     {
+        $time = microtime(true);
+        $mem = memory_get_peak_usage(true);
+        $eventDispatcher = $this->container->get("event_dispatcher");
+
         $response = new Response();
         $isDev = ($this->container->getParameter("kernel.environment") === "dev");
+
+        // we must init the variables we’re using for the success and error events
+        $endpointName = $requestData = $resultData  = null;
 
         try {
             $this->setLocale();
@@ -35,23 +44,35 @@ class ApiController extends Controller
 
             $endpointMeta = $endpointService->getEndpointMetaContainer($endpointName);
             $controller = $endpointService->createEndpointController($endpointName);
+            $requestObject = null;
 
             if (! $isDev && ! $endpointMeta->get("Security")->get("allowCrossOrigin")) {
                 $this->container->get("agit.api.csrf")->checkToken($this->getCsrfToken());
             }
 
             if ($request->getMethod() !== "OPTIONS") {
-                $result = $controller->$method($this->createRequestObject(
+                $requestData = $this->createRequestObject(
                     $endpointMeta->get("Endpoint")->get("request"),
                     $request->get("request")
-                ));
+                );
 
-                $response = $formatter->createResponse($request, $result);
+                $resultData = $controller->$method($requestData);
+                $response = $formatter->createResponse($request, $resultData);
             }
 
             if ($endpointMeta->get("Security")->get("allowCrossOrigin")) {
                 $response->headers->set("Access-Control-Allow-Origin", "*");
             }
+
+            $eventDispatcher->dispatch("agit.api.request.success", new ApiRequestSuccessEvent(
+                $request,
+                $response,
+                $endpointName,
+                $requestData,
+                $resultData,
+                microtime(true) - $time,
+                memory_get_peak_usage(true) - $mem
+            ));
         } catch (Exception $e) {
             $publicException = $e instanceof AgitException && ! ($e instanceof InternalErrorException);
 
@@ -66,6 +87,16 @@ class ApiController extends Controller
             $response->setContent($content);
             $response->setStatusCode($publicException ? $e->getHttpStatus() : 500);
             $response->headers->set("Content-Type", "text/plain; charset=UTF-8", true);
+
+            $eventDispatcher->dispatch("agit.api.request.error", new ApiRequestErrorEvent(
+                $request,
+                $response,
+                $endpointName,
+                $requestData,
+                $e,
+                microtime(true) - $time,
+                memory_get_peak_usage(true) - $mem
+            ));
         }
 
         $response->headers->set("Cache-Control", "no-cache, must-revalidate, max-age=0", true);
