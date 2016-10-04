@@ -34,7 +34,7 @@ trait EntityRemoveTrait
             $this->getEntityManager()->flush();
 
             $this->getLogger()->log(
-                LogLevel::WARNING,
+                LogLevel::INFO,
                 "agit.api.entity",
                 sprintf(Translate::tl("Object %s of type %s has been removed permanently."), $entity->getId(), $this->getEntityClassName($entity)),
                 true
