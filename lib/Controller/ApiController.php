@@ -9,13 +9,13 @@
 
 namespace Agit\ApiBundle\Controller;
 
-use Locale;
 use Agit\ApiBundle\Event\ApiRequestErrorEvent;
 use Agit\ApiBundle\Event\ApiRequestSuccessEvent;
 use Agit\BaseBundle\Exception\AgitException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
 use Exception;
+use Locale;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -1,10 +1,17 @@
 <?php
 
+/*
+ * @package    agitation/api-bundle
+ * @link       http://github.com/agitation/api-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 namespace Agit\ApiBundle\Event;
 
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\EventDispatcher\Event;
 
 class AbstractApiEvent extends Event
 {
@@ -51,7 +58,7 @@ class AbstractApiEvent extends Event
     }
 
     /**
-     * Get the value of Response
+     * Get the value of Response.
      *
      * @return mixed
      */

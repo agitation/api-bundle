@@ -11,7 +11,7 @@ msgstr "API"
 #: @AgitApiBundle/Service/LogentryCategorySeed.php:21
 msgctxt "logging category"
 msgid "Entity API"
-msgstr "Enitäten-API"
+msgstr "Entitäten-API"
 
 #: @AgitApiBundle/Service/AbstractObjectService.php:61
 #: @AgitApiBundle/Service/AbstractObjectService.php:68

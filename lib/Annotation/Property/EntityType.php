@@ -33,8 +33,7 @@ class EntityType extends ObjectType
 
     protected function getChildKeyType()
     {
-        if (!$this->_keytype)
-        {
+        if (! $this->_keytype) {
             $type = self::$_objectMeta->getPropertyMeta($this->class, "id", "Type");
             $this->_keytype = ($type instanceof StringType) ? "string" : "integer";
         }

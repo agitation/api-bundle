@@ -49,7 +49,7 @@ class Factory
                 $this->reflMap[$class] = new ReflectionClass($class);
             }
 
-            $instance = $this->reflMap[$class]->newInstanceArgs($deps);
+        $instance = $this->reflMap[$class]->newInstanceArgs($deps);
         // }
 
         return $instance;
