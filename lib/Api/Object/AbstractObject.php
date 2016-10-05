@@ -133,17 +133,7 @@ abstract class AbstractObject implements JsonSerializable
 
     public function jsonSerialize()
     {
-        $values = $this->getValues();
-
-        // if we have a super parent, we must add the classes name
-        // as meta field. This is because the client must know which
-        // implementation of the super class it is processing here.
-
-        if ($this->objectMeta->get("Object")->get("parentObjectName")) {
-            $values["_class"] = $this->objectName;
-        }
-
-        return $values;
+        return $this->getValues();
     }
 
     public function validate()

@@ -122,11 +122,6 @@ class ObjectProcessor extends AbstractProcessor
             throw new InternalErrorException("Scalar objects must contain only a `_` property.");
         }
 
-        // handle super-class children
-        if ($superParent = $this->getSuperParent($classRefl)) {
-            $objectMeta["Object"]->set("parentObjectName", strpos($superParent, "/") ? "" : "$namespace/" . $superParent);
-        }
-
         $this->addEntry($objectName, [
             "class"        => $classRefl->getName(),
             "deps"         => $this->dissectMeta($deps),
@@ -134,21 +129,5 @@ class ObjectProcessor extends AbstractProcessor
             "defaults"     => $defaults,
             "propMetaList" => $propMetaList
         ]);
-    }
-
-    private function getSuperParent($refl)
-    {
-        $super = null;
-
-        while ($refl = $refl->getParentClass()) {
-            $annotation = $this->annotationReader->getClassAnnotation($refl, "Agit\ApiBundle\Annotation\Object\Object");
-
-            if ($annotation && $annotation->get("super")) {
-                $super = StringHelper::getBareClassName($refl->name);
-                break;
-            }
-        }
-
-        return $super;
     }
 }

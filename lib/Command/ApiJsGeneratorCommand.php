@@ -111,10 +111,6 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
             $objMeta = $objectService->getObjectMetas($objectName)->get("Object");
             $meta = [];
 
-            if ($objMeta->get("parentObjectName")) {
-                $meta["parent"] = $objMeta->get("parentObjectName");
-            }
-
             $propsMetas = $objectService->getObjectPropertyMetas($objectName);
             $defaults = $objectService->getDefaultValues($objectName);
             $properties = [];

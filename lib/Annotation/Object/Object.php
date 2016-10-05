@@ -20,16 +20,6 @@ class Object extends AbstractObjectMeta
     public $namespace;
 
     /**
-     * @var this is a super object and cannot be instantiated as such
-     */
-    protected $super = false;
-
-    /**
-     * @var this is a scalar "object", i.e. a dummy object that carries a scalar value.
-     */
-    protected $scalar = false;
-
-    /**
      * @var full object name with namespace prefix, e.g. `foobar.v1/SomeObject`.
      *
      * @internal Do not set this field, it will be filled automatically.
@@ -37,9 +27,7 @@ class Object extends AbstractObjectMeta
     protected $objectName;
 
     /**
-     * @var if the parent is a super class, this field contains its name.
-     *
-     * @internal Do not set this field, it will be filled automatically.
+     * @var this is a scalar "object", i.e. a dummy object that carries a scalar value.
      */
-    protected $parentObjectName;
+    protected $scalar = false;
 }

@@ -36,13 +36,9 @@ class ObjectMetaService
         AbstractType::setObjectMetaService($this);
     }
 
-    public function createObject($objectName, $force = false)
+    public function createObject($objectName)
     {
         $objectMetas = $this->getObjectMetas($objectName);
-
-        if ($objectMetas->get("Object")->get("super") && ! $force) {
-            throw new InternalErrorException(sprintf("Object %s is marked as super class and can therefore not be instantiated.", $objectName));
-        }
 
         $objectClass = $this->getObjectClass($objectName);
         $deps = $this->composeMeta($this->objects[$objectName]["deps"]);

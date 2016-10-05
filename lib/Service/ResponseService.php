@@ -126,8 +126,7 @@ class ResponseService extends AbstractObjectService
 
                 if ($mapping["type"] & ClassMetadataInfo::TO_ONE) {
                     if ($value) {
-                        $targetClass = $this->getRealTargetClass($value, $typeMeta);
-                        $object->set($propName, $this->createResponseObject($targetClass, $value));
+                        $object->set($propName, $this->createResponseObject($typeMeta->getTargetClass(), $value));
                     }
                 } elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY) {
                     if (! $typeMeta->isListType()) {
@@ -137,10 +136,8 @@ class ResponseService extends AbstractObjectService
                     $values = $value->getValues();
 
                     if (count($values)) {
-                        $targetClass = $this->getRealTargetClass(reset($values), $typeMeta);
-
                         foreach ($value->getValues() as $val) {
-                            $object->add($propName, $this->createResponseObject($targetClass, $val));
+                            $object->add($propName, $this->createResponseObject($typeMeta->getTargetClass(), $val));
                         }
                     }
                 }
@@ -178,34 +175,6 @@ class ResponseService extends AbstractObjectService
             "Type" => $metas->get("Type"),
             "View" => $metas->has("View") ? $metas->get("View") : null
         ];
-    }
-
-    private function getRealTargetClass($entity, $typeMeta)
-    {
-        $metadata = $this->entityManager->getClassMetadata(get_class($entity));
-        $objectMeta = $this->objectMetaService->getObjectMetas($typeMeta->getTargetClass())->get("Object");
-        $targetClass = $typeMeta->getTargetClass();
-
-        if ($objectMeta->get("super") && $metadata->name !== $metadata->rootEntityName) {
-            // we try to resolve the real target object by the entity name.
-            // we expect the target object to be in the same API namespace and have the same name as the entity.
-
-            $entityName = StringHelper::getBareClassName($metadata->name);
-            $namespace = strstr($typeMeta->getTargetClass(), "/", true);
-            $targetClass = "$namespace/$entityName";
-
-            if (! $this->objectMetaService->objectExists($targetClass)) {
-                throw new InternalErrorException("Failed to resolve the target class for a $entityName entity.");
-            }
-
-            $targetObjectMeta = $this->objectMetaService->getObjectMetas($targetClass)->get("Object");
-
-            if ($objectMeta->get("objectName") !== $targetObjectMeta->get("parentObjectName")) {
-                throw new InternalErrorException("Failed to resolve the target class for a $entityName entity.");
-            }
-        }
-
-        return $targetClass;
     }
 
     private function doInclude($viewMeta, $propName)
