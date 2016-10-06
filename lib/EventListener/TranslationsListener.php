@@ -9,6 +9,7 @@
 
 namespace Agit\ApiBundle\EventListener;
 
+use ReflectionClass;
 use Agit\ApiBundle\Service\ObjectMetaService;
 use Agit\IntlBundle\Event\BundleTranslationsEvent;
 use Gettext\Translation;
@@ -27,8 +28,11 @@ class TranslationsListener
     public function onRegistration(BundleTranslationsEvent $event)
     {
         $objectNames = $this->objectMeta->getObjectNames();
-        $list = [];
-        $bundleNamespace = $this->kernel->getBundle($event->getBundleAlias())->getNamespace();
+
+        $bundleAlias = $event->getBundleAlias();
+        $bundle = $this->kernel->getBundle($bundleAlias);
+        $bundleNamespace = $bundle->getNamespace();
+        $bundlePath = $bundle->getPath();
 
         foreach ($objectNames as $objectName) {
             $objectClass = $this->objectMeta->getObjectClass($objectName);
@@ -37,11 +41,16 @@ class TranslationsListener
                 continue;
             }
 
+            $classRefl = new ReflectionClass($objectClass);
+            $fileLocation = "@" . str_replace($bundlePath, $bundleAlias, $classRefl->getFileName());
+
             $propMetas = $this->objectMeta->getObjectPropertyMetas($objectName);
 
             foreach ($propMetas as $propMeta) {
                 $name = $propMeta->get("Name");
-                $event->addTranslation(new Translation($name->get("context"), $name->get("value")));
+                $translation = new Translation($name->get("context"), $name->get("value"));
+                $translation->addReference($fileLocation);
+                $event->addTranslation($translation);
             }
         }
     }
