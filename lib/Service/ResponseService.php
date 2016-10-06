@@ -12,7 +12,6 @@ namespace Agit\ApiBundle\Service;
 use Agit\ApiBundle\Api\Object\AbstractObject;
 use Agit\ApiBundle\Api\Object\ResponseObjectInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
