@@ -20,6 +20,7 @@ use Agit\ApiBundle\Annotation\Property;
 class String extends AbstractValueObject
 {
     /**
+     * @Property\Name("Value")
      * @Property\StringType
      */
     public $_;

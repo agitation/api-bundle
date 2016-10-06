@@ -22,11 +22,13 @@ use Agit\IntlBundle\Tool\Translate;
 class Period extends AbstractValueObject
 {
     /**
+     * @Property\Name("From", context="date")
      * @Property\ObjectType(class="Date")
      */
     public $from;
 
     /**
+     * @Property\Name("Until", context="date")
      * @Property\ObjectType(class="Date")
      */
     public $until;

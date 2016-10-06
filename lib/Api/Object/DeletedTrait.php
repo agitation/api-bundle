@@ -14,7 +14,7 @@ use Agit\ApiBundle\Annotation\Property;
 trait DeletedTrait
 {
     /**
-     * @Property\Name("Deleted")
+     * @Property\Name("Is deleted")
      * @Property\BooleanType(readonly=true)
      */
     public $deleted;

@@ -44,7 +44,7 @@ msgstr ""
 msgid "The “%s” character must not be contained."
 msgstr ""
 
-#: @AgitApiBundle/Controller/ApiController.php:60
+#: @AgitApiBundle/Controller/ApiController.php:81
 msgid "Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible."
 msgstr ""
 
@@ -53,12 +53,12 @@ msgstr ""
 msgid "The `%s` object does not have a `%s` property."
 msgstr ""
 
-#: @AgitApiBundle/Api/Object/AbstractObject.php:162
+#: @AgitApiBundle/Api/Object/AbstractObject.php:152
 #, php-format
 msgid "Invalid value in object `%s` for property `%s`: %s"
 msgstr ""
 
-#: @AgitApiBundle/Api/Object/Period.php:39
+#: @AgitApiBundle/Api/Object/Period.php:41
 msgid "The start date must be earlier than or equal to the end date."
 msgstr ""
 
@@ -97,4 +97,67 @@ msgstr ""
 
 #: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:50
 msgid "Object “%s” of type “%s” has been deleted."
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Time.php
+#: @AgitApiBundle/Api/Object/DateTime.php
+msgid "Hour"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Time.php
+#: @AgitApiBundle/Api/Object/DateTime.php
+msgid "Minute"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/DateTime.php
+#: @AgitApiBundle/Api/Object/Date.php
+msgid "Day"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/DateTime.php
+#: @AgitApiBundle/Api/Object/Month.php
+#: @AgitApiBundle/Api/Object/Date.php
+msgid "Month"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/DateTime.php
+#: @AgitApiBundle/Api/Object/Month.php
+#: @AgitApiBundle/Api/Object/Date.php
+msgid "Year"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/String.php
+#: @AgitApiBundle/Api/Object/Response.php
+#: @AgitApiBundle/Api/Object/Integer.php
+msgid "Value"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Response.php
+msgid "Result list"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Location.php
+msgid "Latitude"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Location.php
+msgid "Longitude"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Money.php
+msgid "Amount"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Money.php
+msgid "Currency"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Period.php
+msgctxt "date"
+msgid "From"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/Period.php
+msgctxt "date"
+msgid "Until"
 msgstr ""

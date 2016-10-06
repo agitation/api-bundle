@@ -20,6 +20,7 @@ use Agit\ApiBundle\Annotation\Property;
 class Integer extends AbstractValueObject
 {
     /**
+     * @Property\Name("Value")
      * @Property\NumberType(allowFloat=false)
      */
     public $_;

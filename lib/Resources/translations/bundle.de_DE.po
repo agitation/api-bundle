@@ -44,7 +44,7 @@ msgstr "Ihre Zugriffsrechte reichen für diese Aktion nicht aus."
 msgid "The “%s” character must not be contained."
 msgstr "Das Zeichen „%s“ darf nicht enthalten sein."
 
-#: @AgitApiBundle/Controller/ApiController.php:60
+#: @AgitApiBundle/Controller/ApiController.php:81
 msgid "Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible."
 msgstr "Leider gab es einen internen Fehler. Die Administratoren wurden benachrichtigt und werden das Problem umgehend beheben."
 
@@ -53,12 +53,12 @@ msgstr "Leider gab es einen internen Fehler. Die Administratoren wurden benachri
 msgid "The `%s` object does not have a `%s` property."
 msgstr "Das Objekt `%s` hat keine Eigenschaft `%s`."
 
-#: @AgitApiBundle/Api/Object/AbstractObject.php:162
+#: @AgitApiBundle/Api/Object/AbstractObject.php:152
 #, php-format
 msgid "Invalid value in object `%s` for property `%s`: %s"
 msgstr "Ungültiger Wert im Objekt `%s` für die Eigenschaft `%s`: %s"
 
-#: @AgitApiBundle/Api/Object/Period.php:39
+#: @AgitApiBundle/Api/Object/Period.php:41
 msgid "The start date must be earlier than or equal to the end date."
 msgstr "Das Anfangsdatum muss vor dem Enddatum liegen."
 
@@ -98,3 +98,66 @@ msgstr "Dieses Objekt ist bereits gelöscht."
 #: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:50
 msgid "Object “%s” of type “%s” has been deleted."
 msgstr "Objekt „%s“ vom Typ „%s“ wurde gelöscht."
+
+#: @AgitApiBundle/Api/Object/Time.php
+#: @AgitApiBundle/Api/Object/DateTime.php
+msgid "Hour"
+msgstr "Stunde"
+
+#: @AgitApiBundle/Api/Object/Time.php
+#: @AgitApiBundle/Api/Object/DateTime.php
+msgid "Minute"
+msgstr "Minute"
+
+#: @AgitApiBundle/Api/Object/DateTime.php
+#: @AgitApiBundle/Api/Object/Date.php
+msgid "Day"
+msgstr "Tag"
+
+#: @AgitApiBundle/Api/Object/DateTime.php
+#: @AgitApiBundle/Api/Object/Month.php
+#: @AgitApiBundle/Api/Object/Date.php
+msgid "Month"
+msgstr "Monat"
+
+#: @AgitApiBundle/Api/Object/DateTime.php
+#: @AgitApiBundle/Api/Object/Month.php
+#: @AgitApiBundle/Api/Object/Date.php
+msgid "Year"
+msgstr "Jahr"
+
+#: @AgitApiBundle/Api/Object/String.php
+#: @AgitApiBundle/Api/Object/Response.php
+#: @AgitApiBundle/Api/Object/Integer.php
+msgid "Value"
+msgstr "Wert"
+
+#: @AgitApiBundle/Api/Object/Response.php
+msgid "Result list"
+msgstr "Ergebnisliste"
+
+#: @AgitApiBundle/Api/Object/Location.php
+msgid "Latitude"
+msgstr "Breitengrad"
+
+#: @AgitApiBundle/Api/Object/Location.php
+msgid "Longitude"
+msgstr "Längengrad"
+
+#: @AgitApiBundle/Api/Object/Money.php
+msgid "Amount"
+msgstr "Betrag"
+
+#: @AgitApiBundle/Api/Object/Money.php
+msgid "Currency"
+msgstr "Währung"
+
+#: @AgitApiBundle/Api/Object/Period.php
+msgctxt "date"
+msgid "From"
+msgstr "Von"
+
+#: @AgitApiBundle/Api/Object/Period.php
+msgctxt "date"
+msgid "Until"
+msgstr "Bis"

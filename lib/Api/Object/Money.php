@@ -26,7 +26,7 @@ class Money extends AbstractValueObject
     public $amount;
 
     /**
-     * @Property\Name("CurrencyCode")
+     * @Property\Name("Currency")
      * @Property\StringType(minLength=3, maxLength=3)
      */
     public $currency;

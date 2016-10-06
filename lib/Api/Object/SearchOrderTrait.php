@@ -22,7 +22,7 @@ trait SearchOrderTrait
     public $orderBy = "id";
 
     /**
-     * @Property\Name("Order by field")
+     * @Property\Name("Order direction")
      * @Property\StringType(nullable=true, allowedValues={"asc", "desc"})
      *
      * The field by which the result set should be ordered.
