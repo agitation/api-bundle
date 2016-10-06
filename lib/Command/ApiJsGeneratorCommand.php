@@ -102,9 +102,9 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         $this->output->write("Processing objects ");
 
         foreach ($objectNames as $objectName) {
-            $object = $objectService->createObject($objectName, true);
+            $objectClass = $objectService->getObjectClass($objectName);
 
-            if (strpos(get_class($object), $bundleNamespace) !== 0) {
+            if (strpos($objectClass, $bundleNamespace) !== 0) {
                 continue;
             }
 
