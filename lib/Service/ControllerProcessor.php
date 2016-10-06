@@ -122,6 +122,7 @@ class ControllerProcessor extends AbstractProcessor
 
         // TODO: Make this a constant as soon as we’re on PHP >= 5.6
         $supportedTraits = [
+            "all"      => "EntityAllTrait",
             "search"   => "EntitySearchTrait",
             "get"      => "EntityGetTrait",
             "create"   => "EntityCreateTrait",
@@ -158,6 +159,10 @@ class ControllerProcessor extends AbstractProcessor
                 $endpointMeta["Security"]->set("capability", $readCap);
                 $endpointMeta["Endpoint"]->set("request", $idObject);
                 $endpointMeta["Endpoint"]->set("response", $controllerName);
+            } elseif ($method === "all") {
+                $endpointMeta["Security"]->set("capability", $readCap);
+                $endpointMeta["Endpoint"]->set("request",  "common.v1/Null");
+                $endpointMeta["Endpoint"]->set("response", "{$controllerName}[]");
             } elseif ($method === "search") {
                 $endpointMeta["Security"]->set("capability", $readCap);
                 $endpointMeta["Endpoint"]->set("request",  "{$controllerName}Search");
