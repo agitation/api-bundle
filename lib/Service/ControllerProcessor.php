@@ -39,6 +39,18 @@ class ControllerProcessor extends AbstractProcessor
 
     protected $entityManager;
 
+    // TODO: Make this a constant as soon as we’re on PHP >= 5.6
+    private static $supportedTraits = [
+        "all"      => "EntityAllTrait",
+        "search"   => "EntitySearchTrait",
+        "get"      => "EntityGetTrait",
+        "create"   => "EntityCreateTrait",
+        "update"   => "EntityUpdateTrait",
+        "delete"   => "EntityDeleteTrait",
+        "undelete" => "EntityUndeleteTrait",
+        "remove"   => "EntityRemoveTrait"
+    ];
+
     public function __construct(Kernel $kernel, ClassCollector $classCollector, Reader $annotationReader, Cache $cacheProvider, EntityManager $entityManager)
     {
         $this->kernel = $kernel;
@@ -120,30 +132,7 @@ class ControllerProcessor extends AbstractProcessor
         $idObject = ($entityIdFieldMeta["type"] === "integer") ? "common.v1/Integer" : "common.v1/String";
         $crossOrigin = $desc->get("crossOrigin");
 
-        // TODO: Make this a constant as soon as we’re on PHP >= 5.6
-        $supportedTraits = [
-            "all"      => "EntityAllTrait",
-            "search"   => "EntitySearchTrait",
-            "get"      => "EntityGetTrait",
-            "create"   => "EntityCreateTrait",
-            "update"   => "EntityUpdateTrait",
-            "delete"   => "EntityDeleteTrait",
-            "undelete" => "EntityUndeleteTrait",
-            "remove"   => "EntityRemoveTrait"
-        ];
-
-        $usedTraits = [];
-
-        foreach ($classRefl->getTraits() as $usedTrait) {
-            foreach ($supportedTraits as $method => $supportedTrait) {
-                $traitClass = self::ENTITY_TRAIT_NAMESPACE . "\\$supportedTrait";
-
-                if ($usedTrait->name === $traitClass || $usedTrait->isSubclassOf($traitClass)) {
-                    $usedTraits[] = $method;
-                    break;
-                }
-            }
-        }
+        $usedTraits = $this->getTraits($classRefl);
 
         foreach ($usedTraits as $method) {
             $endpointMeta = [];
@@ -188,5 +177,25 @@ class ControllerProcessor extends AbstractProcessor
                 "meta"   => $this->dissectMetaList($endpointMeta)
             ]);
         }
+    }
+
+    private function getTraits(ReflectionClass $classRefl)
+    {
+        $usedTraits = [];
+
+        foreach ($classRefl->getTraits() as $usedTrait) {
+            foreach (self::$supportedTraits as $method => $supportedTrait) {
+                $traitClass = self::ENTITY_TRAIT_NAMESPACE . "\\$supportedTrait";
+
+                if ($usedTrait->name === $traitClass || $usedTrait->isSubclassOf($traitClass)) {
+                    $usedTraits[] = $method;
+                    break;
+                }
+            }
+
+            $usedTraits = array_merge($usedTraits, $this->getTraits($usedTrait));
+        }
+
+        return $usedTraits;
     }
 }
