@@ -99,31 +99,9 @@ msgstr ""
 msgid "Object “%s” of type “%s” has been deleted."
 msgstr ""
 
-#: @AgitApiBundle/Api/Object/Time.php
-#: @AgitApiBundle/Api/Object/DateTime.php
-msgid "Hour"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Time.php
-#: @AgitApiBundle/Api/Object/DateTime.php
-msgid "Minute"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/DateTime.php
-#: @AgitApiBundle/Api/Object/Date.php
-msgid "Day"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/DateTime.php
-#: @AgitApiBundle/Api/Object/Month.php
-#: @AgitApiBundle/Api/Object/Date.php
-msgid "Month"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/DateTime.php
-#: @AgitApiBundle/Api/Object/Month.php
-#: @AgitApiBundle/Api/Object/Date.php
-msgid "Year"
+#: @AgitApiBundle/Api/Object/DeletedTrait.php
+#: @AgitApiBundle/Api/Object/SearchDeletedTrait.php
+msgid "Is deleted"
 msgstr ""
 
 #: @AgitApiBundle/Api/Object/String.php
@@ -152,6 +130,35 @@ msgstr ""
 msgid "Currency"
 msgstr ""
 
+#: @AgitApiBundle/Api/Object/SearchPaginationTrait.php
+msgid "Start offset"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/SearchPaginationTrait.php
+msgid "Items per page"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/NameTrait.php
+#: @AgitApiBundle/Api/Object/SearchNameTrait.php
+msgid "Name"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/DateTrait.php
+msgid "Day"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/TimeTrait.php
+msgid "Hour"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/TimeTrait.php
+msgid "Minute"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/IdTrait.php
+msgid "ID"
+msgstr ""
+
 #: @AgitApiBundle/Api/Object/Period.php
 msgctxt "date"
 msgid "From"
@@ -160,4 +167,24 @@ msgstr ""
 #: @AgitApiBundle/Api/Object/Period.php
 msgctxt "date"
 msgid "Until"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/SearchPeriodTrait.php
+msgid "Search period"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/SearchOrderTrait.php
+msgid "Order by field"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/SearchOrderTrait.php
+msgid "Order direction"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/MonthTrait.php
+msgid "Month"
+msgstr ""
+
+#: @AgitApiBundle/Api/Object/MonthTrait.php
+msgid "Year"
 msgstr ""

@@ -99,32 +99,10 @@ msgstr "Dieses Objekt ist bereits gelöscht."
 msgid "Object “%s” of type “%s” has been deleted."
 msgstr "Objekt „%s“ vom Typ „%s“ wurde gelöscht."
 
-#: @AgitApiBundle/Api/Object/Time.php
-#: @AgitApiBundle/Api/Object/DateTime.php
-msgid "Hour"
-msgstr "Stunde"
-
-#: @AgitApiBundle/Api/Object/Time.php
-#: @AgitApiBundle/Api/Object/DateTime.php
-msgid "Minute"
-msgstr "Minute"
-
-#: @AgitApiBundle/Api/Object/DateTime.php
-#: @AgitApiBundle/Api/Object/Date.php
-msgid "Day"
-msgstr "Tag"
-
-#: @AgitApiBundle/Api/Object/DateTime.php
-#: @AgitApiBundle/Api/Object/Month.php
-#: @AgitApiBundle/Api/Object/Date.php
-msgid "Month"
-msgstr "Monat"
-
-#: @AgitApiBundle/Api/Object/DateTime.php
-#: @AgitApiBundle/Api/Object/Month.php
-#: @AgitApiBundle/Api/Object/Date.php
-msgid "Year"
-msgstr "Jahr"
+#: @AgitApiBundle/Api/Object/DeletedTrait.php
+#: @AgitApiBundle/Api/Object/SearchDeletedTrait.php
+msgid "Is deleted"
+msgstr "Ist gelöscht"
 
 #: @AgitApiBundle/Api/Object/String.php
 #: @AgitApiBundle/Api/Object/Response.php
@@ -152,6 +130,35 @@ msgstr "Betrag"
 msgid "Currency"
 msgstr "Währung"
 
+#: @AgitApiBundle/Api/Object/SearchPaginationTrait.php
+msgid "Start offset"
+msgstr "Anfang"
+
+#: @AgitApiBundle/Api/Object/SearchPaginationTrait.php
+msgid "Items per page"
+msgstr "Elemente pro Seite"
+
+#: @AgitApiBundle/Api/Object/NameTrait.php
+#: @AgitApiBundle/Api/Object/SearchNameTrait.php
+msgid "Name"
+msgstr "Name"
+
+#: @AgitApiBundle/Api/Object/DateTrait.php
+msgid "Day"
+msgstr "Tag"
+
+#: @AgitApiBundle/Api/Object/TimeTrait.php
+msgid "Hour"
+msgstr "Stunde"
+
+#: @AgitApiBundle/Api/Object/TimeTrait.php
+msgid "Minute"
+msgstr "Minute"
+
+#: @AgitApiBundle/Api/Object/IdTrait.php
+msgid "ID"
+msgstr "ID"
+
 #: @AgitApiBundle/Api/Object/Period.php
 msgctxt "date"
 msgid "From"
@@ -161,3 +168,23 @@ msgstr "Von"
 msgctxt "date"
 msgid "Until"
 msgstr "Bis"
+
+#: @AgitApiBundle/Api/Object/SearchPeriodTrait.php
+msgid "Search period"
+msgstr "Suchzeitraum"
+
+#: @AgitApiBundle/Api/Object/SearchOrderTrait.php
+msgid "Order by field"
+msgstr "Sortieren nach"
+
+#: @AgitApiBundle/Api/Object/SearchOrderTrait.php
+msgid "Order direction"
+msgstr "Reihenfolge"
+
+#: @AgitApiBundle/Api/Object/MonthTrait.php
+msgid "Month"
+msgstr "Monat"
+
+#: @AgitApiBundle/Api/Object/MonthTrait.php
+msgid "Year"
+msgstr "Jahr"
