@@ -9,13 +9,12 @@
 
 namespace Agit\ApiBundle\EventListener;
 
-use ReflectionClass;
-use Agit\ApiBundle\Service\ObjectMetaService;
 use Agit\BaseBundle\Service\ClassCollector;
 use Agit\IntlBundle\Event\BundleTranslationsEvent;
-use Gettext\Translation;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Doctrine\Common\Annotations\Reader;
+use Gettext\Translation;
+use ReflectionClass;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class TranslationsListener
 {
@@ -38,6 +37,11 @@ class TranslationsListener
         $bundle = $this->kernel->getBundle($bundleAlias);
         $bundleNamespace = $bundle->getNamespace();
         $bundlePath = $bundle->getPath();
+
+        if (! is_dir("$bundlePath/Api")) {
+            return;
+        }
+
         $classes = $this->classCollector->collect("$bundlePath/Api", false, false);
 
         foreach ($classes as $class) {
@@ -47,13 +51,15 @@ class TranslationsListener
             $traitProps = $this->getTraitProperties($classRefl);
 
             foreach ($classRefl->getProperties() as $propRefl) {
-                if ($propRefl->class !== $class || array_key_exists($propRefl->name, $traitProps))
+                if ($propRefl->class !== $class || array_key_exists($propRefl->name, $traitProps)) {
                     continue;
+                }
 
                 $name = $this->annotationReader->getPropertyAnnotation($propRefl, "Agit\ApiBundle\Annotation\Property\Name");
 
-                if (!$name)
+                if (! $name) {
                     continue;
+                }
 
                 $translation = new Translation($name->get("context"), $name->get("value"));
                 $translation->addReference($fileLocation);

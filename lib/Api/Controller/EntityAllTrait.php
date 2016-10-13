@@ -9,8 +9,7 @@
 
 namespace Agit\ApiBundle\Api\Controller;
 
-use Agit\ApiBundle\Api\Controller\AbstractEntityController;
-use Agit\ApiBundle\Api\Object\RequestObjectInterface;
+
 use Agit\BaseBundle\Exception\InternalErrorException;
 
 trait EntityAllTrait
