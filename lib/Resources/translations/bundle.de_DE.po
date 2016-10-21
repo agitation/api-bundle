@@ -104,9 +104,9 @@ msgstr "Objekt „%s“ vom Typ „%s“ wurde gelöscht."
 msgid "Is deleted"
 msgstr "Ist gelöscht"
 
-#: @AgitApiBundle/Api/Object/String.php
+#: @AgitApiBundle/Api/Object/ScalarInteger.php
 #: @AgitApiBundle/Api/Object/Response.php
-#: @AgitApiBundle/Api/Object/Integer.php
+#: @AgitApiBundle/Api/Object/ScalarString.php
 msgid "Value"
 msgstr "Wert"
 

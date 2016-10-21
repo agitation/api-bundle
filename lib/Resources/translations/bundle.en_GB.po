@@ -104,9 +104,9 @@ msgstr ""
 msgid "Is deleted"
 msgstr ""
 
-#: @AgitApiBundle/Api/Object/String.php
+#: @AgitApiBundle/Api/Object/ScalarInteger.php
 #: @AgitApiBundle/Api/Object/Response.php
-#: @AgitApiBundle/Api/Object/Integer.php
+#: @AgitApiBundle/Api/Object/ScalarString.php
 msgid "Value"
 msgstr ""
 
