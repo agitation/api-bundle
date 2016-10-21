@@ -129,7 +129,7 @@ class ControllerProcessor extends AbstractProcessor
         $capPrefix = $desc->get("cap");
         $entityMeta = $this->entityManager->getClassMetadata($desc->get("entity"));
         $entityIdFieldMeta = $entityMeta->getFieldMapping($entityMeta->getSingleIdentifierFieldName());
-        $idObject = ($entityIdFieldMeta["type"] === "integer") ? "common.v1/Integer" : "common.v1/String";
+        $idObject = ($entityIdFieldMeta["type"] === "integer") ? "common.v1/ScalarInteger" : "common.v1/ScalarString";
         $crossOrigin = $desc->get("crossOrigin");
 
         $usedTraits = $this->getTraits($classRefl);
@@ -150,7 +150,7 @@ class ControllerProcessor extends AbstractProcessor
                 $endpointMeta["Endpoint"]->set("response", $controllerName);
             } elseif ($method === "all") {
                 $endpointMeta["Security"]->set("capability", $readCap);
-                $endpointMeta["Endpoint"]->set("request",  "common.v1/Null");
+                $endpointMeta["Endpoint"]->set("request",  "common.v1/ScalarNull");
                 $endpointMeta["Endpoint"]->set("response", "{$controllerName}[]");
             } elseif ($method === "search") {
                 $endpointMeta["Security"]->set("capability", $readCap);
@@ -163,7 +163,7 @@ class ControllerProcessor extends AbstractProcessor
             } elseif (in_array($method, ["delete", "undelete", "remove"])) {
                 $endpointMeta["Security"]->set("capability", $writeCap);
                 $endpointMeta["Endpoint"]->set("request", $idObject);
-                $endpointMeta["Endpoint"]->set("response", "common.v1/Null");
+                $endpointMeta["Endpoint"]->set("response", "common.v1/ScalarNull");
             }
 
             if ($crossOrigin && in_array($method, ["get", "search"])) {

@@ -9,7 +9,6 @@
 
 namespace Agit\ApiBundle\Api\Controller;
 
-
 use Agit\BaseBundle\Exception\InternalErrorException;
 
 trait EntityAllTrait

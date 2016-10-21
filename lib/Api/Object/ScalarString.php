@@ -17,7 +17,7 @@ use Agit\ApiBundle\Annotation\Property;
  *
  * A simple string value.
  */
-class String extends AbstractValueObject
+class ScalarString extends AbstractValueObject
 {
     /**
      * @Property\Name("Value")

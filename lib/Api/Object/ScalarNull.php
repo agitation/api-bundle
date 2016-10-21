@@ -18,6 +18,6 @@ use Agit\ApiBundle\Annotation\Object;
  * has this as its response object, the client should rely on the HTTP status
  * to see if the call was successful.
  */
-class Null extends AbstractValueObject
+class ScalarNull extends AbstractValueObject
 {
 }
