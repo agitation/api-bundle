@@ -25,7 +25,7 @@ class EntityListType extends EntityType
         $this->init($value);
 
         if ($this->mustCheck()) {
-            static::$_validator->validate("array", $value);
+            static::$_validator->validate("array", $value, $this->minLength, $this->maxLength);
 
             foreach ($value as $val) {
                 static::$_validator->validate($this->getChildKeyType(), $val, 1);
