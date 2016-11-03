@@ -127,8 +127,9 @@ class ApiController extends Controller
     {
         $submittedCsrfToken = $request->headers->get("x-token", "", true);
 
-        if (!$submittedCsrfToken)
+        if (! $submittedCsrfToken) {
             $submittedCsrfToken = $request->get("token", "");
+        }
 
         return $submittedCsrfToken;
     }
