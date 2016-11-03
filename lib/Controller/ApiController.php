@@ -36,7 +36,7 @@ class ApiController extends Controller
 
         try {
             $this->setLocale();
-            $this->checkHeaderAuth();
+            $this->checkHeaderAuth($request);
 
             $formatter = $this->container->get("agit.api.formatter")->getFormatter($_ext);
             $endpointService = $this->container->get("agit.api.endpoint");
@@ -47,7 +47,7 @@ class ApiController extends Controller
             $requestObject = null;
 
             if (! $isDev && ! $endpointMeta->get("Security")->get("allowCrossOrigin")) {
-                $this->container->get("agit.api.csrf")->checkToken($this->getCsrfToken());
+                $this->container->get("agit.api.csrf")->checkToken($this->getCsrfToken($request));
             }
 
             if ($request->getMethod() !== "OPTIONS") {
@@ -105,11 +105,11 @@ class ApiController extends Controller
         return $response;
     }
 
-    private function checkHeaderAuth()
+    private function checkHeaderAuth($request)
     {
         if ($this->container->has("agit.user")) {
-            $username = isset($_SERVER["HTTP_X_USER"]) ? $_SERVER["HTTP_X_USER"] : "";
-            $password = isset($_SERVER["HTTP_X_PASSWORD"]) ? $_SERVER["HTTP_X_PASSWORD"] : "";
+            $username = $request->headers->get("x-user", null, true);
+            $password = $request->headers->get("x-password", null, true);
 
             if ($username && $password) {
                 $this->container->get("agit.user")->authenticate($username, $password);
@@ -123,17 +123,14 @@ class ApiController extends Controller
         $localeService->setLocale($localeService->getUserLocale());
     }
 
-    private function getCsrfToken()
+    private function getCsrfToken(Request $request)
     {
-        $submittedCsrfToken = "";
+        $submittedCsrfToken = $request->headers->get("x-token", "", true);
 
-        if (isset($_SERVER["HTTP_X_TOKEN"])) {
-            $submittedCsrfToken = $_SERVER["HTTP_X_TOKEN"];
-        } elseif (isset($_REQUEST["token"])) {
-            $submittedCsrfToken = $_REQUEST["token"];
-        }
+        if (!$submittedCsrfToken)
+            $submittedCsrfToken = $request->get("token", "");
 
-        return (string) $submittedCsrfToken;
+        return $submittedCsrfToken;
     }
 
     private function createRequestObject($objectName, $rawRequest)
