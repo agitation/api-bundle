@@ -13,12 +13,10 @@ use Agit\ApiBundle\Annotation\Annotation;
 use Agit\ApiBundle\Annotation\Depends;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\BaseBundle\Service\ClassCollector;
-use Doctrine\Common\Cache\Cache;
 use ReflectionClass;
-use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
-abstract class AbstractProcessor implements CacheWarmerInterface
+abstract class AbstractProcessor
 {
     private $entries = [];
 
@@ -46,21 +44,6 @@ abstract class AbstractProcessor implements CacheWarmerInterface
         }
     }
 
-    /**
-     * Warms up the cache, required by CacheWarmerInterface.
-     */
-    public function warmUp($cacheDir)
-    {
-        $this->process();
-    }
-
-    /**
-     * required by CacheWarmerInterface.
-     */
-    public function isOptional()
-    {
-        return true;
-    }
     protected function addEntry($key, $entry)
     {
         $this->entries[$key] = $entry;
