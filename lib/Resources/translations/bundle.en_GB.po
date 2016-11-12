@@ -141,7 +141,7 @@ msgstr ""
 #: @AgitApiBundle/Api/Object/NameTrait.php
 #: @AgitApiBundle/Api/Object/SearchNameTrait.php
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: @AgitApiBundle/Api/Object/DateTrait.php
 msgid "Day"
@@ -157,7 +157,7 @@ msgstr ""
 
 #: @AgitApiBundle/Api/Object/IdTrait.php
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: @AgitApiBundle/Api/Object/Period.php
 msgctxt "date"
