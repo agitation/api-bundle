@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4.9",
+        "php": ">=5.6",
         "symfony/symfony": "2.8.*",
         "agitation/base-bundle": "dev-master",
         "agitation/validation-bundle": "^1.0",
