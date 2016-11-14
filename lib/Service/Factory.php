@@ -11,7 +11,6 @@ namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Annotation\Depends;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Factory
@@ -41,17 +40,6 @@ class Factory
             }
         }
 
-        // TODO: PHP >= 5.6
-        // if (PHP_VERSION_ID > 50600) {
-        //     $instance = new $class(...$deps);
-        // } else {
-            if (! isset($this->reflMap[$class])) {
-                $this->reflMap[$class] = new ReflectionClass($class);
-            }
-
-        $instance = $this->reflMap[$class]->newInstanceArgs($deps);
-        // }
-
-        return $instance;
+        return new $class(...$deps);
     }
 }
