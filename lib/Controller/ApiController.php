@@ -16,6 +16,7 @@ use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
 use Exception;
 use Locale;
+use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,15 +77,19 @@ class ApiController extends Controller
         } catch (Exception $e) {
             $publicException = $e instanceof AgitException && ! ($e instanceof InternalErrorException);
 
-            $content = $isDev || $publicException
+            $message = $isDev || $publicException
                 ? $e->getMessage()
                 : Translate::t("Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible.");
 
-            if ($isDev && ! $publicException) {
-                $content .= "\n\n" . $e->getTraceAsString();
+            if (! $publicException && $this->container->has("logger")) {
+                $this->container->get("logger")->log(LogLevel::ERROR, $e->getMessage(), [$e->getTraceAsString()]);
             }
 
-            $response->setContent($content);
+            if ($isDev && ! $publicException) {
+                $message .= "\n\n" . $e->getTraceAsString();
+            }
+
+            $response->setContent($message);
             $response->setStatusCode($publicException ? $e->getStatusCode() : 500);
             $response->headers->set("Content-Type", "text/plain; charset=UTF-8", true);
 
