@@ -18,5 +18,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class MandatoryFieldException extends AgitException
 {
-    protected $httpStatus = 400;
+    protected $statusCode = 400;
 }

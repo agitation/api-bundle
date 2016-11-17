@@ -17,5 +17,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class IncompatibleFormatterException extends AgitException
 {
-    protected $httpStatus = 406;
+    protected $statusCode = 406;
 }

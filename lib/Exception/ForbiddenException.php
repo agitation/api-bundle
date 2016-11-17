@@ -17,5 +17,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class ForbiddenException extends AgitException
 {
-    protected $httpStatus = 403;
+    protected $statusCode = 403;
 }

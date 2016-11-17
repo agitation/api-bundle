@@ -17,5 +17,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class BadGatewayException extends AgitException
 {
-    protected $httpStatus = 502;
+    protected $statusCode = 502;
 }

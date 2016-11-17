@@ -16,5 +16,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class CsrfException extends AgitException
 {
-    protected $httpStatus = 401;
+    protected $statusCode = 401;
 }

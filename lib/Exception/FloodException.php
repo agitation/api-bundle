@@ -16,5 +16,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class FloodException extends AgitException
 {
-    protected $httpStatus = 429;
+    protected $statusCode = 429;
 }

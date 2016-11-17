@@ -16,5 +16,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class FormatterNotFoundException extends AgitException
 {
-    protected $httpStatus = 404;
+    protected $statusCode = 404;
 }

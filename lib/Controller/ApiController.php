@@ -85,7 +85,7 @@ class ApiController extends Controller
             }
 
             $response->setContent($content);
-            $response->setStatusCode($publicException ? $e->getHttpStatus() : 500);
+            $response->setStatusCode($publicException ? $e->getStatusCode() : 500);
             $response->headers->set("Content-Type", "text/plain; charset=UTF-8", true);
 
             $eventDispatcher->dispatch("agit.api.request.error", new ApiRequestErrorEvent(

@@ -18,5 +18,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class DuplicateUniqueValueException extends AgitException
 {
-    protected $httpStatus = 409;
+    protected $statusCode = 409;
 }

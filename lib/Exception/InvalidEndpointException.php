@@ -16,5 +16,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class InvalidEndpointException extends AgitException
 {
-    protected $httpStatus = 404;
+    protected $statusCode = 404;
 }

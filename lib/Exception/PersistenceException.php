@@ -16,5 +16,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class PersistenceException extends AgitException
 {
-    protected $httpStatus = 500;
+    protected $statusCode = 500;
 }

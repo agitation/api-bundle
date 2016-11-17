@@ -16,5 +16,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class InvalidRangeException extends AgitException
 {
-    protected $httpStatus = 400;
+    protected $statusCode = 400;
 }

@@ -17,5 +17,5 @@ use Agit\BaseBundle\Exception\AgitException;
  */
 class CrossReferenceException extends AgitException
 {
-    protected $httpStatus = 409;
+    protected $statusCode = 409;
 }
