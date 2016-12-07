@@ -23,19 +23,18 @@ trait EntityAllTrait
 
         $this->responseService->setView("list");
         $responseObjectName = $this->getResponseObjectApiClass();
-
-        $metadata = $this->getEntityManager()->getClassMetadata($this->getEntityClass());
-
-        $entities = ($metadata->hasField("deleted"))
-            ? $this->getEntityManager()->getRepository($this->getEntityClass())->findBy(["deleted" => false])
-            : $this->getEntityManager()->getRepository($this->getEntityClass())->findAll();
-
+        $entities = $this->getEntityManager()->getRepository($this->getEntityClass())->findAll();
         $result = [];
 
         foreach ($entities as $entity) {
             $resObj = $this->createObject($responseObjectName);
             $resObj->set("id", $entity->getId());
             $resObj->set("name", $entity->getName());
+
+            if ($resObj->has("deleted") && method_exists($entity, "isDeleted")) {
+                $resObj->set("deleted", $entity->isDeleted());
+            }
+
             $result[] = $resObj;
         }
 
