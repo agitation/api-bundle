@@ -29,6 +29,16 @@ class ControllerProcessor extends AbstractProcessor
 {
     const ENTITY_TRAIT_NAMESPACE = "Agit\ApiBundle\Api\Controller";
 
+    const SUPPORTED_ENTITY_TRAITS = [
+        "search"   => "EntitySearchTrait",
+        "get"      => "EntityGetTrait",
+        "create"   => "EntityCreateTrait",
+        "update"   => "EntityUpdateTrait",
+        "delete"   => "EntityDeleteTrait",
+        "undelete" => "EntityUndeleteTrait",
+        "remove"   => "EntityRemoveTrait"
+    ];
+
     protected $kernel;
 
     protected $classCollector;
@@ -38,17 +48,6 @@ class ControllerProcessor extends AbstractProcessor
     protected $annotationReader;
 
     protected $entityManager;
-
-    // TODO: Make this a constant as soon as we’re on PHP >= 5.6
-    private static $supportedTraits = [
-        "search"   => "EntitySearchTrait",
-        "get"      => "EntityGetTrait",
-        "create"   => "EntityCreateTrait",
-        "update"   => "EntityUpdateTrait",
-        "delete"   => "EntityDeleteTrait",
-        "undelete" => "EntityUndeleteTrait",
-        "remove"   => "EntityRemoveTrait"
-    ];
 
     public function __construct(Kernel $kernel, ClassCollector $classCollector, Reader $annotationReader, Cache $cacheProvider, EntityManager $entityManager)
     {
@@ -183,7 +182,7 @@ class ControllerProcessor extends AbstractProcessor
         $usedTraits = [];
 
         foreach ($classRefl->getTraits() as $usedTrait) {
-            foreach (self::$supportedTraits as $method => $supportedTrait) {
+            foreach (self::SUPPORTED_ENTITY_TRAITS as $method => $supportedTrait) {
                 $traitClass = self::ENTITY_TRAIT_NAMESPACE . "\\$supportedTrait";
 
                 if ($usedTrait->name === $traitClass || $usedTrait->isSubclassOf($traitClass)) {
