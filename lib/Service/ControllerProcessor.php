@@ -41,7 +41,6 @@ class ControllerProcessor extends AbstractProcessor
 
     // TODO: Make this a constant as soon as we’re on PHP >= 5.6
     private static $supportedTraits = [
-        "all"      => "EntityAllTrait",
         "search"   => "EntitySearchTrait",
         "get"      => "EntityGetTrait",
         "create"   => "EntityCreateTrait",
