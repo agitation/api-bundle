@@ -137,11 +137,11 @@ class PersistenceService
                         } else {
                             // ONE_TO_MANY or MANY_TO_MANY
 
-                            if (! is_object($childValue) || ! property_exists($childValue, "id")) {
-                                throw new InternalErrorException("Bad child entity: expecting an object with an ID.");
+                            if (! is_object($childValue)) {
+                                throw new InternalErrorException("Bad child entity: expecting an object.");
                             }
 
-                            $id = $childValue->id;
+                            $id = property_exists($childValue, "id") ? $childValue->id : null;
 
                             if (! is_null($id) && ! isset($childrenArray[$id])) {
                                 throw new InternalErrorException("A child entity of $prop with ID $id doesn’t exist.");
