@@ -15,7 +15,7 @@ trait NameTrait
 {
     /**
      * @Property\Name("Name")
-     * @Property\StringType
+     * @Property\StringType(minLength=1)
      */
     public $name;
 }
