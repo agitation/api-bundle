@@ -11,6 +11,7 @@ namespace Agit\ApiBundle\Controller;
 
 use Agit\ApiBundle\Event\ApiRequestErrorEvent;
 use Agit\ApiBundle\Event\ApiRequestSuccessEvent;
+use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\BaseBundle\Exception\AgitException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
@@ -56,6 +57,10 @@ class ApiController extends Controller
                     $endpointMeta->get("Endpoint")->get("request"),
                     $request->get("request")
                 );
+
+                if (! is_callable([$controller, $method])) {
+                    throw new InvalidEndpointException("The `$endpointName` controller does not have a `$method` method.");
+                }
 
                 $resultData = $controller->$method($requestData);
                 $response = $formatter->createResponse($request, $resultData);
