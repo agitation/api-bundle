@@ -96,7 +96,9 @@ class ObjectProcessor extends AbstractProcessor
 
             $defaults[$propName] = $allDefaults[$propName];
 
-            if ($propMeta["Type"]->isListType() && ! is_array($defaults[$propName])) {
+            if ($propMeta["Type"]->get("readonly")) {
+                $defaults[$propName] = null;
+            } elseif ($propMeta["Type"]->isListType() && ! is_array($defaults[$propName])) {
                 $defaults[$propName] = [];
             }
 
