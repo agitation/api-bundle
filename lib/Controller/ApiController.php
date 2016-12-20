@@ -68,6 +68,7 @@ class ApiController extends Controller
 
             if ($endpointMeta->get("Security")->get("allowCrossOrigin")) {
                 $response->headers->set("Access-Control-Allow-Origin", "*");
+                $response->headers->set("Access-Control-Allow-Credentials", "true");
             }
 
             $eventDispatcher->dispatch("agit.api.request.success", new ApiRequestSuccessEvent(
