@@ -12,12 +12,8 @@ namespace Agit\ApiBundle\Controller;
 use Agit\ApiBundle\Event\ApiRequestErrorEvent;
 use Agit\ApiBundle\Event\ApiRequestSuccessEvent;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
-use Agit\BaseBundle\Exception\AgitException;
-use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Tool\Translate;
 use Exception;
 use Locale;
-use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,6 +67,9 @@ class ApiController extends Controller
                 $response->headers->set("Access-Control-Allow-Credentials", "true");
             }
 
+            $response->headers->set("Cache-Control", "no-cache, must-revalidate, max-age=0", true);
+            $response->headers->set("Pragma", "no-store", true);
+
             $eventDispatcher->dispatch("agit.api.request.success", new ApiRequestSuccessEvent(
                 $request,
                 $response,
@@ -81,24 +80,6 @@ class ApiController extends Controller
                 memory_get_peak_usage(true) - $mem
             ));
         } catch (Exception $e) {
-            $publicException = $e instanceof AgitException && ! ($e instanceof InternalErrorException);
-
-            $message = $isDev || $publicException
-                ? $e->getMessage()
-                : Translate::t("Sorry, there has been an internal error. The administrators have been notified and will fix this as soon as possible.");
-
-            if (! $publicException && $this->container->has("logger")) {
-                $this->container->get("logger")->log(LogLevel::ERROR, $e->getMessage(), [$e->getTraceAsString()]);
-            }
-
-            if ($isDev && ! $publicException) {
-                $message .= "\n\n" . $e->getTraceAsString();
-            }
-
-            $response->setContent($message);
-            $response->setStatusCode($publicException ? $e->getStatusCode() : 500);
-            $response->headers->set("Content-Type", "text/plain; charset=UTF-8", true);
-
             $eventDispatcher->dispatch("agit.api.request.error", new ApiRequestErrorEvent(
                 $request,
                 $response,
@@ -108,10 +89,9 @@ class ApiController extends Controller
                 microtime(true) - $time,
                 memory_get_peak_usage(true) - $mem
             ));
-        }
 
-        $response->headers->set("Cache-Control", "no-cache, must-revalidate, max-age=0", true);
-        $response->headers->set("Pragma", "no-store", true);
+            throw $e;
+        }
 
         return $response;
     }
