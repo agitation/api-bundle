@@ -9,7 +9,6 @@
 
 namespace Agit\ApiBundle\Command;
 
-use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,8 +17,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ApiJsGeneratorCommand extends ContainerAwareCommand
 {
-    use SingletonCommandTrait;
-
     private $relJsPath = "Resources/public/js";
 
     private $output;
@@ -36,10 +33,6 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (! $this->flock(__FILE__)) {
-            return;
-        }
-
         $this->output = $output;
         $this->filesystem = new Filesystem();
 

@@ -9,7 +9,6 @@
 
 namespace Agit\ApiBundle\Command;
 
-use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -19,8 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateObjectCommand extends ContainerAwareCommand
 {
-    use SingletonCommandTrait;
-
     protected function configure()
     {
         $this
@@ -33,10 +30,6 @@ class GenerateObjectCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (! $this->flock(__FILE__)) {
-            return;
-        }
-
         $bundleName = "Foo\BarBundle";
 
         if ($input->getArgument("bundle")) {
