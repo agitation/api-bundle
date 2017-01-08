@@ -9,12 +9,12 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The request is utterly malformed and cannot be processed.
  */
-class BadRequestException extends AgitException
+class BadRequestException extends PublicException
 {
     protected $statusCode = 400;
 }

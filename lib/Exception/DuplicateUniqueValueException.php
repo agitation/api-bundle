@@ -9,14 +9,14 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * An update has been requested where a field would be set to a value which must
  * only exist once in a certain context, but there already exists another object
  * with that field value in the same context.
  */
-class DuplicateUniqueValueException extends AgitException
+class DuplicateUniqueValueException extends PublicException
 {
     protected $statusCode = 409;
 }

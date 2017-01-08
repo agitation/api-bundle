@@ -9,14 +9,14 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The requested ressource requires authentication, but the client did not
  * authenticate and is therefore considered unauthorized. After authentication,
  * the client may try again.
  */
-class UnauthorizedException extends AgitException
+class UnauthorizedException extends PublicException
 {
     protected $statusCode = 401;
 }

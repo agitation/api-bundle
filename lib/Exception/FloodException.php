@@ -9,12 +9,12 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The API itself or an endpoint call is being called too frequently.
  */
-class FloodException extends AgitException
+class FloodException extends PublicException
 {
     protected $statusCode = 429;
 }

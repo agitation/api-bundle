@@ -9,13 +9,13 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * An object has been requested which is incompatible with other objects in the
  * current context.
  */
-class CrossReferenceException extends AgitException
+class CrossReferenceException extends PublicException
 {
     protected $statusCode = 409;
 }

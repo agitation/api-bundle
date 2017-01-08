@@ -9,12 +9,12 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * A non-existent endpoint was called.
  */
-class InvalidEndpointException extends AgitException
+class InvalidEndpointException extends PublicException
 {
     protected $statusCode = 404;
 }

@@ -9,13 +9,13 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The request cannot be processed, because it would cause an inconsistency
  * between certain objects or contexts.
  */
-class ConsistencyException extends AgitException
+class ConsistencyException extends PublicException
 {
     protected $statusCode = 409;
 }

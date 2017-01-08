@@ -9,12 +9,12 @@
 
 namespace Agit\ApiBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The client has requested a response format which is not available.
  */
-class FormatterNotFoundException extends AgitException
+class FormatterNotFoundException extends PublicException
 {
     protected $statusCode = 404;
 }
