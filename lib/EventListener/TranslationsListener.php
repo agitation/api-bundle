@@ -9,6 +9,7 @@
 
 namespace Agit\ApiBundle\EventListener;
 
+use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\BaseBundle\Service\ClassCollector;
 use Agit\IntlBundle\Event\BundleTranslationsEvent;
 use Doctrine\Common\Annotations\Reader;
@@ -55,7 +56,7 @@ class TranslationsListener
                     continue;
                 }
 
-                $name = $this->annotationReader->getPropertyAnnotation($propRefl, "Agit\ApiBundle\Annotation\Property\Name");
+                $name = $this->annotationReader->getPropertyAnnotation($propRefl, Name::class);
 
                 if (! $name) {
                     continue;

@@ -46,11 +46,7 @@ class ObjectProcessor extends AbstractProcessor
 
     public function process()
     {
-        $this->collect(
-            "Api/Object",
-            "Agit\ApiBundle\Annotation\Object\Object",
-            "agit.api.object"
-        );
+        $this->collect("Api/Object", Object::class, "agit.api.object");
     }
 
     protected function processClass(ReflectionClass $classRefl, Annotation $desc)
@@ -73,7 +69,7 @@ class ObjectProcessor extends AbstractProcessor
 
         $desc->set("objectName", $objectName);
         $objectMeta["Object"] = $desc;
-        $deps = $this->annotationReader->getClassAnnotation($classRefl, "Agit\ApiBundle\Annotation\Depends") ?: new Depends();
+        $deps = $this->annotationReader->getClassAnnotation($classRefl, Depends::class) ?: new Depends();
 
         foreach ($classRefl->getProperties() as $propertyRefl) {
             $annotations = $this->annotationReader->getPropertyAnnotations($propertyRefl);

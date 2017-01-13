@@ -60,11 +60,7 @@ class ControllerProcessor extends AbstractProcessor
 
     public function process()
     {
-        $this->collect(
-            "Api/Controller",
-            "Agit\ApiBundle\Annotation\Controller\Controller",
-            "agit.api.endpoint"
-        );
+        $this->collect("Api/Controller", Controller::class, "agit.api.endpoint");
     }
 
     protected function processClass(ReflectionClass $classRefl, Annotation $desc)
@@ -72,7 +68,7 @@ class ControllerProcessor extends AbstractProcessor
         $class = $classRefl->getName();
         $namespace = $desc->get("namespace");
         $controllerName = "$namespace/" . $classRefl->getShortName();
-        $deps = $this->annotationReader->getClassAnnotation($classRefl, "Agit\ApiBundle\Annotation\Depends") ?: new Depends();
+        $deps = $this->annotationReader->getClassAnnotation($classRefl, Depends::class) ?: new Depends();
 
         $this->checkConstructor($classRefl, $deps);
 
