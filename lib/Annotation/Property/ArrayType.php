@@ -14,7 +14,7 @@ namespace Agit\ApiBundle\Annotation\Property;
  */
 class ArrayType extends AbstractType
 {
-    protected $elemtype = null;
+    protected $type = null;
 
     protected $allowedValues = null;
 
@@ -29,25 +29,25 @@ class ArrayType extends AbstractType
         $this->init($value);
 
         if ($this->mustCheck()) {
-            static::$_validator->validate('array', $value, $this->minLength, $this->maxLength);
+            static::$_validator->validate("array", $value, $this->minLength, $this->maxLength);
 
             if (is_array($this->allowedValues)) {
-                static::$_validator->validate('multiSelection', $value, $this->allowedValues);
+                static::$_validator->validate("multiSelection", $value, $this->allowedValues);
             }
 
             foreach ($value as $k => $val) {
                 $this->checkKey($k);
 
-                if ($this->elemtype === 'integer') {
-                    static::$_validator->validate('integer', $val);
-                } elseif ($this->elemtype === 'string') {
-                    static::$_validator->validate('string', $val);
-                } elseif ($this->elemtype === 'float') {
-                    static::$_validator->validate('float', $val);
-                } elseif ($this->elemtype === 'boolean') {
-                    static::$_validator->validate('boolean', $val);
+                if ($this->type === "integer") {
+                    static::$_validator->validate("integer", $val);
+                } elseif ($this->type === "string") {
+                    static::$_validator->validate("string", $val);
+                } elseif ($this->type === "float") {
+                    static::$_validator->validate("float", $val);
+                } elseif ($this->type === "boolean") {
+                    static::$_validator->validate("boolean", $val);
                 } else {
-                    static::$_validator->validate('scalar', $val);
+                    static::$_validator->validate("scalar", $val);
                 }
             }
         }
@@ -56,6 +56,6 @@ class ArrayType extends AbstractType
     protected function checkKey($arrayKey)
     {
         // numeric array: keys must be integer values
-        static::$_validator->validate('numeric', $arrayKey);
+        static::$_validator->validate("numeric", $arrayKey);
     }
 }
