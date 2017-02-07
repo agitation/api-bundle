@@ -10,7 +10,7 @@
 namespace Agit\ApiBundle\EventListener;
 
 use Agit\ApiBundle\Annotation\Property\Name;
-use Agit\BaseBundle\Service\ClassCollector;
+use Agit\ApiBundle\Service\ClassCollector;
 use Agit\IntlBundle\Event\BundleTranslationsEvent;
 use Doctrine\Common\Annotations\Reader;
 use Gettext\Translation;

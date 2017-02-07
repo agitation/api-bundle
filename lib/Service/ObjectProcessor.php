@@ -17,7 +17,6 @@ use Agit\ApiBundle\Annotation\Property\AbstractType;
 use Agit\ApiBundle\Annotation\Property\Name;
 use Agit\ApiBundle\Annotation\Property\ObjectType;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\BaseBundle\Service\ClassCollector;
 use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\Cache;

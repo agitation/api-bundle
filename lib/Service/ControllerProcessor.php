@@ -17,7 +17,6 @@ use Agit\ApiBundle\Annotation\Endpoint\AbstractEndpointMeta;
 use Agit\ApiBundle\Annotation\Endpoint\EntityEndpoint;
 use Agit\ApiBundle\Annotation\Endpoint\Security;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\BaseBundle\Service\ClassCollector;
 use Agit\BaseBundle\Tool\StringHelper;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\Cache;

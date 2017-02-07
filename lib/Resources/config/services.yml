@@ -31,12 +31,12 @@ services:
 
     agit.api.controller_processor:
         class: Agit\ApiBundle\Service\ControllerProcessor
-        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.api.cache", "@doctrine.orm.entity_manager" ]
+        arguments: [ "@kernel", "@agit.api.classcollector", "@annotation_reader", "@agit.api.cache", "@doctrine.orm.entity_manager" ]
         tags: [{ name: kernel.cache_warmer }]
 
     agit.api.object_processor:
         class: Agit\ApiBundle\Service\ObjectProcessor
-        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.api.cache" ]
+        arguments: [ "@kernel", "@agit.api.classcollector", "@annotation_reader", "@agit.api.cache" ]
         tags: [{ name: kernel.cache_warmer }]
 
     # formatters
@@ -58,6 +58,10 @@ services:
         class: Doctrine\Common\Cache\FilesystemCache
         arguments: [ "%kernel.cache_dir%/agit/api" ]
 
+    agit.api.classcollector:
+        class: Agit\ApiBundle\Service\ClassCollector
+        arguments: [ "@agit.common.filecollector" ]
+
     agit.api.seed.logentry_category:
         private: true
         class: Agit\ApiBundle\Service\LogentryCategorySeed
@@ -75,5 +79,5 @@ services:
     # registration listener for translation catalogs
     agit.api.bundle.translations:
         class: Agit\ApiBundle\EventListener\TranslationsListener
-        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader" ]
+        arguments: [ "@kernel", "@agit.api.classcollector", "@annotation_reader" ]
         tags: [{ name: kernel.event_listener, event: agit.intl.bundle.translations, method: onRegistration }]
