@@ -1,11 +1,11 @@
 services:
     agit.api.endpoint:
         class: Agit\ApiBundle\Service\EndpointService
-        arguments: [ "@agit.common.cache.persistent", "@agit.api.response", "@agit.api.persistence", "@doctrine.orm.entity_manager", "@agit.api.factory", "@?agit.logger", "@?agit.user" ]
+        arguments: [ "@agit.api.cache", "@agit.api.response", "@agit.api.persistence", "@doctrine.orm.entity_manager", "@agit.api.factory", "@?agit.logger", "@?agit.user" ]
 
     agit.api.objectmeta:
         class: Agit\ApiBundle\Service\ObjectMetaService
-        arguments: [ "@agit.common.cache.persistent", "@agit.validation", "@agit.api.factory" ]
+        arguments: [ "@agit.api.cache", "@agit.validation", "@agit.api.factory" ]
 
     agit.api.request:
         class: Agit\ApiBundle\Service\RequestService
@@ -17,7 +17,7 @@ services:
 
     agit.api.formatter:
         class: Agit\ApiBundle\Service\FormatterService
-        arguments: [ "@agit.common.cache.persistent", "%kernel.debug%" ]
+        arguments: [ "@agit.api.cache", "%kernel.debug%" ]
 
     agit.api.persistence:
         class: Agit\ApiBundle\Service\PersistenceService
@@ -31,12 +31,12 @@ services:
 
     agit.api.controller_processor:
         class: Agit\ApiBundle\Service\ControllerProcessor
-        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.common.cache.persistent", "@doctrine.orm.entity_manager" ]
+        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.api.cache", "@doctrine.orm.entity_manager" ]
         tags: [{ name: kernel.cache_warmer }]
 
     agit.api.object_processor:
         class: Agit\ApiBundle\Service\ObjectProcessor
-        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.common.cache.persistent" ]
+        arguments: [ "@kernel", "@agit.common.classcollector", "@annotation_reader", "@agit.api.cache" ]
         tags: [{ name: kernel.cache_warmer }]
 
     # formatters
@@ -52,6 +52,11 @@ services:
         tags: [{ name: agit.api.formatter, extension: jsonp }]
 
     # various other services
+
+    agit.api.cache:
+        private : true
+        class: Doctrine\Common\Cache\FilesystemCache
+        arguments: [ "%kernel.cache_dir%/agit/api" ]
 
     agit.api.seed.logentry_category:
         private: true
