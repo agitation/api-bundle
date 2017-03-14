@@ -10,6 +10,7 @@
 namespace Agit\ApiBundle\Api\Object;
 
 use Agit\ApiBundle\Service\ResponseService;
+use stdClass;
 
 trait ResponseObjectTrait
 {
@@ -33,7 +34,7 @@ trait ResponseObjectTrait
             if ($this->responseService->isEntity($data)) {
                 $this->responseService->fillObjectFromEntity($this, $data);
             } elseif ($data instanceof stdClass) {
-                $this->responseService->fillObjectFromPlainObject($this, $data);
+                $this->responseService->fillObjectFromPlain($this, $data);
             }
         }
     }

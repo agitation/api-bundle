@@ -71,16 +71,17 @@ class ResponseService extends AbstractObjectService
             $object = $this->fillObjectFromEntity($object, $data);
         } elseif (is_object($data)) {
             $values = get_object_vars($data) + $object->getValues();
+            $metas = $this->objectMetaService->getObjectPropertyMetas($object->getObjectName());
 
             foreach ($values as $propName => $value) {
-                $metas = $this->getPropertyMetas($object, $propName);
+                if (isset($metas[$propName])) {
+                    if ($metas[$propName]->has("View") && ! $this->doInclude($metas[$propName]->get("View"), $propName)) {
+                        unset($object->$propName);
+                        continue;
+                    }
 
-                if (! $this->doInclude($metas["View"], $propName)) {
-                    unset($object->$propName);
-                    continue;
+                    $object->set($propName, $this->createFieldValue($metas[$propName]->get("Type"), $propName, $value));
                 }
-
-                $object->set($propName, $this->createFieldValue($metas["Type"], $propName, $value));
             }
         }
 
