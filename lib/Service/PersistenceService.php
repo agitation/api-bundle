@@ -13,6 +13,7 @@ use Agit\ApiBundle\Exception\PersistenceException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
 use Exception;
@@ -22,11 +23,17 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PersistenceService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     protected $entityManager;
 
+    /**
+     * @var ValidatorInterface
+     */
     protected $entityValidator;
 
-    public function __construct(EntityManager $entityManager, ValidatorInterface $entityValidator)
+    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $entityValidator)
     {
         $this->entityManager = $entityManager;
         $this->entityValidator = $entityValidator;
