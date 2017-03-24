@@ -32,11 +32,11 @@ trait EntityUndeleteTrait
             $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
             if (! ($entity instanceof DeletableInterface)) {
-                throw new InternalErrorException("Only entities which implement the DeletableInterface can be undeleted here.");
+                throw new InternalErrorException("Only entities which implement the DeletableInterface can be activated here.");
             }
 
             if (! $entity->isDeleted()) {
-                throw new BadRequestException(Translate::t("This entity is not deleted and hence cannot be undeleted."));
+                throw new BadRequestException(Translate::t("This entity is not deactivated and hence cannot be activated."));
             }
 
             $entity->setDeleted(false);
@@ -44,9 +44,9 @@ trait EntityUndeleteTrait
             $this->getEntityManager()->flush();
 
             $this->getLogger()->log(
-                LogLevel::INFO,
+                LogLevel::NOTICE,
                 "agit.api.entity",
-                sprintf(Translate::tl("Object %s of type %s has been undeleted."), $entity->getId(), $this->getEntityClassName($entity)),
+                sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been reactivated.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
                 true
             );
 

@@ -33,9 +33,9 @@ trait EntityUpdateTrait
             $entity = $this->saveEntity($entity, $requestObject);
 
             $this->getLogger()->log(
-                LogLevel::INFO,
+                LogLevel::NOTICE,
                 "agit.api.entity",
-                sprintf(Translate::tl("Object “%s” of type “%s” has been updated."), $this->getEntityName($entity), $this->getEntityClassName($entity)),
+                sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been updated.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
                 true
             );
 

@@ -33,9 +33,9 @@ trait EntityCreateTrait
             $entity = $this->saveEntity(new $className(), $requestObject);
 
             $this->getLogger()->log(
-                LogLevel::INFO,
+                LogLevel::NOTICE,
                 "agit.api.entity",
-                sprintf(Translate::tl("New object %s of type %s has been created."), $entity->getId(), $this->getEntityClassName($entity)),
+                sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been created.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
                 true
             );
 

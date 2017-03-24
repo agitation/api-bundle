@@ -32,22 +32,21 @@ trait EntityDeleteTrait
             $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
             if (! ($entity instanceof DeletableInterface)) {
-                throw new InternalErrorException("Only entities which implement the DeletableInterface can be deleted here.");
+                throw new InternalErrorException("Only entities which implement the DeletableInterface can be deactivated here.");
             }
 
             if ($entity->isDeleted()) {
-                throw new BadRequestException(Translate::t("This entity is already deleted."));
+                throw new BadRequestException(Translate::t("This entity is already deactivated."));
             }
 
             $entity->setDeleted(true);
-
             $this->getEntityManager()->persist($entity);
             $this->getEntityManager()->flush();
 
             $this->getLogger()->log(
-                LogLevel::INFO,
+                LogLevel::NOTICE,
                 "agit.api.entity",
-                sprintf(Translate::tl("Object “%s” of type “%s” has been deleted."), $entity->getId(), $this->getEntityClassName($entity)),
+                sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been deactivated.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
                 true
             );
 

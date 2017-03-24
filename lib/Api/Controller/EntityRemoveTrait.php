@@ -24,7 +24,6 @@ trait EntityRemoveTrait
         }
 
         $this->checkPermissions($id, __FUNCTION__);
-
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
         try {
@@ -34,9 +33,9 @@ trait EntityRemoveTrait
             $this->getEntityManager()->flush();
 
             $this->getLogger()->log(
-                LogLevel::INFO,
+                LogLevel::NOTICE,
                 "agit.api.entity",
-                sprintf(Translate::tl("Object %s of type %s has been removed permanently."), $entity->getId(), $this->getEntityClassName($entity)),
+                sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been removed permanently.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
                 true
             );
 
