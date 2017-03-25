@@ -68,6 +68,7 @@ class ObjectProcessor extends AbstractProcessor
 
         $desc->set("objectName", $objectName);
         $objectMeta["Object"] = $desc;
+        $objectMeta["Name"] = $this->annotationReader->getClassAnnotation($classRefl, Name::class) ?: new Name(["value" => $objectName]);
         $deps = $this->annotationReader->getClassAnnotation($classRefl, Depends::class) ?: new Depends();
 
         foreach ($classRefl->getProperties() as $propertyRefl) {

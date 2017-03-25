@@ -54,6 +54,11 @@ abstract class AbstractObject implements JsonSerializable
         $this->propertyMetas = $objectMetaService->getObjectPropertyMetas($this->objectName);
     }
 
+    public function getName()
+    {
+        return $this->objectMeta->get("Name")->getName();
+    }
+
     public function getObjectName()
     {
         return $this->objectName;
@@ -125,7 +130,7 @@ abstract class AbstractObject implements JsonSerializable
         if (! $this->has($key)) {
             throw new InvalidObjectException(sprintf(
                 Translate::t("The `%s` object does not have a `%s` property."),
-                $this->getObjectName(),
+                $this->getName(),
                 $key
             ));
         }
@@ -149,8 +154,8 @@ abstract class AbstractObject implements JsonSerializable
             $this->getPropertyMeta($key, "Type")->check($value);
         } catch (\Exception $e) {
             throw new InvalidObjectValueException(sprintf(
-                Translate::t("Invalid value in object `%s` for property `%s`: %s"),
-                $this->getObjectName(), $this->getPropertyMeta($key, "Name")->getName(), $e->getMessage()));
+                Translate::t("Invalid value for “%s“: %s"),
+                $this->getPropertyMeta($key, "Name")->getName(), $e->getMessage()));
         }
     }
 
