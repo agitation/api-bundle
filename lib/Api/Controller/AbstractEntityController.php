@@ -17,7 +17,7 @@ use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\LoggingBundle\Service\Logger;
 use Agit\MultilangBundle\Multilang;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use stdClass;
 
 /**
@@ -32,13 +32,22 @@ use stdClass;
  */
 abstract class AbstractEntityController extends AbstractController
 {
-    private $entityManager;
-
-    private $logger;
-
+    /**
+     * @var PersistenceService
+     */
     private $persistenceService;
 
-    public function initExtra(PersistenceService $persistenceService, EntityManager $entityManager, Logger $logger)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    public function initExtra(PersistenceService $persistenceService, EntityManagerInterface $entityManager, Logger $logger)
     {
         $this->persistenceService = $persistenceService;
         $this->entityManager = $entityManager;
@@ -168,5 +177,16 @@ abstract class AbstractEntityController extends AbstractController
         }
 
         return $output;
+    }
+
+    protected function createResultList($objectName, array $entities)
+    {
+        $result = [];
+
+        foreach ($entities as $entity) {
+            $result[] = $this->createObject($objectName, $entity);
+        }
+
+        return $result;
     }
 }
