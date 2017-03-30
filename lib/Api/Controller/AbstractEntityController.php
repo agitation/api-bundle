@@ -54,16 +54,25 @@ abstract class AbstractEntityController extends AbstractController
         $this->logger = $logger;
     }
 
+    /**
+     * @return PersistenceService
+     */
     protected function getPersistenceService()
     {
         return $this->persistenceService;
     }
 
+    /**
+     * @return EntityManagerInterface
+     */
     protected function getEntityManager()
     {
         return $this->entityManager;
     }
 
+    /**
+     * @return Logger
+     */
     protected function getLogger()
     {
         return $this->logger;

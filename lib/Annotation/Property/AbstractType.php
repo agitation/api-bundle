@@ -116,4 +116,10 @@ abstract class AbstractType extends AbstractPropertyMeta
     {
         return $this->_mustCheck;
     }
+
+    // allows for on-the-fly transformations
+    public function filter($value)
+    {
+        return $value;
+    }
 }

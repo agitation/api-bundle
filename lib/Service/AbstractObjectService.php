@@ -73,6 +73,6 @@ abstract class AbstractObjectService
             }
         }
 
-        return $result;
+        return $typeMeta->filter($result);
     }
 }

@@ -11,6 +11,8 @@ namespace Agit\ApiBundle\Annotation\Property;
 
 /**
  * @Annotation
+ *
+ * @deprecated use IntegerType or FloatType instead
  */
 class NumberType extends AbstractType
 {
