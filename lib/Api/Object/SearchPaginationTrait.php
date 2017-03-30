@@ -15,13 +15,13 @@ trait SearchPaginationTrait
 {
     /**
      * @Property\Name("Start offset")
-     * @Property\NumberType(minValue=0)
+     * @Property\IntegerType(minValue=0)
      */
     public $offset = 0;
 
     /**
      * @Property\Name("Items per page")
-     * @Property\NumberType(minValue=1, maxValue=200)
+     * @Property\IntegerType(minValue=1, maxValue=200)
      */
     public $limit = 50;
 }

@@ -17,7 +17,7 @@ trait DateTrait
 
     /**
      * @Property\Name("Day")
-     * @Property\NumberType(minValue=1, maxValue=31)
+     * @Property\IntegerType(minValue=1, maxValue=31)
      */
     public $day;
 }

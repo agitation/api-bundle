@@ -21,7 +21,7 @@ class ScalarInteger extends AbstractValueObject
 {
     /**
      * @Property\Name("Value")
-     * @Property\NumberType(allowFloat=false)
+     * @Property\IntegerType
      */
     public $_;
 }

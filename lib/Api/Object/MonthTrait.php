@@ -15,13 +15,13 @@ trait MonthTrait
 {
     /**
      * @Property\Name("Month")
-     * @Property\NumberType(minValue=1, maxValue=12)
+     * @Property\IntegerType(minValue=1, maxValue=12)
      */
     public $month;
 
     /**
      * @Property\Name("Year")
-     * @Property\NumberType(minValue=2000, maxValue=2100)
+     * @Property\IntegerType(minValue=2000, maxValue=2100)
      */
     public $year;
 }

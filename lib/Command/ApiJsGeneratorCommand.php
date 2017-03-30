@@ -132,8 +132,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
     {
         $meta = ["type" => $typeMeta->getType()];
 
-        $keywords = ["minLength", "nullable", "readonly", "maxLength", "minValue",
-            "maxValue", "positive", "allowFloat", "allowLineBreaks", "class"];
+        $keywords = ["minLength", "nullable", "readonly", "maxLength", "minValue", "maxValue", "allowLineBreaks", "class"];
 
         foreach ($typeMeta->getOptions() as $key => $value) {
             if (in_array($key, $keywords) && $value !== null && $value !== false) {

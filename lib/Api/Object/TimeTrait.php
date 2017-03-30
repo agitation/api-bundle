@@ -15,13 +15,13 @@ trait TimeTrait
 {
     /**
      * @Property\Name("Hour")
-     * @Property\NumberType(minValue=0, maxValue=23)
+     * @Property\IntegerType(minValue=0, maxValue=23)
      */
     public $hour;
 
     /**
      * @Property\Name("Minute")
-     * @Property\NumberType(minValue=0, maxValue=59)
+     * @Property\IntegerType(minValue=0, maxValue=59)
      */
     public $minute;
 }

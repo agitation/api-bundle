@@ -19,13 +19,13 @@ class Location extends AbstractValueObject
 {
     /**
      * @Property\Name("Latitude")
-     * @Property\NumberType(allowFloat=true, minValue=-90, maxValue=90)
+     * @Property\FloatType(minValue=-90, maxValue=90)
      */
     public $lat;
 
     /**
      * @Property\Name("Longitude")
-     * @Property\NumberType(allowFloat=true, minValue=-180, maxValue=180)
+     * @Property\FloatType(minValue=-180, maxValue=180)
      */
     public $lon;
 }

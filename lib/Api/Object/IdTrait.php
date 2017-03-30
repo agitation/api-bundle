@@ -15,7 +15,7 @@ trait IdTrait
 {
     /**
      * @Property\Name("ID")
-     * @Property\NumberType(positive=true, nullable=true)
+     * @Property\IntegerType(readonly=true)
      */
     public $id;
 }

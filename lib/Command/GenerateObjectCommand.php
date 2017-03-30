@@ -55,8 +55,10 @@ class GenerateObjectCommand extends ContainerAwareCommand
             if (! in_array($prop, $assoc)) {
                 $type = $metadata->getTypeOfField($prop);
 
-                if ($type === "smallint" || $type === "integer" || $type === "decimal") {
-                    $attr = "@Property\NumberType(minValue=, maxValue=)";
+                if ($type === "smallint" || $type === "integer") {
+                    $attr = "@Property\IntegerType(minValue=, maxValue=)";
+                } elseif ($type === "decimal") {
+                    $attr = "@Property\FloatType(minValue=, maxValue=)";
                 } elseif ($type === "text" || $type === "string") {
                     $attr = "@Property\StringType(minLength=, maxLength=)";
                 } elseif ($type === "boolean") {

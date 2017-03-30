@@ -21,7 +21,7 @@ class Money extends AbstractValueObject
 {
     /**
      * @Property\Name("Amount")
-     * @Property\NumberType(allowFloat=true)
+     * @Property\FloatType
      */
     public $amount;
 
