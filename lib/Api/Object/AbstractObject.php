@@ -111,7 +111,7 @@ abstract class AbstractObject implements JsonSerializable
             }
 
             array_push($this->$key, $value);
-        } elseif ($type->getType() === "number") {
+        } elseif ($type->getType() === "integer" || $type->getType() === "float") {
             $this->$key += $value;
         } else {
             throw new InternalErrorException("Cannot use `add` with this property type.");
