@@ -26,18 +26,11 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     protected function getHttpContent(Request $httpRequest, $result)
     {
-        $compactHeader = $httpRequest->headers->get("x-api-serialize-compact", null, true);
-        $compactHeader = "true";
-
-        if ($compactHeader === "true") {
+        if (! $this->debug && $httpRequest->headers->get("x-api-serialize-compact", null, true) === "true") {
             list($payload, $entityList) = $this->compactEntities($result);
-
-            // overhead is only worth it if there are significantly more references than entities
-            if ($this->rNum * .8 > $this->eNum) {
-                $result = $this->objectMetaService->createObject("common.v1/Response");
-                $result->setPayload($payload);
-                $result->setEntityList($entityList);
-            }
+            $result = $this->objectMetaService->createObject("common.v1/Response");
+            $result->setPayload($payload);
+            $result->setEntityList($entityList);
         }
 
         return $this->encode($result);
@@ -53,13 +46,6 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     private $compactEntityList = [];
 
-    private $rNum = 0;
-
-    private $eNum = 0;
-
-    /**
-     * {@inheritdoc}
-     */
     public function compactEntities($result)
     {
         $this->idx = 0;
@@ -90,9 +76,11 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
             if ($this->isEntityObject($value)) {
                 $processed = $this->addEntityObject($value);
             } else {
-                $processed = new \stdClass();
-                foreach (get_object_vars($value) as $k => $v) {
-                    $processed->$k = $this->processValue($v);
+                $values = get_object_vars($value);
+                $processed = $values ? [] : new stdClass(); // create stdClass only if values are empty, otherwise an assoc array will do
+
+                foreach ($values as $k => $v) {
+                    $processed[$k] = $this->processValue($v);
                 }
             }
         }
@@ -110,17 +98,15 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
     private function addEntityObject($object)
     {
         $key = sprintf("%s:%s", $object->getObjectName(), $object->get("id"));
-        ++$this->eNum;
 
         if (! isset($this->compactEntityList[$key])) {
-            ++$this->rNum;
             $this->compactEntityList[$key] = [
                 "idx" => sprintf("%s:%s", $this->keyPrefix, $this->idx++),
-                "obj" => new stdClass()
+                "obj" => [] // associative arrays are faster than stdClass and have the same effect
             ];
 
             foreach ($object->getValues() as $k => $v) {
-                $this->compactEntityList[$key]["obj"]->$k = $this->processValue($v);
+                $this->compactEntityList[$key]["obj"][$k] = $this->processValue($v);
             }
         }
 
