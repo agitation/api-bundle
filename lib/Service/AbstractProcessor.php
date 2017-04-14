@@ -19,14 +19,16 @@ use Symfony\Component\HttpKernel\Kernel;
 
 abstract class AbstractProcessor implements CacheWarmerInterface
 {
+    const API_SUBDIR = "Api";
+
     private $entries = [];
 
-    public function collect($subdir, $annotationClass, $cacheKey)
+    public function collect($annotationClass, $cacheKey)
     {
         $classes = [];
 
         foreach ($this->kernel->getBundles() as $bundle) {
-            $path = realpath($bundle->getPath() . "/$subdir");
+            $path = realpath($bundle->getPath() . "/" . static::API_SUBDIR);
 
             if (! $path) {
                 continue;

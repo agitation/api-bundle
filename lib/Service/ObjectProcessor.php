@@ -45,7 +45,7 @@ class ObjectProcessor extends AbstractProcessor
 
     public function process()
     {
-        $this->collect("Api/Object", Object::class, "agit.api.object");
+        $this->collect(Object::class, "agit.api.object");
     }
 
     protected function processClass(ReflectionClass $classRefl, Annotation $desc)

@@ -59,7 +59,7 @@ class ControllerProcessor extends AbstractProcessor
 
     public function process()
     {
-        $this->collect("Api/Controller", Controller::class, "agit.api.endpoint");
+        $this->collect(Controller::class, "agit.api.endpoint");
     }
 
     protected function processClass(ReflectionClass $classRefl, Annotation $desc)
