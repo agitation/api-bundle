@@ -186,7 +186,12 @@ class ControllerProcessor extends AbstractProcessor
                 }
             }
 
+            // get traits of traits
             $usedTraits = array_merge($usedTraits, $this->getTraits($usedTrait));
+        }
+
+        if ($parent = $classRefl->getParentClass()) {
+            $usedTraits = array_merge($usedTraits, $this->getTraits($parent)); // get parent traits
         }
 
         return $usedTraits;
