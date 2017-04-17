@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ApiJsGeneratorCommand extends ContainerAwareCommand
 {
-    private $relJsPath = "Resources/public/js";
+    private $assetsPath = "Resources/public";
 
     private $output;
 
@@ -39,9 +39,6 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         $bundle = $this->getContainer()->get("kernel")->getBundle($input->getArgument("bundle"));
         $bundleNamespace = $bundle->getNamespace();
 
-        $bundlePath = $bundle->getPath();
-        $targetPath = "$bundlePath/{$this->relJsPath}/var";
-
         $endpoints = $this->generateEndpointsFiles($bundleNamespace);
         $objects = $this->generateObjectsFiles($bundleNamespace);
 
@@ -49,11 +46,7 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
             return;
         }
 
-        if (! is_dir($targetPath)) {
-            $this->filesystem->mkdir($targetPath);
-        }
-
-        $this->createJsFiles($targetPath, $endpoints, $objects);
+        $this->createJsFiles($bundle->getPath(), $endpoints, $objects);
 
         $this->output->writeln("Finished successfully.");
     }
@@ -68,12 +61,20 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
 
         foreach ($names as $name) {
             $metaContainer = $endpointService->getEndpointMetaContainer($name);
+            $class = $endpointService->getControllerClass($name);
 
-            if (strpos($endpointService->getControllerClass($name), $bundleNamespace) !== 0) {
+            if (strpos($class, $bundleNamespace) !== 0) {
                 continue;
             }
 
-            $list[$name] = [
+            $subNs = strstr(str_replace("$bundleNamespace\Api\\", "", $class), "\\", true);
+            $path = ($subNs === "Controller" ? "" : strtolower($subNs) . "/") . "js";
+
+            if (! isset($list[$path])) {
+                $list[$path] = [];
+            }
+
+            $list[$path][$name] = [
                 $metaContainer->get("Endpoint")->get("request"),
                 $metaContainer->get("Endpoint")->get("response")
             ];
@@ -116,7 +117,14 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
                 }
             }
 
-            $list[$objectName] = ["props" => $properties];
+            $subNs = strstr(str_replace("$bundleNamespace\Api\\", "", $objectClass), "\\", true);
+            $path = ($subNs === "Object" ? "" : strtolower($subNs) . "/") . "js";
+
+            if (! isset($list[$path])) {
+                $list[$path] = [];
+            }
+
+            $list[$path][$objectName] = ["props" => $properties];
 
             if (count($meta)) {
                 $list[$objectName]["meta"] = $meta;
@@ -145,20 +153,32 @@ class ApiJsGeneratorCommand extends ContainerAwareCommand
         return $meta;
     }
 
-    private function createJsFiles($path, $endpoints, $objects)
+    private function createJsFiles($basePath, $endpoints, $objects)
     {
-        $file = "";
+        $files = [];
 
-        if ($endpoints) {
-            $endpointsJson = json_encode($endpoints, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-            $file .= "ag.api.Endpoint.register($endpointsJson);\n";
+        foreach (array_unique(array_merge(array_keys($endpoints), array_keys($objects))) as $path) {
+            $file = "";
+
+            if (isset($endpoints[$path])) {
+                $endpointsJson = json_encode($endpoints[$path], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                $file .= "ag.api.Endpoint.register($endpointsJson);\n";
+            }
+
+            if ($objects[$path]) {
+                $objectsJson = json_encode($objects[$path], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                $file .= "ag.api.Object.register($objectsJson);\n";
+            }
+
+            if ($file) {
+                $targetPath = "$basePath/{$this->assetsPath}/$path/var";
+
+                if (! is_dir($targetPath)) {
+                    $this->filesystem->mkdir($targetPath);
+                }
+
+                file_put_contents("$targetPath/api.js", $file);
+            }
         }
-
-        if ($objects) {
-            $objectsJson = json_encode($objects, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-            $file .= "ag.api.Object.register($objectsJson);\n";
-        }
-
-        file_put_contents("$path/api.js", $file);
     }
 }
