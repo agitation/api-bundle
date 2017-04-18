@@ -21,16 +21,11 @@ trait EntitySearchTrait
         }
 
         $this->checkPermissions($requestObject, __FUNCTION__);
-
         $this->responseService->setView("search");
 
-        $query = $this->createSearchQuery($requestObject);
-        $result = [];
-
-        foreach ($query->getQuery()->getResult() as $entity) {
-            $result[] = $this->createObject($this->getResponseObjectApiClass(), $entity);
-        }
-
-        return $result;
+        return $this->createResultList(
+            $this->getResponseObjectApiClass(),
+            $this->createSearchQuery($requestObject)->getQuery()->getResult()
+        );
     }
 }

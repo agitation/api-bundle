@@ -115,12 +115,12 @@ abstract class AbstractEntityController extends AbstractController
     {
         $entityName = $this->getEntityClass();
 
-        $query =  $this->entityManager
+        $qb = $this->entityManager
             ->createQueryBuilder()
             ->select("e")->from($entityName, "e")
             ->orderBy("e.id", "ASC");
 
-        return $query;
+        return $qb;
     }
 
     protected function retrieveEntity($entityClass, $id)
