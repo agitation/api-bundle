@@ -48,28 +48,25 @@ class ObjectProcessor extends AbstractProcessor
         $this->collect(Object::class, "agit.api.object");
     }
 
-    protected function processClass(ReflectionClass $classRefl, Annotation $desc)
+    protected function processClass(ReflectionClass $classRefl, Annotation $desc, array $classAnnotations)
     {
         $class = $classRefl->getName();
         $namespace = $desc->get("namespace");
         $allDefaults = $classRefl->getDefaultProperties();
         $defaults = [];
 
-        if ($desc->get("objectName") !== null) {
-            throw new InternalErrorException("Error in Object annotation on $class: You must not set the `objectName` parameter, it will be set automatically.");
-        }
-
         if (! $namespace) {
             throw new InternalErrorException(sprintf("ATTENTION: missing namespace on %s\n", $class));
         }
+
         $objectName = "$namespace/" . $classRefl->getShortName();
         $objectMeta = [];
         $propMetaList = [];
 
         $desc->set("objectName", $objectName);
         $objectMeta["Object"] = $desc;
-        $objectMeta["Name"] = $this->annotationReader->getClassAnnotation($classRefl, Name::class) ?: new Name(["value" => $objectName]);
-        $deps = $this->annotationReader->getClassAnnotation($classRefl, Depends::class) ?: new Depends();
+        $objectMeta["Name"] = isset($classAnnotations[Name::class]) ? $classAnnotations[Name::class] : new Name(["value" => $objectName]);
+        $deps = isset($classAnnotations[Depends::class]) ? $classAnnotations[Depends::class] : new Depends();
 
         foreach ($classRefl->getProperties() as $propertyRefl) {
             $annotations = $this->annotationReader->getPropertyAnnotations($propertyRefl);

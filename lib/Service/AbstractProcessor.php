@@ -36,10 +36,16 @@ abstract class AbstractProcessor implements CacheWarmerInterface
 
             foreach ($this->classCollector->collect($path) as $class) {
                 $classRefl = new ReflectionClass($class);
-                $desc = $this->annotationReader->getClassAnnotation($classRefl, $annotationClass);
+                // $desc = $this->annotationReader->getClassAnnotation($classRefl, $annotationClass);
 
-                if ($desc) {
-                    $this->processClass($classRefl, $desc);
+                $annotations = $this->getAllClassAnnotations($classRefl);
+
+                foreach ($annotations as $annoClass => $anno) {
+                    if ($anno instanceof $annotationClass) {
+                        unset($annotations[$annoClass]);
+                        $this->processClass($classRefl, $anno, $annotations);
+                        break;
+                    }
                 }
             }
 
@@ -106,5 +112,23 @@ abstract class AbstractProcessor implements CacheWarmerInterface
         }
     }
 
-    abstract protected function processClass(ReflectionClass $classRefl, Annotation $desc);
+    /**
+     * gets annotations from a class AND ITS ANCESTORS.
+     */
+    protected function getAllClassAnnotations(ReflectionClass $classRefl)
+    {
+        $annotations = [];
+
+        foreach ($this->annotationReader->getClassAnnotations($classRefl) as $k => $anno) {
+            $annotations[get_class($anno)] = $anno;
+        }
+
+        if ($parent = $classRefl->getParentClass()) {
+            $annotations += $this->getAllClassAnnotations($parent);
+        }
+
+        return $annotations;
+    }
+
+    abstract protected function processClass(ReflectionClass $classRefl, Annotation $desc, array $classAnnotations);
 }
