@@ -17,27 +17,19 @@ use Psr\Log\LogLevel;
 
 trait EntityCreateTrait
 {
-    public function create(AbstractEntityObject $requestObject)
+    public function create(AbstractEntityObject $request)
     {
         if (! ($this instanceof AbstractEntityController)) {
             throw new InternalErrorException("This trait must be used in children of the AbstractEntityController.");
         }
 
-        $this->checkPermissions($requestObject, __FUNCTION__);
-        $this->validate($requestObject);
+        $this->checkPermissions($request, __FUNCTION__);
+        $this->validate($request);
 
         try {
             $this->getEntityManager()->beginTransaction();
 
-            $className = $this->getEntityManager()->getClassMetadata($this->getEntityClass())->getName();
-            $entity = $this->saveEntity(new $className(), $requestObject);
-
-            $this->getLogger()->log(
-                LogLevel::NOTICE,
-                "agit.api.entity",
-                sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been created.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
-                true
-            );
+            $entity = $this->createEntity($request);
 
             $this->getEntityManager()->commit();
         } catch (Exception $e) {
@@ -46,5 +38,20 @@ trait EntityCreateTrait
         }
 
         return $this->createObject($this->getResponseObjectApiClass(), $entity);
+    }
+
+    protected function createEntity(AbstractEntityObject $request)
+    {
+        $className = $this->getEntityManager()->getClassMetadata($this->getEntityClass())->getName();
+        $entity = $this->saveEntity(new $className(), $request);
+
+        $this->getLogger()->log(
+            LogLevel::NOTICE,
+            "agit.api.entity",
+            sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been created.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
+            true
+        );
+
+        return $entity;
     }
 }
