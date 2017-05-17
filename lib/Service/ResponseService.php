@@ -11,6 +11,7 @@ namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Api\Object\AbstractObject;
 use Agit\ApiBundle\Api\Object\ResponseObjectInterface;
+use Agit\BaseBundle\Entity\IdentityInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -18,12 +19,19 @@ use Doctrine\ORM\Proxy\Proxy;
 
 class ResponseService extends AbstractObjectService
 {
+    /**
+     * @var EntityManager
+     */
     private $entityManager;
 
-    // cache of entity classes
+    /**
+     * @var array cache of entity class names
+     */
     private $entities;
 
-    // cache of generated objects with an identity
+    /**
+     * @var IdentityInterface cache of generated objects with an identity
+     */
     private $objects = [];
 
     private $view;
