@@ -111,7 +111,10 @@ class ApiController extends Controller
     private function setLocale()
     {
         $localeService = $this->container->get("agit.intl.locale");
-        $localeService->setLocale($localeService->getUserLocale());
+        $localeConfigService = $this->container->get("agit.intl.config");
+        $userLocale = $localeService->getUserLocale();
+        $activeLocales = $localeConfigService->getActiveLocales();
+        $localeService->setLocale(in_array($userLocale, $activeLocales) ? $userLocale : (isset($activeLocales[0]) ? $activeLocales[0] : $localeService->getDefaultLocale()));
     }
 
     private function getCsrfToken(Request $request)
