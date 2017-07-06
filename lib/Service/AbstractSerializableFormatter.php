@@ -26,7 +26,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     protected function getHttpContent(Request $httpRequest, $result)
     {
-        if (! $this->debug && $httpRequest->headers->get("x-api-serialize-compact", null, true) === "true") {
+        if (! $this->debug && ! is_scalar($result) && $httpRequest->headers->get("x-api-serialize-compact", null, true) === "true") {
             list($payload, $entityList) = $this->compactEntities($result);
             $result = $this->objectMetaService->createObject("common.v1/Response");
             $result->setPayload($payload);
