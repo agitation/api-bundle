@@ -47,7 +47,11 @@ abstract class AbstractObjectService
         if (is_scalar($value) || is_null($value) || $expectedType === "polymorphic") {
             $result = $value;
         } elseif (is_array($value)) {
-            if ($typeMeta->isObjectType() && $typeMeta->isListType()) {
+            if (! $typeMeta->isListType()) {
+                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the `%s` property."), $key));
+            }
+
+            if ($typeMeta->isObjectType()) {
                 $result = [];
 
                 foreach ($value as $listValue) {
@@ -55,10 +59,8 @@ abstract class AbstractObjectService
                     $this->fill($childObj, $listValue);
                     $result[] = $childObj;
                 }
-            } elseif (in_array($expectedType, ["array", "entity", "entitylist"])) {
-                $result = $value;
             } else {
-                throw new InvalidObjectValueException(sprintf(Translate::t("Invalid value for the `%s` property."), $key));
+                $result = $value;
             }
         } elseif (is_object($value)) {
             if ($expectedType === "map") {
