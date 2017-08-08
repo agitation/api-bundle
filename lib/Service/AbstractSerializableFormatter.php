@@ -10,6 +10,7 @@
 namespace Agit\ApiBundle\Service;
 
 use stdClass;
+use Agit\ApiBundle\Api\Object\ObjectInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractSerializableFormatter extends AbstractFormatter
@@ -76,7 +77,10 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
             if ($this->isEntityObject($value)) {
                 $processed = $this->addEntityObject($value);
             } else {
-                $values = get_object_vars($value);
+                $values = ($value instanceof ObjectInterface)
+                    ? $value->getValues()
+                    : get_object_vars($value);
+
                 $processed = $values ? [] : new stdClass(); // create stdClass only if values are empty, otherwise an assoc array will do
 
                 foreach ($values as $k => $v) {
