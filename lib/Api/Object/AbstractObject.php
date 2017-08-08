@@ -16,9 +16,8 @@ use Agit\ApiBundle\Exception\InvalidObjectValueException;
 use Agit\ApiBundle\Service\ObjectMetaService;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
-use JsonSerializable;
 
-abstract class AbstractObject implements JsonSerializable
+abstract class AbstractObject implements ObjectInterface
 {
     /**
      * @var MetaContainer instance for the object.

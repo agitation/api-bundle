@@ -9,6 +9,6 @@
 
 namespace Agit\ApiBundle\Api\Object;
 
-interface RequestObjectInterface
+interface RequestObjectInterface extends ObjectInterface
 {
 }

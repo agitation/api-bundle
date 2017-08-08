@@ -11,7 +11,7 @@ namespace Agit\ApiBundle\Api\Object;
 
 use Agit\ApiBundle\Service\ResponseService;
 
-interface ResponseObjectInterface
+interface ResponseObjectInterface extends ObjectInterface
 {
     public function setResponseService(ResponseService $responseService);
 
