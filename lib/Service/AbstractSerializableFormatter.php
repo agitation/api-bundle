@@ -9,8 +9,9 @@
 
 namespace Agit\ApiBundle\Service;
 
-use stdClass;
+use Agit\ApiBundle\Api\Object\EntityObjectInterface;
 use Agit\ApiBundle\Api\Object\ObjectInterface;
+use stdClass;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractSerializableFormatter extends AbstractFormatter
@@ -27,7 +28,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     protected function getHttpContent(Request $httpRequest, $result)
     {
-       if (! $this->debug && $result && ! is_scalar($result) && $httpRequest->headers->get("x-api-serialize-compact", null, true) === "true") {
+        if (! $this->debug && $result && ! is_scalar($result) && $httpRequest->headers->get("x-api-serialize-compact", null, true) === "true") {
             list($payload, $entityList) = $this->compactEntities($result);
             $result = $this->objectMetaService->createObject("common.v1/Response");
             $result->setPayload($payload);
@@ -74,7 +75,7 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
                 $processed[$k] = $this->processValue($v);
             }
         } elseif (is_object($value)) {
-            if ($this->isEntityObject($value)) {
+            if ($value instanceof EntityObjectInterface) {
                 $processed = $this->addEntityObject($value);
             } else {
                 $values = ($value instanceof ObjectInterface)
@@ -92,16 +93,9 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
         return $processed;
     }
 
-    private function isEntityObject($value)
+    private function addEntityObject(EntityObjectInterface $object)
     {
-        return is_callable([$value, "has"]) &&
-            $value->has("id") &&
-            $value->get("id");
-    }
-
-    private function addEntityObject($object)
-    {
-        $key = sprintf("%s:%s", $object->getObjectName(), $object->get("id"));
+        $key = sprintf("%s:%s", $object->getObjectName(), $object->getId());
 
         if (! isset($this->compactEntityList[$key])) {
             $this->compactEntityList[$key] = [

@@ -9,8 +9,20 @@
 
 namespace Agit\ApiBundle\Api\Object;
 
-abstract class AbstractEntityObject extends AbstractObject implements RequestObjectInterface, ResponseObjectInterface
+use Agit\ApiBundle\Exception\InvalidObjectException;
+
+abstract class AbstractEntityObject extends AbstractObject implements EntityObjectInterface, RequestObjectInterface, ResponseObjectInterface
 {
     use RequestObjectTrait;
     use ResponseObjectTrait;
+
+    // override this method if the entity has a different ID implementation
+    public function getId()
+    {
+        if (! $value->has("id")) {
+            throw new InvalidObjectException("An entity object must have an `id` field.");
+        }
+
+        return $value->get("id");
+    }
 }
