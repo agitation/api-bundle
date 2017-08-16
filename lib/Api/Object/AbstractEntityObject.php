@@ -19,10 +19,10 @@ abstract class AbstractEntityObject extends AbstractObject implements EntityObje
     // override this method if the entity has a different ID implementation
     public function getId()
     {
-        if (! $value->has("id")) {
+        if (! $this->has("id")) {
             throw new InvalidObjectException("An entity object must have an `id` field.");
         }
 
-        return $value->get("id");
+        return $this->get("id");
     }
 }
