@@ -9,9 +9,6 @@
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\ApiBundle\Api\Object\EntityObjectInterface;
-use Agit\ApiBundle\Api\Object\ObjectInterface;
-use stdClass;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractSerializableFormatter extends AbstractFormatter
@@ -29,85 +26,14 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
     protected function getHttpContent(Request $httpRequest, $result)
     {
         if (! $this->debug && $result && ! is_scalar($result) && $httpRequest->headers->get("x-api-serialize-compact", null, true) === "true") {
-            list($payload, $entityList) = $this->compactEntities($result);
+            $compactor = new Compactor($result);
             $result = $this->objectMetaService->createObject("common.v1/Response");
-            $result->setPayload($payload);
-            $result->setEntityList($entityList);
+            $result->setPayload($compactor->getPayload());
+            $result->setEntityList($compactor->getEntities());
         }
 
         return $this->encode($result);
     }
 
     abstract protected function encode($result);
-
-    // functions for compact mode
-
-    private $idx;
-
-    private $keyPrefix = "#e#";
-
-    private $compactEntityList = [];
-
-    public function compactEntities($result)
-    {
-        $this->idx = 0;
-        $this->compactEntityList = [];
-
-        $payload = $this->processValue($result);
-        $compactEntityList = [];
-
-        foreach ($this->compactEntityList as $compactEntity) {
-            $compactEntityList[$compactEntity["idx"]] = $compactEntity["obj"];
-        }
-
-        return [$payload, $compactEntityList];
-    }
-
-    public function processValue($value)
-    {
-        $processed = null;
-
-        if (is_scalar($value)) {
-            $processed = $value;
-        } elseif (is_array($value)) {
-            $processed = [];
-            foreach ($value as $k => $v) {
-                $processed[$k] = $this->processValue($v);
-            }
-        } elseif (is_object($value)) {
-            if ($value instanceof EntityObjectInterface) {
-                $processed = $this->addEntityObject($value);
-            } else {
-                $values = ($value instanceof ObjectInterface)
-                    ? $value->getValues()
-                    : get_object_vars($value);
-
-                $processed = $values ? [] : new stdClass(); // create stdClass only if values are empty, otherwise an assoc array will do
-
-                foreach ($values as $k => $v) {
-                    $processed[$k] = $this->processValue($v);
-                }
-            }
-        }
-
-        return $processed;
-    }
-
-    private function addEntityObject(EntityObjectInterface $object)
-    {
-        $key = sprintf("%s:%s", $object->getObjectName(), $object->getId());
-
-        if (! isset($this->compactEntityList[$key])) {
-            $this->compactEntityList[$key] = [
-                "idx" => sprintf("%s:%s", $this->keyPrefix, $this->idx++),
-                "obj" => [] // associative arrays are faster than stdClass and have the same effect
-            ];
-
-            foreach ($object->getValues() as $k => $v) {
-                $this->compactEntityList[$key]["obj"][$k] = $this->processValue($v);
-            }
-        }
-
-        return $this->compactEntityList[$key]["idx"];
-    }
 }
