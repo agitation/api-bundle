@@ -26,7 +26,10 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
     protected function getHttpHeaders(Request $httpRequest, $result)
     {
         $headers = parent::getHttpHeaders($httpRequest, $result);
-        $headers->set("Content-Encoding", "deflate");
+
+        if (! $this->debug) {
+            $headers->set("Content-Encoding", "deflate");
+        }
 
         return $headers;
     }
@@ -40,7 +43,11 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
             $result->setEntityList($compactor->getEntities());
         }
 
-        return zlib_encode($this->encode($result), ZLIB_ENCODING_DEFLATE);
+        $content = $this->encode($result);
+
+        return $this->debug
+            ? $content
+            : zlib_encode($content, ZLIB_ENCODING_DEFLATE);
     }
 
     abstract protected function encode($result);
