@@ -13,6 +13,8 @@ use Agit\ApiBundle\Api\Object\AbstractEntityObject;
 use Agit\ApiBundle\Api\Object\RequestObjectInterface;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Service\PersistenceService;
+use Agit\BaseBundle\Entity\IdentityInterface;
+use Agit\BaseBundle\Entity\NameInterface;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\LoggingBundle\Service\Logger;
@@ -145,14 +147,22 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function getEntityName($entity)
     {
-        return is_callable([$entity, "getName"])
-            ? Multilang::u($entity->getName())
-            : $entity->getId();
+        $name = null;
+
+        if ($entity instanceof NameInterface) {
+            $name = $entity->getName();
+
+            if (class_exists("Agit\MultilangBundle\Multilang")) {
+                $name = Multilang::u($name);
+            }
+        } elseif ($entity instanceof IdentityInterface) {
+            $name = $entity->getId();
+        }
     }
 
     protected function getEntityClassName($entity)
     {
-        return is_callable([$entity, "getEntityClassName"])
+        return $entity instanceof IdentityInterface
             ? $entity->getEntityClassName()
             : StringHelper::getBareClassName($entity);
     }
