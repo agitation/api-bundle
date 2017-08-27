@@ -158,6 +158,8 @@ abstract class AbstractEntityController extends AbstractController
         } elseif ($entity instanceof IdentityInterface) {
             $name = $entity->getId();
         }
+
+        return $name;
     }
 
     protected function getEntityClassName($entity)
