@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -29,13 +29,13 @@ class ControllerProcessor extends AbstractProcessor
     const ENTITY_TRAIT_NAMESPACE = "Agit\ApiBundle\Api\Controller";
 
     const SUPPORTED_ENTITY_TRAITS = [
-        "search"   => "EntitySearchTrait",
-        "get"      => "EntityGetTrait",
-        "create"   => "EntityCreateTrait",
-        "update"   => "EntityUpdateTrait",
-        "delete"   => "EntityDeleteTrait",
-        "undelete" => "EntityUndeleteTrait",
-        "remove"   => "EntityRemoveTrait"
+        'search' => 'EntitySearchTrait',
+        'get' => 'EntityGetTrait',
+        'create' => 'EntityCreateTrait',
+        'update' => 'EntityUpdateTrait',
+        'delete' => 'EntityDeleteTrait',
+        'undelete' => 'EntityUndeleteTrait',
+        'remove' => 'EntityRemoveTrait'
     ];
 
     protected $kernel;
@@ -59,59 +59,67 @@ class ControllerProcessor extends AbstractProcessor
 
     public function process()
     {
-        $this->collect(Controller::class, "agit.api.endpoint");
+        $this->collect(Controller::class, 'agit.api.endpoint');
     }
 
     protected function processClass(ReflectionClass $classRefl, Annotation $desc, array $classAnnotations)
     {
         $class = $classRefl->getName();
-        $namespace = $desc->get("namespace");
+        $namespace = $desc->get('namespace');
         $controllerName = "$namespace/" . $classRefl->getShortName();
         $deps = isset($classAnnotations[Depends::class]) ? $classAnnotations[Depends::class] : new Depends();
 
         $this->checkConstructor($classRefl, $deps);
 
-        if (! $namespace) {
+        if (! $namespace)
+        {
             throw new InternalErrorException(sprintf("ATTENTION: missing namespace on %s\n", $class));
         }
 
-        if ($desc instanceof EntityController) {
+        if ($desc instanceof EntityController)
+        {
             $this->processEntityController($desc, $classRefl, $controllerName, $deps);
         }
 
-        foreach ($classRefl->getMethods() as $methodRefl) {
+        foreach ($classRefl->getMethods() as $methodRefl)
+        {
             $annotationList = $this->annotationReader->getMethodAnnotations($methodRefl);
             $endpointMeta = [];
 
-            foreach ($annotationList as $annotation) {
-                if ($annotation instanceof AbstractEndpointMeta) {
+            foreach ($annotationList as $annotation)
+            {
+                if ($annotation instanceof AbstractEndpointMeta)
+                {
                     $endpointMetaName = StringHelper::getBareClassName($annotation);
                     $endpointMeta[$endpointMetaName] = $annotation;
                 }
             }
 
-            if (! isset($endpointMeta["Endpoint"]) || ! isset($endpointMeta["Security"])) {
+            if (! isset($endpointMeta['Endpoint']) || ! isset($endpointMeta['Security']))
+            {
                 continue;
             }
 
-            if (! $methodRefl->isPublic()) {
+            if (! $methodRefl->isPublic())
+            {
                 throw new InternalErrorException(sprintf("ATTENTION: %s->%s must be public!\n", $class, $methodRefl->getName()));
             }
 
             // fix implicit namespaces in request and response
-            $endpointMeta["Endpoint"]->set("request", $this->fixObjectName($namespace, $endpointMeta["Endpoint"]->get("request")));
-            $endpointMeta["Endpoint"]->set("response", $this->fixObjectName($namespace, $endpointMeta["Endpoint"]->get("response")));
+            $endpointMeta['Endpoint']->set('request', $this->fixObjectName($namespace, $endpointMeta['Endpoint']->get('request')));
+            $endpointMeta['Endpoint']->set('response', $this->fixObjectName($namespace, $endpointMeta['Endpoint']->get('response')));
 
             $endpoint = sprintf(
-                "%s.%s",
+                '%s.%s',
                 $controllerName,
-                $methodRefl->getName());
+                $methodRefl->getName()
+            );
 
             $this->addEntry($endpoint, [
-                "class"  => $class,
-                "deps"   => $this->dissectMeta($deps),
-                "method" => $methodRefl->getName(),
-                "meta"   => $this->dissectMetaList($endpointMeta)
+                'class' => $class,
+                'deps' => $this->dissectMeta($deps),
+                'method' => $methodRefl->getName(),
+                'meta' => $this->dissectMetaList($endpointMeta)
             ]);
         }
     }
@@ -119,55 +127,66 @@ class ControllerProcessor extends AbstractProcessor
     protected function processEntityController($desc, $classRefl, $controllerName, $deps)
     {
         $class = $classRefl->getName();
-        $capPrefix = $desc->get("cap");
-        $entityMeta = $this->entityManager->getClassMetadata($desc->get("entity"));
+        $capPrefix = $desc->get('cap');
+        $entityMeta = $this->entityManager->getClassMetadata($desc->get('entity'));
         $entityIdFieldMeta = $entityMeta->getFieldMapping($entityMeta->getSingleIdentifierFieldName());
-        $idObject = ($entityIdFieldMeta["type"] === "integer") ? "common.v1/ScalarInteger" : "common.v1/ScalarString";
-        $crossOrigin = $desc->get("crossOrigin");
+        $idObject = ($entityIdFieldMeta['type'] === 'integer') ? 'common.v1/ScalarInteger' : 'common.v1/ScalarString';
+        $crossOrigin = $desc->get('crossOrigin');
 
         $usedTraits = $this->getTraits($classRefl);
 
-        foreach ($usedTraits as $method) {
+        foreach ($usedTraits as $method)
+        {
             $endpointMeta = [];
-            $endpointMeta["Security"] = new Security();
-            $endpointMeta["Endpoint"] = new EntityEndpoint([
-                "entity"  => $desc->get("entity")
+            $endpointMeta['Security'] = new Security();
+            $endpointMeta['Endpoint'] = new EntityEndpoint([
+                'entity' => $desc->get('entity')
             ]);
 
-            $readCap = $capPrefix ? "$capPrefix.read" : "";
-            $writeCap = $capPrefix ? "$capPrefix.write" : "";
+            $readCap = $capPrefix ? "$capPrefix.read" : '';
+            $writeCap = $capPrefix ? "$capPrefix.write" : '';
 
-            if ($method === "get") {
-                $endpointMeta["Security"]->set("capability", $readCap);
-                $endpointMeta["Endpoint"]->set("request", $idObject);
-                $endpointMeta["Endpoint"]->set("response", $controllerName);
-            } elseif ($method === "all") {
-                $endpointMeta["Security"]->set("capability", $readCap);
-                $endpointMeta["Endpoint"]->set("request",  "common.v1/ScalarNull");
-                $endpointMeta["Endpoint"]->set("response", "{$controllerName}[]");
-            } elseif ($method === "search") {
-                $endpointMeta["Security"]->set("capability", $readCap);
-                $endpointMeta["Endpoint"]->set("request",  "{$controllerName}Search");
-                $endpointMeta["Endpoint"]->set("response", "{$controllerName}[]");
-            } elseif (in_array($method, ["create", "update"])) {
-                $endpointMeta["Security"]->set("capability", $writeCap);
-                $endpointMeta["Endpoint"]->set("request", $controllerName);
-                $endpointMeta["Endpoint"]->set("response", $controllerName);
-            } elseif (in_array($method, ["delete", "undelete", "remove"])) {
-                $endpointMeta["Security"]->set("capability", $writeCap);
-                $endpointMeta["Endpoint"]->set("request", $idObject);
-                $endpointMeta["Endpoint"]->set("response", "common.v1/ScalarNull");
+            if ($method === 'get')
+            {
+                $endpointMeta['Security']->set('capability', $readCap);
+                $endpointMeta['Endpoint']->set('request', $idObject);
+                $endpointMeta['Endpoint']->set('response', $controllerName);
+            }
+            elseif ($method === 'all')
+            {
+                $endpointMeta['Security']->set('capability', $readCap);
+                $endpointMeta['Endpoint']->set('request', 'common.v1/ScalarNull');
+                $endpointMeta['Endpoint']->set('response', "{$controllerName}[]");
+            }
+            elseif ($method === 'search')
+            {
+                $endpointMeta['Security']->set('capability', $readCap);
+                $endpointMeta['Endpoint']->set('request', "{$controllerName}Search");
+                $endpointMeta['Endpoint']->set('response', "{$controllerName}[]");
+            }
+            elseif (in_array($method, ['create', 'update']))
+            {
+                $endpointMeta['Security']->set('capability', $writeCap);
+                $endpointMeta['Endpoint']->set('request', $controllerName);
+                $endpointMeta['Endpoint']->set('response', $controllerName);
+            }
+            elseif (in_array($method, ['delete', 'undelete', 'remove']))
+            {
+                $endpointMeta['Security']->set('capability', $writeCap);
+                $endpointMeta['Endpoint']->set('request', $idObject);
+                $endpointMeta['Endpoint']->set('response', 'common.v1/ScalarNull');
             }
 
-            if ($crossOrigin && in_array($method, ["get", "search"])) {
-                $endpointMeta["Security"]->set("allowCrossOrigin", true);
+            if ($crossOrigin && in_array($method, ['get', 'search']))
+            {
+                $endpointMeta['Security']->set('allowCrossOrigin', true);
             }
 
             $this->addEntry("$controllerName.$method", [
-                "class"  => $class,
-                "deps"   => $this->dissectMeta($deps),
-                "method" => $method,
-                "meta"   => $this->dissectMetaList($endpointMeta)
+                'class' => $class,
+                'deps' => $this->dissectMeta($deps),
+                'method' => $method,
+                'meta' => $this->dissectMetaList($endpointMeta)
             ]);
         }
     }
@@ -176,12 +195,16 @@ class ControllerProcessor extends AbstractProcessor
     {
         $usedTraits = [];
 
-        foreach ($classRefl->getTraits() as $usedTrait) {
-            foreach (self::SUPPORTED_ENTITY_TRAITS as $method => $supportedTrait) {
+        foreach ($classRefl->getTraits() as $usedTrait)
+        {
+            foreach (self::SUPPORTED_ENTITY_TRAITS as $method => $supportedTrait)
+            {
                 $traitClass = self::ENTITY_TRAIT_NAMESPACE . "\\$supportedTrait";
 
-                if ($usedTrait->name === $traitClass || $usedTrait->isSubclassOf($traitClass)) {
+                if ($usedTrait->name === $traitClass || $usedTrait->isSubclassOf($traitClass))
+                {
                     $usedTraits[] = $method;
+
                     break;
                 }
             }
@@ -190,7 +213,8 @@ class ControllerProcessor extends AbstractProcessor
             $usedTraits = array_merge($usedTraits, $this->getTraits($usedTrait));
         }
 
-        if ($parent = $classRefl->getParentClass()) {
+        if ($parent = $classRefl->getParentClass())
+        {
             $usedTraits = array_merge($usedTraits, $this->getTraits($parent)); // get parent traits
         }
 

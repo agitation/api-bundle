@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -27,7 +27,8 @@ class MetaContainer
 
     public function get($name)
     {
-        if (! isset($this->metas[$name])) {
+        if (! isset($this->metas[$name]))
+        {
             throw new InternalErrorException("No meta named `$name` found.");
         }
 

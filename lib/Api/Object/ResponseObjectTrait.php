@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -27,13 +27,18 @@ trait ResponseObjectTrait
     /**
      * Can be overridden by API objects which have their own logic of matching
      * the given $data to their properties.
+     * @param mixed $data
      */
     public function fill($data)
     {
-        if ($this->responseService) {
-            if ($this->responseService->isEntity($data)) {
+        if ($this->responseService)
+        {
+            if ($this->responseService->isEntity($data))
+            {
                 $this->responseService->fillObjectFromEntity($this, $data);
-            } elseif ($data instanceof stdClass) {
+            }
+            elseif ($data instanceof stdClass)
+            {
                 $this->responseService->fillObjectFromPlain($this, $data);
             }
         }
@@ -41,7 +46,8 @@ trait ResponseObjectTrait
 
     protected function createObject($name, $data = null)
     {
-        if (strpos($name, '/') === false) {
+        if (strpos($name, '/') === false)
+        {
             $name = "{$this->apiNamespace}/$name";
         }
 

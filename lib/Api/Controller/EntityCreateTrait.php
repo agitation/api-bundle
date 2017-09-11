@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -19,21 +19,26 @@ trait EntityCreateTrait
 {
     public function create(AbstractEntityObject $request)
     {
-        if (! ($this instanceof AbstractEntityController)) {
-            throw new InternalErrorException("This trait must be used in children of the AbstractEntityController.");
+        if (! ($this instanceof AbstractEntityController))
+        {
+            throw new InternalErrorException('This trait must be used in children of the AbstractEntityController.');
         }
 
         $this->checkPermissions($request, __FUNCTION__);
         $this->validate($request);
 
-        try {
+        try
+        {
             $this->getEntityManager()->beginTransaction();
 
             $entity = $this->createEntity($request);
 
             $this->getEntityManager()->commit();
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             $this->getEntityManager()->rollBack();
+
             throw $e;
         }
 
@@ -47,8 +52,8 @@ trait EntityCreateTrait
 
         $this->getLogger()->log(
             LogLevel::NOTICE,
-            "agit.api.entity",
-            sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been created.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
+            'agit.api.entity',
+            sprintf(Translate::xl('1: object type, 2: name', '%1$s “%2$s” has been created.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
             true
         );
 

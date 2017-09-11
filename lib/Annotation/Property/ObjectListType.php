@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -28,10 +28,12 @@ class ObjectListType extends ObjectType
     {
         $this->init($value);
 
-        if ($this->mustCheck()) {
+        if ($this->mustCheck())
+        {
             static::$_validator->validate('array', $value, $this->minLength, $this->maxLength);
 
-            foreach ($value as $val) {
+            foreach ($value as $val)
+            {
                 $this->checkValue($val);
             }
         }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -18,6 +18,7 @@ interface ResponseObjectInterface extends ObjectInterface
     /**
      * Can be overridden by API objects which have their own logic of matching
      * the given $data to their properties.
+     * @param mixed $data
      */
     public function fill($data);
 }

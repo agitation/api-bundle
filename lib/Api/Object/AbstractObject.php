@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -20,12 +20,12 @@ use Agit\IntlBundle\Tool\Translate;
 abstract class AbstractObject implements ObjectInterface
 {
     /**
-     * @var MetaContainer instance for the object.
+     * @var MetaContainer instance for the object
      */
     protected $objectMeta;
 
     /**
-     * @var MetaContainer instance for the properties.
+     * @var MetaContainer instance for the properties
      */
     protected $propertyMetas = [];
 
@@ -47,7 +47,7 @@ abstract class AbstractObject implements ObjectInterface
     public function init($name, ObjectMetaService $objectMetaService)
     {
         $this->objectName = $name;
-        $this->apiNamespace = strstr($this->objectName, "/", true);
+        $this->apiNamespace = strstr($this->objectName, '/', true);
         $this->objectMetaService = $objectMetaService;
         $this->objectMeta = $objectMetaService->getObjectMetas($this->objectName);
         $this->propertyMetas = $objectMetaService->getObjectPropertyMetas($this->objectName);
@@ -55,7 +55,7 @@ abstract class AbstractObject implements ObjectInterface
 
     public function getName()
     {
-        return $this->objectMeta->get("Name")->getName();
+        return $this->objectMeta->get('Name')->getName();
     }
 
     public function getObjectName()
@@ -84,8 +84,10 @@ abstract class AbstractObject implements ObjectInterface
     {
         $values = [];
 
-        foreach ($this->propertyMetas as $key => $meta) {
-            if (isset($this->$key)) {
+        foreach ($this->propertyMetas as $key => $meta)
+        {
+            if (isset($this->$key))
+            {
                 $values[$key] = $this->$key;
             }
         }
@@ -102,18 +104,24 @@ abstract class AbstractObject implements ObjectInterface
     public function add($key, $value)
     {
         $this->checkHasProperty($key);
-        $type = $this->getPropertyMeta($key, "Type");
+        $type = $this->getPropertyMeta($key, 'Type');
 
-        if ($type->isListType()) {
-            if (! is_array($this->$key)) {
+        if ($type->isListType())
+        {
+            if (! is_array($this->$key))
+            {
                 $this->$key = [];
             }
 
             array_push($this->$key, $value);
-        } elseif ($type->getType() === "integer" || $type->getType() === "float") {
+        }
+        elseif ($type->getType() === 'integer' || $type->getType() === 'float')
+        {
             $this->$key += $value;
-        } else {
-            throw new InternalErrorException("Cannot use `add` with this property type.");
+        }
+        else
+        {
+            throw new InternalErrorException('Cannot use `add` with this property type.');
         }
     }
 
@@ -124,17 +132,6 @@ abstract class AbstractObject implements ObjectInterface
         return $this->propertyMetas[$propKey]->get($metaName);
     }
 
-    protected function checkHasProperty($key)
-    {
-        if (! $this->has($key)) {
-            throw new InvalidObjectException(sprintf(
-                Translate::t("The `%s` object does not have a `%s` property."),
-                $this->getName(),
-                $key
-            ));
-        }
-    }
-
     public function jsonSerialize()
     {
         return $this->getValues();
@@ -142,25 +139,44 @@ abstract class AbstractObject implements ObjectInterface
 
     public function validate()
     {
-        foreach ($this->propertyMetas as $key => $metaContainer) {
+        foreach ($this->propertyMetas as $key => $metaContainer)
+        {
             $this->validateValue($key, $this->$key);
+        }
+    }
+
+    protected function checkHasProperty($key)
+    {
+        if (! $this->has($key))
+        {
+            throw new InvalidObjectException(sprintf(
+                Translate::t('The `%s` object does not have a `%s` property.'),
+                $this->getName(),
+                $key
+            ));
         }
     }
 
     protected function validateValue($key, $value)
     {
-        try {
-            $this->getPropertyMeta($key, "Type")->check($value);
-        } catch (\Exception $e) {
+        try
+        {
+            $this->getPropertyMeta($key, 'Type')->check($value);
+        }
+        catch (\Exception $e)
+        {
             throw new InvalidObjectValueException(sprintf(
-                Translate::t("Invalid value for “%s“: %s"),
-                $this->getPropertyMeta($key, "Name")->getName(), $e->getMessage()));
+                Translate::t('Invalid value for “%s“: %s'),
+                $this->getPropertyMeta($key, 'Name')->getName(),
+                $e->getMessage()
+            ));
         }
     }
 
     protected function createObject($name)
     {
-        if (strpos($name, '/') === false) {
+        if (strpos($name, '/') === false)
+        {
             $name = "{$this->apiNamespace}/$name";
         }
 

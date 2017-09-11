@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -15,8 +15,9 @@ trait EntityGetTrait
 {
     public function get($id)
     {
-        if (! ($this instanceof AbstractEntityController)) {
-            throw new InternalErrorException("This trait must be used in children of the AbstractEntityController.");
+        if (! ($this instanceof AbstractEntityController))
+        {
+            throw new InternalErrorException('This trait must be used in children of the AbstractEntityController.');
         }
 
         $this->checkPermissions($id, __FUNCTION__);

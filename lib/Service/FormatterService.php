@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -28,8 +28,9 @@ class FormatterService
 
     public function getFormatter($extension)
     {
-        if (! $this->formatExists($extension)) {
-            throw new FormatterNotFoundException(Translate::t("The requested format is not supported."));
+        if (! $this->formatExists($extension))
+        {
+            throw new FormatterNotFoundException(Translate::t('The requested format is not supported.'));
         }
 
         return $this->formatters[$extension];

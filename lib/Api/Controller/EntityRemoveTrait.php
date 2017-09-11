@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -19,14 +19,16 @@ trait EntityRemoveTrait
 {
     public function remove($id)
     {
-        if (! ($this instanceof AbstractEntityController)) {
-            throw new InternalErrorException("This trait must be used in children of the AbstractEntityController.");
+        if (! ($this instanceof AbstractEntityController))
+        {
+            throw new InternalErrorException('This trait must be used in children of the AbstractEntityController.');
         }
 
         $this->checkPermissions($id, __FUNCTION__);
         $entity = $this->retrieveEntity($this->getEntityClass(), $id);
 
-        try {
+        try
+        {
             $this->getEntityManager()->beginTransaction();
 
             $this->getEntityManager()->remove($entity);
@@ -34,15 +36,18 @@ trait EntityRemoveTrait
 
             $this->getLogger()->log(
                 LogLevel::NOTICE,
-                "agit.api.entity",
-                sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been removed permanently.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
+                'agit.api.entity',
+                sprintf(Translate::xl('1: object type, 2: name', '%1$s “%2$s” has been removed permanently.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
                 true
             );
 
             $this->getEntityManager()->commit();
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             $this->getEntityManager()->rollBack();
-            throw new BadRequestException(Translate::t("This object cannot be removed, because there are other objects depending on it."));
+
+            throw new BadRequestException(Translate::t('This object cannot be removed, because there are other objects depending on it.'));
         }
     }
 }

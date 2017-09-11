@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -27,7 +27,7 @@ abstract class AbstractFormatter
     protected function getHttpHeaders(Request $httpRequest, $result)
     {
         $headers = new ResponseHeaderBag();
-        $headers->set("Content-Type", $this->getMimeType() . "; charset=utf-8");
+        $headers->set('Content-Type', $this->getMimeType() . '; charset=utf-8');
 
         return $headers;
     }

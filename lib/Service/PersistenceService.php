@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -12,7 +12,6 @@ namespace Agit\ApiBundle\Service;
 use Agit\ApiBundle\Exception\PersistenceException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
@@ -41,14 +40,17 @@ class PersistenceService
 
     public function saveEntity($entity, stdClass $data = null, callable $callback = null)
     {
-        try {
+        try
+        {
             $this->entityManager->beginTransaction();
 
-            if (is_object($data)) {
+            if (is_object($data))
+            {
                 $this->fillEntity($entity, $data);
             }
 
-            if (is_callable($callback)) {
+            if (is_callable($callback))
+            {
                 $callback($entity, $data);
             }
 
@@ -58,15 +60,19 @@ class PersistenceService
             $this->entityManager->commit();
 
             $this->entityManager->refresh($entity);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             $this->entityManager->rollback();
+
             throw $e;
         }
     }
 
     public function fillEntity($entity, stdClass $data)
     {
-        if ($entity instanceof Proxy) {
+        if ($entity instanceof Proxy)
+        {
             $entity->__load();
         }
 
@@ -75,103 +81,135 @@ class PersistenceService
         $assoc = $entityMeta->getAssociationNames();
         $allFields = array_merge($assoc, $entityMeta->getFieldNames());
 
-        foreach ($allFields as $prop) {
-            if (! isset($data->$prop) || $entityMeta->isIdentifier($prop)) {
+        foreach ($allFields as $prop)
+        {
+            if (! isset($data->$prop) || $entityMeta->isIdentifier($prop))
+            {
                 continue;
             }
 
             $value = $data->$prop;
-            $setter = "set" . ucfirst($prop);
+            $setter = 'set' . ucfirst($prop);
 
-            if (! in_array($prop, $assoc)) {
+            if (! in_array($prop, $assoc))
+            {
                 $entity->$setter($value);
-            } else {
+            }
+            else
+            {
                 $mapping = $entityMeta->getAssociationMapping($prop);
-                $targetEntity = $mapping["targetEntity"];
-                $isOwning = $mapping["isOwningSide"];
+                $targetEntity = $mapping['targetEntity'];
+                $isOwning = $mapping['isOwningSide'];
 
-                if ($mapping["type"] & ClassMetadataInfo::TO_ONE) {
-                    if ($isOwning) {
+                if ($mapping['type'] & ClassMetadataInfo::TO_ONE)
+                {
+                    if ($isOwning)
+                    {
                         // ONE_TO_ONE or MANY_TO_ONE
 
-                        if (! is_scalar($value) && ! is_null($value)) {
+                        if (! is_scalar($value) && $value !== null)
+                        {
                             throw new InternalErrorException("Bad object value: The `$prop` property must be scalar or null.");
                         }
 
                         $ref = $this->entityManager->getReference($targetEntity, $value);
                         $entity->$setter($ref);
-                    } else {
+                    }
+                    else
+                    {
                         // ONE_TO_ONE
 
                         $childEntity = $entityMeta->getFieldValue($entity, $prop);
 
-                        if (! $childEntity) {
+                        if (! $childEntity)
+                        {
                             $childEntity = $this->entityManager->getClassMetadata($targetEntity)->newInstance();
                         }
 
                         $this->fillEntity($childEntity, $value);
                         $entity->$setter($childEntity);
                     }
-                } elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY) {
-                    if (! is_array($value)) {
+                }
+                elseif ($mapping['type'] & ClassMetadataInfo::TO_MANY)
+                {
+                    if (! is_array($value))
+                    {
                         throw new InternalErrorException("Mismatch between object and entity: The `$prop` property is a single object reference, while the entity field is a xToMany relation.");
                     }
 
                     $children = $entityMeta->getFieldValue($entity, $prop);
 
-                    if (! ($children instanceof Collection)) {
+                    if (! ($children instanceof Collection))
+                    {
                         throw new InternalErrorException("Bad entity: The `$prop` property is expected to be a Doctrine collection.");
                     }
 
                     $childrenArray = [];
 
                     // can't use the toArray() method, because we want the array to be indexed by the childrens' keys
-                    foreach ($children as $child) {
+                    foreach ($children as $child)
+                    {
                         $childrenArray[$child->getId()] = $child;
                     }
 
-                    foreach ($value as $childValue) {
-                        if ($isOwning) {
+                    foreach ($value as $childValue)
+                    {
+                        if ($isOwning)
+                        {
                             // MANY_TO_MANY
 
-                            if (! isset($childrenArray[$childValue])) {
+                            if (! isset($childrenArray[$childValue]))
+                            {
                                 $ref = $this->entityManager->getReference($targetEntity, $childValue);
                                 $children->add($ref);
-                            } else {
+                            }
+                            else
+                            {
                                 // no action needed, just make sure it doesn't get deleted
                                 unset($childrenArray[$childValue]);
                             }
-                        } else {
+                        }
+                        else
+                        {
                             // ONE_TO_MANY or MANY_TO_MANY
 
-                            if (! is_object($childValue)) {
-                                throw new InternalErrorException("Bad child entity: expecting an object.");
+                            if (! is_object($childValue))
+                            {
+                                throw new InternalErrorException('Bad child entity: expecting an object.');
                             }
 
-                            $id = property_exists($childValue, "id") ? $childValue->id : null;
+                            $id = property_exists($childValue, 'id') ? $childValue->id : null;
 
-                            if (! is_null($id) && ! isset($childrenArray[$id])) {
+                            if ($id !== null&& ! isset($childrenArray[$id]))
+                            {
                                 throw new InternalErrorException("A child entity of $prop with ID $id doesn’t exist.");
                             }
 
-                            if (isset($childrenArray[$id])) {
+                            if (isset($childrenArray[$id]))
+                            {
                                 $child = $childrenArray[$id];
                                 unset($childrenArray[$id]);
-                            } else {
+                            }
+                            else
+                            {
                                 $childMeta = $this->entityManager->getClassMetadata($targetEntity);
                                 $childClassName = $childMeta->getName();
                                 $child = new $childClassName();
                                 $parentField = null;
 
-                                foreach ($childMeta->getAssociationMappings() as $field => $childFieldMapping) {
-                                    if ($childFieldMapping["targetEntity"] === $entityClassName) {
+                                foreach ($childMeta->getAssociationMappings() as $field => $childFieldMapping)
+                                {
+                                    if ($childFieldMapping['targetEntity'] === $entityClassName)
+                                    {
                                         $parentField = $field;
+
                                         break;
                                     }
                                 }
 
-                                if (! $parentField) {
-                                    throw new InternalErrorException("Bad child entity: the child entity class is missing a relation to the parent.");
+                                if (! $parentField)
+                                {
+                                    throw new InternalErrorException('Bad child entity: the child entity class is missing a relation to the parent.');
                                 }
 
                                 $childMeta->setFieldValue($child, $field, $entity);
@@ -179,14 +217,16 @@ class PersistenceService
 
                             $this->fillEntity($child, $childValue);
 
-                            if (! $child->getId()) {
+                            if (! $child->getId())
+                            {
                                 $children->add($child);
                             }
                         }
                     }
 
                     // remove obsolete children
-                    foreach ($childrenArray as $child) {
+                    foreach ($childrenArray as $child)
+                    {
                         $children->removeElement($child);
                     }
                 }
@@ -198,9 +238,10 @@ class PersistenceService
 
     public function validate($entity)
     {
-        $errors = $this->entityValidator->validate($entity, new Valid(["traverse" => true]));
+        $errors = $this->entityValidator->validate($entity, new Valid(['traverse' => true]));
 
-        if (count($errors) > 0) {
+        if (count($errors) > 0)
+        {
             throw new PersistenceException((string) $errors);
         }
     }

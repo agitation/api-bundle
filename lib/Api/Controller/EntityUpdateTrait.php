@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -19,21 +19,26 @@ trait EntityUpdateTrait
 {
     public function update(AbstractEntityObject $request)
     {
-        if (! ($this instanceof AbstractEntityController)) {
-            throw new InternalErrorException("This trait must be used in children of the AbstractEntityController.");
+        if (! ($this instanceof AbstractEntityController))
+        {
+            throw new InternalErrorException('This trait must be used in children of the AbstractEntityController.');
         }
 
         $this->checkPermissions($request, __FUNCTION__);
         $this->validate($request);
 
-        try {
+        try
+        {
             $this->getEntityManager()->beginTransaction();
 
             $entity = $this->updateEntity($request);
 
             $this->getEntityManager()->commit();
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             $this->getEntityManager()->rollBack();
+
             throw $e;
         }
 
@@ -42,13 +47,13 @@ trait EntityUpdateTrait
 
     protected function updateEntity(AbstractEntityObject $request)
     {
-        $entity = $this->retrieveEntity($this->getEntityClass(), $request->get("id"));
+        $entity = $this->retrieveEntity($this->getEntityClass(), $request->get('id'));
         $this->saveEntity($entity, $request);
 
         $this->getLogger()->log(
             LogLevel::NOTICE,
-            "agit.api.entity",
-            sprintf(Translate::xl("1: object type, 2: name", '%1$s “%2$s” has been updated.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
+            'agit.api.entity',
+            sprintf(Translate::xl('1: object type, 2: name', '%1$s “%2$s” has been updated.'), $this->getEntityClassName($entity), $this->getEntityName($entity)),
             true
         );
 

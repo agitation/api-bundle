@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -13,14 +13,15 @@ class JsonFormatter extends AbstractSerializableFormatter
 {
     public function getMimeType()
     {
-        return "application/json";
+        return 'application/json';
     }
 
     protected function encode($result)
     {
         $opts = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 
-        if ($this->debug) {
+        if ($this->debug)
+        {
             $opts += JSON_PRETTY_PRINT;
         }
 

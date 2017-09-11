@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -22,18 +22,18 @@ class Time extends AbstractValueObject
 
     public function fill($dateTime)
     {
-        $this->hour = (int) $dateTime->format("H");
-        $this->minute = (int) $dateTime->format("i");
+        $this->hour = (int) $dateTime->format('H');
+        $this->minute = (int) $dateTime->format('i');
     }
 
     public function setMinutes($minutes)
     {
-        $this->set("hour", floor($minutes / 60));
-        $this->set("minute", $minutes % 60);
+        $this->set('hour', floor($minutes / 60));
+        $this->set('minute', $minutes % 60);
     }
 
     public function getMinutes()
     {
-        return $this->get("hour") * 60 + $this->get("minute");
+        return $this->get('hour') * 60 + $this->get('minute');
     }
 }

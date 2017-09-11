@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -18,13 +18,13 @@ class CreateApiCacheCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName("agit:api:cache")
-            ->setDescription("Creates the cache of API endpoints and commands.");
+            ->setName('agit:api:cache')
+            ->setDescription('Creates the cache of API endpoints and commands.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getContainer()->get("agit.api.controller_processor")->process();
-        $this->getContainer()->get("agit.api.object_processor")->process();
+        $this->getContainer()->get('agit.api.controller_processor')->process();
+        $this->getContainer()->get('agit.api.object_processor')->process();
     }
 }

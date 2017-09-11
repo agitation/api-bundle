@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -17,12 +17,12 @@ namespace Agit\ApiBundle\Annotation\Property;
 class View extends AbstractPropertyMeta
 {
     /**
-     * @var the property should only be set when one of the given views is selected.
+     * @var the property should only be set when one of the given views is selected
      */
     protected $only = [];
 
     /**
-     * @var the property should only be set if none of the given views is selected.
+     * @var the property should only be set if none of the given views is selected
      */
     protected $not = [];
 }

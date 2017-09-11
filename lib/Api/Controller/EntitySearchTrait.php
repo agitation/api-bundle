@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -16,12 +16,13 @@ trait EntitySearchTrait
 {
     public function search(RequestObjectInterface $requestObject)
     {
-        if (! ($this instanceof AbstractEntityController)) {
-            throw new InternalErrorException("This trait must be used in children of the AbstractEntityController.");
+        if (! ($this instanceof AbstractEntityController))
+        {
+            throw new InternalErrorException('This trait must be used in children of the AbstractEntityController.');
         }
 
         $this->checkPermissions($requestObject, __FUNCTION__);
-        $this->responseService->setView("search");
+        $this->responseService->setView('search');
 
         return $this->createResultList(
             $this->getResponseObjectApiClass(),

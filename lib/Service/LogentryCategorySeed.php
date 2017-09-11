@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -17,12 +17,13 @@ class LogentryCategorySeed
     public function registerSeed(SeedEvent $event)
     {
         $categories = [
-            "agit.api"        => Translate::noopX("logging category", "API"),
-            "agit.api.entity" => Translate::noopX("logging category", "Entity API")
+            'agit.api' => Translate::noopX('logging category', 'API'),
+            'agit.api.entity' => Translate::noopX('logging category', 'Entity API')
         ];
 
-        foreach ($categories as $id => $name) {
-            $event->addSeedEntry("AgitLoggingBundle:LogentryCategory", ["id" => $id, "name" => $name]);
+        foreach ($categories as $id => $name)
+        {
+            $event->addSeedEntry('AgitLoggingBundle:LogentryCategory', ['id' => $id, 'name' => $name]);
         }
     }
 }

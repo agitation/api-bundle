@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -16,16 +16,17 @@ class JsonpFormatter extends JsonFormatter
 {
     public function getMimeType()
     {
-        return "application/javascript";
+        return 'application/javascript';
     }
 
     protected function getHttpContent(Request $httpRequest, $result)
     {
         $httpContent = parent::getHttpContent($httpRequest, $result);
-        $callbackName = $httpRequest->get("callback") ?: "jsonpCallback";
+        $callbackName = $httpRequest->get('callback') ?: 'jsonpCallback';
 
-        if (preg_match("|[^a-z0-9_-]|i", $callbackName)) {
-            throw new IncompatibleFormatterException("The callback function name is invalid.");
+        if (preg_match('|[^a-z0-9_-]|i', $callbackName))
+        {
+            throw new IncompatibleFormatterException('The callback function name is invalid.');
         }
 
         return "$callbackName($httpContent);";

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -15,12 +15,12 @@ use Agit\ApiBundle\Service\ResponseService;
 abstract class AbstractController
 {
     /**
-     * @var MetaContainer cached metadata of this controller.
+     * @var MetaContainer cached metadata of this controller
      */
     protected $meta;
 
     /**
-     * @var ResponseService instance of the response generation service.
+     * @var ResponseService instance of the response generation service
      */
     protected $responseService;
 
@@ -30,7 +30,7 @@ abstract class AbstractController
     protected $endpointName;
 
     /**
-     * @var API namespace.
+     * @var API namespace
      */
     protected $apiNamespace;
 
@@ -38,7 +38,7 @@ abstract class AbstractController
     {
         $this->meta = $meta;
         $this->endpointName = $name;
-        $this->apiNamespace = strstr($name, "/", true);
+        $this->apiNamespace = strstr($name, '/', true);
         $this->responseService = $responseService;
     }
 
@@ -54,7 +54,8 @@ abstract class AbstractController
 
     protected function createObject($name, $data = null)
     {
-        if (strpos($name, "/") === false) {
+        if (strpos($name, '/') === false)
+        {
             $name = "{$this->apiNamespace}/$name";
         }
 

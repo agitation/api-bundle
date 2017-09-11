@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -28,14 +28,20 @@ class Factory
     {
         $deps = [];
 
-        foreach ($depends->get("value") as $dep) {
-            if ($dep[0] === "@") {
+        foreach ($depends->get('value') as $dep)
+        {
+            if ($dep[0] === '@')
+            {
                 $dep = substr($dep, 1);
                 $deps[] = $this->container->get($dep);
-            } elseif ($dep[0] === "%") {
+            }
+            elseif ($dep[0] === '%')
+            {
                 $dep = substr($dep, 1, -1);
                 $deps[] = $this->container->getParameter($dep);
-            } else {
+            }
+            else
+            {
                 throw new InternalErrorException("Invalid dependency: $dep.");
             }
         }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -24,8 +24,9 @@ class IntegerType extends AbstractType
     {
         $this->init($value);
 
-        if ($this->mustCheck()) {
-            static::$_validator->validate("integer", $value, $this->minValue, $this->maxValue);
+        if ($this->mustCheck())
+        {
+            static::$_validator->validate('integer', $value, $this->minValue, $this->maxValue);
         }
     }
 }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -17,7 +17,8 @@ trait MetaAwareTrait
     {
         $metaContainer = new MetaContainer();
 
-        foreach ($metaList as $name => $meta) {
+        foreach ($metaList as $name => $meta)
+        {
             $metaContainer->set($name, $this->composeMeta($meta));
         }
 

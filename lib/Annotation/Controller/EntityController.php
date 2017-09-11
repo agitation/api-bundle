@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -17,7 +17,7 @@ namespace Agit\ApiBundle\Annotation\Controller;
 class EntityController extends Controller
 {
     /**
-     * @var the entity this class refers to.
+     * @var the entity this class refers to
      */
     public $entity;
 

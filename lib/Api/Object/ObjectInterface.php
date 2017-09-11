@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -75,6 +75,7 @@ interface ObjectInterface extends JsonSerializable
      *
      * @param string $prop     property name
      * @param string $metaName name of the meta field
+     * @param mixed  $propKey
      *
      * @return MetaContainer
      */

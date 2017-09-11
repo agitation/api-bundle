@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -24,10 +24,6 @@ class EndpointService
 {
     use MetaAwareTrait;
 
-    private $endpoints = [];
-
-    private $endpointMetas = [];
-
     protected $responseService;
 
     protected $persistenceService;
@@ -40,6 +36,10 @@ class EndpointService
 
     protected $userService;
 
+    private $endpoints = [];
+
+    private $endpointMetas = [];
+
     public function __construct(
         Cache $cache,
         ResponseService $responseService,
@@ -49,7 +49,7 @@ class EndpointService
         Logger $logger = null,
         UserService $userService = null
     ) {
-        $this->endpoints = $cache->fetch("agit.api.endpoint") ?: [];
+        $this->endpoints = $cache->fetch('agit.api.endpoint') ?: [];
         $this->responseService = $responseService;
         $this->persistenceService = $persistenceService;
         $this->entityManager = $entityManager;
@@ -60,19 +60,21 @@ class EndpointService
 
     public function createEndpointController($name, Request $request = null)
     {
-        if (! isset($this->endpoints[$name])) {
+        if (! isset($this->endpoints[$name]))
+        {
             throw new InvalidEndpointException("Invalid endpoint: $name");
         }
 
         $metaContainer = $this->getEndpointMetaContainer($name);
         $this->checkAuthorisation($metaContainer);
 
-        $deps = $this->composeMeta($this->endpoints[$name]["deps"]);
-        $controller = $this->factory->create($this->endpoints[$name]["class"], $deps);
+        $deps = $this->composeMeta($this->endpoints[$name]['deps']);
+        $controller = $this->factory->create($this->endpoints[$name]['class'], $deps);
 
         $controller->init($name, $metaContainer, $this->responseService);
 
-        if ($controller instanceof AbstractEntityController) {
+        if ($controller instanceof AbstractEntityController)
+        {
             $controller->initExtra($this->persistenceService, $this->entityManager, $this->logger);
         }
 
@@ -86,21 +88,24 @@ class EndpointService
 
     public function getControllerClass($endpointName)
     {
-        if (! isset($this->endpoints[$endpointName])) {
-            throw new InternalErrorException("This endpoint does not exist.");
+        if (! isset($this->endpoints[$endpointName]))
+        {
+            throw new InternalErrorException('This endpoint does not exist.');
         }
 
-        return $this->endpoints[$endpointName]["class"];
+        return $this->endpoints[$endpointName]['class'];
     }
 
     public function getEndpointMetaContainer($name)
     {
-        if (! isset($this->endpoints[$name])) {
-            throw new InternalErrorException("This endpoint does not exist.");
+        if (! isset($this->endpoints[$name]))
+        {
+            throw new InternalErrorException('This endpoint does not exist.');
         }
 
-        if (! isset($this->endpointMetas[$name])) {
-            $this->endpointMetas[$name] = $this->createMetaContainer($this->endpoints[$name]["meta"]);
+        if (! isset($this->endpointMetas[$name]))
+        {
+            $this->endpointMetas[$name] = $this->createMetaContainer($this->endpoints[$name]['meta']);
         }
 
         return $this->endpointMetas[$name];
@@ -108,25 +113,30 @@ class EndpointService
 
     private function checkAuthorisation($metaContainer)
     {
-        $reqCapibilty = $metaContainer->get("Security")->get("capability");
+        $reqCapibilty = $metaContainer->get('Security')->get('capability');
 
-        if (is_null($reqCapibilty)) {
-            throw new InternalErrorException("The endpoint call must specify the required capabilities.");
+        if ($reqCapibilty === null)
+        {
+            throw new InternalErrorException('The endpoint call must specify the required capabilities.');
         }
 
-        if ($reqCapibilty) {
-            if (! $this->userService) {
-                throw new InternalErrorException("The `agitation/user` bundle must be loaded to support capability-aware endpoints.");
+        if ($reqCapibilty)
+        {
+            if (! $this->userService)
+            {
+                throw new InternalErrorException('The `agitation/user` bundle must be loaded to support capability-aware endpoints.');
             }
 
             $user = $this->userService->getCurrentUser();
 
-            if (! $user) {
-                throw new UnauthorizedException(Translate::t("You must be logged in to perform this operation."));
+            if (! $user)
+            {
+                throw new UnauthorizedException(Translate::t('You must be logged in to perform this operation.'));
             }
 
-            if (! $user->hasCapability($reqCapibilty)) {
-                throw new UnauthorizedException(Translate::t("You do not have sufficient permissions to perform this operation."));
+            if (! $user->hasCapability($reqCapibilty))
+            {
+                throw new UnauthorizedException(Translate::t('You do not have sufficient permissions to perform this operation.'));
             }
         }
     }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -21,8 +21,10 @@ abstract class Annotation implements Serializable
 
     public function setOptions(array $options = null)
     {
-        if ($options && count($options)) {
-            foreach ($options as $key => $value) {
+        if ($options && count($options))
+        {
+            foreach ($options as $key => $value)
+            {
                 $this->set($key, $value);
             }
         }
@@ -32,8 +34,10 @@ abstract class Annotation implements Serializable
     {
         $options = [];
 
-        foreach (get_object_vars($this) as $key => $value) {
-            if ($key[0] !== "_") {
+        foreach (get_object_vars($this) as $key => $value)
+        {
+            if ($key[0] !== '_')
+            {
                 $options[$key] = $value;
             }
         }
@@ -43,17 +47,19 @@ abstract class Annotation implements Serializable
 
     public function has($key)
     {
-        return is_string($key) && strpos($key, "_") !== 0 && property_exists($this, $key);
+        return is_string($key) && strpos($key, '_') !== 0 && property_exists($this, $key);
     }
 
     public function set($key, $value)
     {
-        if (! property_exists($this, $key)) {
-            throw new InternalErrorException(sprintf("Annotation property `%s` does not exist.", $key));
+        if (! property_exists($this, $key))
+        {
+            throw new InternalErrorException(sprintf('Annotation property `%s` does not exist.', $key));
         }
 
-        if (strpos($key, "_") === 0) {
-            throw new InternalErrorException("Internal properties must not be modified via annotations.");
+        if (strpos($key, '_') === 0)
+        {
+            throw new InternalErrorException('Internal properties must not be modified via annotations.');
         }
 
         $this->$key = $value;
@@ -61,12 +67,14 @@ abstract class Annotation implements Serializable
 
     public function get($key)
     {
-        if ($key[0] === "_") {
-            throw new InternalErrorException("Internal properties must not be read through this method.");
+        if ($key[0] === '_')
+        {
+            throw new InternalErrorException('Internal properties must not be read through this method.');
         }
 
-        if (! property_exists($this, $key)) {
-            throw new InternalErrorException(sprintf("Annotation property `%s` does not exist.", $key));
+        if (! property_exists($this, $key))
+        {
+            throw new InternalErrorException(sprintf('Annotation property `%s` does not exist.', $key));
         }
 
         return $this->$key;

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -15,7 +15,7 @@ use stdClass;
 
 class Compactor
 {
-    const KEY_PREFIX = "#e#";
+    const KEY_PREFIX = '#e#';
 
     private $idx = 0;
 
@@ -32,8 +32,9 @@ class Compactor
     {
         $this->payload = $this->process($tree);
 
-        foreach ($this->tmpEntityList as $compactEntity) {
-            $this->entityList[$compactEntity["idx"]] = $compactEntity["obj"];
+        foreach ($this->tmpEntityList as $compactEntity)
+        {
+            $this->entityList[$compactEntity['idx']] = $compactEntity['obj'];
         }
     }
 
@@ -51,24 +52,34 @@ class Compactor
     {
         $processed = null;
 
-        if (is_scalar($value)) {
+        if (is_scalar($value))
+        {
             $processed = $value;
-        } elseif (is_array($value)) {
+        }
+        elseif (is_array($value))
+        {
             $processed = [];
-            foreach ($value as $k => $v) {
+            foreach ($value as $k => $v)
+            {
                 $processed[$k] = $this->process($v);
             }
-        } elseif (is_object($value)) {
-            if ($value instanceof EntityObjectInterface) {
+        }
+        elseif (is_object($value))
+        {
+            if ($value instanceof EntityObjectInterface)
+            {
                 $processed = $this->addEntityObject($value);
-            } else {
+            }
+            else
+            {
                 $values = ($value instanceof ObjectInterface)
                     ? $value->getValues()
                     : get_object_vars($value);
 
                 $processed = $values ? [] : new stdClass(); // create stdClass only if values are empty, otherwise an assoc array will do
 
-                foreach ($values as $k => $v) {
+                foreach ($values as $k => $v)
+                {
                     $processed[$k] = $this->process($v);
                 }
             }
@@ -79,19 +90,21 @@ class Compactor
 
     private function addEntityObject(EntityObjectInterface $object)
     {
-        $key = sprintf("%s:%s", $object->getObjectName(), $object->getId());
+        $key = sprintf('%s:%s', $object->getObjectName(), $object->getId());
 
-        if (! isset($this->tmpEntityList[$key])) {
+        if (! isset($this->tmpEntityList[$key]))
+        {
             $this->tmpEntityList[$key] = [
-                "idx" => sprintf("%s:%s", self::KEY_PREFIX, $this->idx++),
-                "obj" => [] // associative arrays are faster than stdClass and have the same effect
+                'idx' => sprintf('%s:%s', self::KEY_PREFIX, $this->idx++),
+                'obj' => [] // associative arrays are faster than stdClass and have the same effect
             ];
 
-            foreach ($object->getValues() as $k => $v) {
-                $this->tmpEntityList[$key]["obj"][$k] = $this->process($v);
+            foreach ($object->getValues() as $k => $v)
+            {
+                $this->tmpEntityList[$key]['obj'][$k] = $this->process($v);
             }
         }
 
-        return $this->tmpEntityList[$key]["idx"];
+        return $this->tmpEntityList[$key]['idx'];
     }
 }

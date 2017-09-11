@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -45,17 +45,18 @@ class ObjectProcessor extends AbstractProcessor
 
     public function process()
     {
-        $this->collect(Object::class, "agit.api.object");
+        $this->collect(Object::class, 'agit.api.object');
     }
 
     protected function processClass(ReflectionClass $classRefl, Annotation $desc, array $classAnnotations)
     {
         $class = $classRefl->getName();
-        $namespace = $desc->get("namespace");
+        $namespace = $desc->get('namespace');
         $allDefaults = $classRefl->getDefaultProperties();
         $defaults = [];
 
-        if (! $namespace) {
+        if (! $namespace)
+        {
             throw new InternalErrorException(sprintf("ATTENTION: missing namespace on %s\n", $class));
         }
 
@@ -63,66 +64,77 @@ class ObjectProcessor extends AbstractProcessor
         $objectMeta = [];
         $propMetaList = [];
 
-        $desc->set("objectName", $objectName);
-        $objectMeta["Object"] = $desc;
-        $objectMeta["Name"] = isset($classAnnotations[Name::class]) ? $classAnnotations[Name::class] : new Name(["value" => $objectName]);
+        $desc->set('objectName', $objectName);
+        $objectMeta['Object'] = $desc;
+        $objectMeta['Name'] = isset($classAnnotations[Name::class]) ? $classAnnotations[Name::class] : new Name(['value' => $objectName]);
         $deps = isset($classAnnotations[Depends::class]) ? $classAnnotations[Depends::class] : new Depends();
 
-        foreach ($classRefl->getProperties() as $propertyRefl) {
+        foreach ($classRefl->getProperties() as $propertyRefl)
+        {
             $annotations = $this->annotationReader->getPropertyAnnotations($propertyRefl);
             $propName = $propertyRefl->getName();
             $propMeta = [];
 
-            foreach ($annotations as $annotation) {
-                if (! ($annotation instanceof AbstractPropertyMeta)) {
+            foreach ($annotations as $annotation)
+            {
+                if (! ($annotation instanceof AbstractPropertyMeta))
+                {
                     continue;
                 }
 
                 $propMetaClass = StringHelper::getBareClassName($annotation);
-                $propMetaName = ($annotation instanceof AbstractType) ? "Type" : $propMetaClass;
+                $propMetaName = ($annotation instanceof AbstractType) ? 'Type' : $propMetaClass;
                 $propMeta[$propMetaName] = $annotation;
             }
 
-            if (! isset($propMeta["Type"])) {
+            if (! isset($propMeta['Type']))
+            {
                 continue;
             }
 
             $defaults[$propName] = $allDefaults[$propName];
 
-            if ($propMeta["Type"]->get("readonly")) {
+            if ($propMeta['Type']->get('readonly'))
+            {
                 $defaults[$propName] = null;
-            } elseif ($propMeta["Type"]->isListType() && ! is_array($defaults[$propName])) {
+            }
+            elseif ($propMeta['Type']->isListType() && ! is_array($defaults[$propName]))
+            {
                 $defaults[$propName] = [];
             }
 
-            if ($propMeta["Type"] instanceof ObjectType) {
-                $targetClass = $propMeta["Type"]->get("class");
+            if ($propMeta['Type'] instanceof ObjectType)
+            {
+                $targetClass = $propMeta['Type']->get('class');
 
-                if (is_null($targetClass)) {
+                if ($targetClass === null)
+                {
                     throw new InternalErrorException("Error in $objectName, property $propName: The target class must be specified.");
                 }
 
-                $propMeta["Type"]->set("class", $this->fixObjectName($namespace, $targetClass));
+                $propMeta['Type']->set('class', $this->fixObjectName($namespace, $targetClass));
             }
 
-            if (! isset($propMeta["Name"]) || ! $propMeta["Name"]->get("value")) {
-                $propMeta["Name"] = new Name(["value" => $propName]);
+            if (! isset($propMeta['Name']) || ! $propMeta['Name']->get('value'))
+            {
+                $propMeta['Name'] = new Name(['value' => $propName]);
             }
 
             $propMetaList[$propName] = $this->dissectMetaList($propMeta);
         }
 
         // check scalar "objects"
-        if ($objectMeta["Object"]->get("scalar") && (count($propMetaList) !== 1 || ! isset($propMetaList["_"]))) {
-            throw new InternalErrorException("Scalar objects must contain only a `_` property.");
+        if ($objectMeta['Object']->get('scalar') && (count($propMetaList) !== 1 || ! isset($propMetaList['_'])))
+        {
+            throw new InternalErrorException('Scalar objects must contain only a `_` property.');
         }
 
         $this->addEntry($objectName, [
-            "class"        => $classRefl->getName(),
-            "deps"         => $this->dissectMeta($deps),
-            "objectMeta"   => $this->dissectMetaList($objectMeta),
-            "defaults"     => $defaults,
-            "propMetaList" => $propMetaList
+            'class' => $classRefl->getName(),
+            'deps' => $this->dissectMeta($deps),
+            'objectMeta' => $this->dissectMetaList($objectMeta),
+            'defaults' => $defaults,
+            'propMetaList' => $propMetaList
         ]);
     }
 }

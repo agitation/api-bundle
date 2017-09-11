@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -15,11 +15,10 @@ use Agit\BaseBundle\Exception\InternalErrorException;
 use Doctrine\Common\Cache\Cache;
 use ReflectionClass;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
-use Symfony\Component\HttpKernel\Kernel;
 
 abstract class AbstractProcessor implements CacheWarmerInterface
 {
-    const API_SUBDIR = "Api";
+    const API_SUBDIR = 'Api';
 
     private $entries = [];
 
@@ -27,23 +26,29 @@ abstract class AbstractProcessor implements CacheWarmerInterface
     {
         $classes = [];
 
-        foreach ($this->kernel->getBundles() as $bundle) {
-            $path = realpath($bundle->getPath() . "/" . static::API_SUBDIR);
+        foreach ($this->kernel->getBundles() as $bundle)
+        {
+            $path = realpath($bundle->getPath() . '/' . static::API_SUBDIR);
 
-            if (! $path) {
+            if (! $path)
+            {
                 continue;
             }
 
-            foreach ($this->classCollector->collect($path) as $class) {
+            foreach ($this->classCollector->collect($path) as $class)
+            {
                 $classRefl = new ReflectionClass($class);
                 // $desc = $this->annotationReader->getClassAnnotation($classRefl, $annotationClass);
 
                 $annotations = $this->getAllClassAnnotations($classRefl);
 
-                foreach ($annotations as $annoClass => $anno) {
-                    if ($anno instanceof $annotationClass) {
+                foreach ($annotations as $annoClass => $anno)
+                {
+                    if ($anno instanceof $annotationClass)
+                    {
                         unset($annotations[$annoClass]);
                         $this->processClass($classRefl, $anno, $annotations);
+
                         break;
                     }
                 }
@@ -55,6 +60,7 @@ abstract class AbstractProcessor implements CacheWarmerInterface
 
     /**
      * Warms up the cache, required by CacheWarmerInterface.
+     * @param mixed $cacheDir
      */
     public function warmUp($cacheDir)
     {
@@ -86,7 +92,8 @@ abstract class AbstractProcessor implements CacheWarmerInterface
         // we’d have to unserialize hundreds of them on every API access.
         // Therefore we store class names and options separately.
 
-        foreach ($metas as $name => $meta) {
+        foreach ($metas as $name => $meta)
+        {
             $newList[$name] = $this->dissectMeta($meta);
         }
 
@@ -95,7 +102,7 @@ abstract class AbstractProcessor implements CacheWarmerInterface
 
     protected function dissectMeta(Annotation $meta)
     {
-        return ["class" => get_class($meta), "options" => $meta->getOptions()];
+        return ['class' => get_class($meta), 'options' => $meta->getOptions()];
     }
 
     protected function fixObjectName($namespace, $name)
@@ -107,8 +114,9 @@ abstract class AbstractProcessor implements CacheWarmerInterface
 
     protected function checkConstructor(ReflectionClass $classRefl, Depends $deps)
     {
-        if (count($deps->get("value")) && ! $classRefl->getConstructor()) {
-            throw new InternalErrorException(sprintf("Class %s has dependencies, but doesn’t have a constructor to inject them!", $classRefl->name));
+        if (count($deps->get('value')) && ! $classRefl->getConstructor())
+        {
+            throw new InternalErrorException(sprintf('Class %s has dependencies, but doesn’t have a constructor to inject them!', $classRefl->name));
         }
     }
 
@@ -119,11 +127,13 @@ abstract class AbstractProcessor implements CacheWarmerInterface
     {
         $annotations = [];
 
-        foreach ($this->annotationReader->getClassAnnotations($classRefl) as $k => $anno) {
+        foreach ($this->annotationReader->getClassAnnotations($classRefl) as $k => $anno)
+        {
             $annotations[get_class($anno)] = $anno;
         }
 
-        if ($parent = $classRefl->getParentClass()) {
+        if ($parent = $classRefl->getParentClass())
+        {
             $annotations += $this->getAllClassAnnotations($parent);
         }
 

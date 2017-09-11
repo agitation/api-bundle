@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -33,17 +33,23 @@ class StringType extends AbstractType
     {
         $this->init($value);
 
-        if ($this->mustCheck()) {
-            if (is_array($this->allowedValues)) {
-                static::$_validator->validate("selection", $value, array_keys($this->allowedValues));
-            } else {
-                if ($this->minLength || $value !== "") {
-                    static::$_validator->validate("string", $value, $this->minLength, $this->maxLength, $this->allowLineBreaks);
+        if ($this->mustCheck())
+        {
+            if (is_array($this->allowedValues))
+            {
+                static::$_validator->validate('selection', $value, array_keys($this->allowedValues));
+            }
+            else
+            {
+                if ($this->minLength || $value !== '')
+                {
+                    static::$_validator->validate('string', $value, $this->minLength, $this->maxLength, $this->allowLineBreaks);
                     $this->checkForbiddenCharacters($value);
                 }
 
-                if ($this->pattern) {
-                    static::$_validator->validate("regex", $value, $this->pattern);
+                if ($this->pattern)
+                {
+                    static::$_validator->validate('regex', $value, $this->pattern);
                     $this->checkForbiddenCharacters($value);
                 }
             }
@@ -53,13 +59,15 @@ class StringType extends AbstractType
     protected function checkForbiddenCharacters($value)
     {
         $forbiddenCharacters = [
-            "<"  => "<",
-            "\0" => "null byte"
+            '<' => '<',
+            "\0" => 'null byte'
         ];
 
-        foreach ($forbiddenCharacters as $char => $name) {
-            if (strpos($value, $char)) {
-                throw new InvalidObjectValueException(sprintf(Translate::t("The “%s” character must not be contained."), $name));
+        foreach ($forbiddenCharacters as $char => $name)
+        {
+            if (strpos($value, $char))
+            {
+                throw new InvalidObjectValueException(sprintf(Translate::t('The “%s” character must not be contained.'), $name));
             }
         }
     }

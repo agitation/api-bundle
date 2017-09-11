@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -20,37 +20,47 @@ class RequestService extends AbstractObjectService
     {
         $result = null;
 
-        if (substr($expectedObject, -2) === "[]") {
-            if (! is_array($rawRequest)) {
-                throw new InvalidObjectException(Translate::t("The request is expected to be an array."));
+        if (substr($expectedObject, -2) === '[]')
+        {
+            if (! is_array($rawRequest))
+            {
+                throw new InvalidObjectException(Translate::t('The request is expected to be an array.'));
             }
 
             $result = [];
 
-            foreach ($rawRequest as $rawRequestElem) {
+            foreach ($rawRequest as $rawRequestElem)
+            {
                 $result[] = $this->createRequestObject(substr($expectedObject, 0, -2), $rawRequestElem);
             }
-        } else {
+        }
+        else
+        {
             $meta = $this->objectMetaService->getObjectMetas($expectedObject);
-            $expectsScalar = $meta->get("Object")->get("scalar");
+            $expectsScalar = $meta->get('Object')->get('scalar');
 
-            if ($expectsScalar) {
-                if (! is_scalar($rawRequest)) {
-                    throw new InvalidObjectException(Translate::t("The request is expected to be a scalar value."));
+            if ($expectsScalar)
+            {
+                if (! is_scalar($rawRequest))
+                {
+                    throw new InvalidObjectException(Translate::t('The request is expected to be a scalar value.'));
                 }
 
                 // we fill the scalar object, but only to see if it passes validation.
                 // then we return the bare request
                 $object = $this->createObject($expectedObject);
 
-                $object->set("_", $rawRequest);
+                $object->set('_', $rawRequest);
                 $object->validate();
 
                 $result = $rawRequest;
-            } else {
+            }
+            else
+            {
                 $result = $this->createObject($expectedObject);
 
-                if (is_object($rawRequest)) {
+                if (is_object($rawRequest))
+                {
                     $this->fill($result, $rawRequest);
                 }
 
@@ -65,7 +75,8 @@ class RequestService extends AbstractObjectService
     {
         $object = $this->objectMetaService->createObject($objectName);
 
-        if (! ($object instanceof RequestObjectInterface)) {
+        if (! ($object instanceof RequestObjectInterface))
+        {
             throw new InternalErrorException("Object $objectName must implement RequestObjectInterface.");
         }
 

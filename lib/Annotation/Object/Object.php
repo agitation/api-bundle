@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -22,7 +22,7 @@ class Object extends AbstractObjectMeta
     /**
      * @var full object name with namespace prefix, e.g. `foobar.v1/SomeObject`.
      *
-     * @internal Do not set this field, it will be filled automatically.
+     * @internal do not set this field, it will be filled automatically
      */
     protected $objectName;
 

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -26,16 +26,18 @@ class EntityType extends ObjectType
     {
         $this->init($value);
 
-        if ($this->mustCheck()) {
+        if ($this->mustCheck())
+        {
             static::$_validator->validate($this->getChildKeyType(), $value, 1);
         }
     }
 
     protected function getChildKeyType()
     {
-        if (! $this->_keytype) {
-            $type = self::$_objectMeta->getPropertyMeta($this->class, "id", "Type");
-            $this->_keytype = ($type instanceof StringType) ? "string" : "integer";
+        if (! $this->_keytype)
+        {
+            $type = self::$_objectMeta->getPropertyMeta($this->class, 'id', 'Type');
+            $this->_keytype = ($type instanceof StringType) ? 'string' : 'integer';
         }
 
         return $this->_keytype;

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -37,8 +37,9 @@ class Period extends AbstractValueObject
     {
         parent::validate();
 
-        if ($this->from->getDate()->getTimestamp() > $this->until->getDate()->getTimestamp()) {
-            throw new InvalidRangeException(Translate::t("The start date must be earlier than or equal to the end date."));
+        if ($this->from->getDate()->getTimestamp() > $this->until->getDate()->getTimestamp())
+        {
+            throw new InvalidRangeException(Translate::t('The start date must be earlier than or equal to the end date.'));
         }
     }
 }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -39,33 +39,38 @@ class TranslationsListener
         $bundleNamespace = $bundle->getNamespace();
         $bundlePath = $bundle->getPath();
 
-        if (! is_dir("$bundlePath/Api")) {
+        if (! is_dir("$bundlePath/Api"))
+        {
             return;
         }
 
         $classes = $this->classCollector->collect("$bundlePath/Api", false, false);
 
-        foreach ($classes as $class) {
+        foreach ($classes as $class)
+        {
             $classRefl = new ReflectionClass($class);
-            $fileLocation = "@" . str_replace($bundlePath, $bundleAlias, $classRefl->getFileName());
+            $fileLocation = '@' . str_replace($bundlePath, $bundleAlias, $classRefl->getFileName());
 
             $traitProps = $this->getTraitProperties($classRefl);
 
-            foreach ($classRefl->getProperties() as $propRefl) {
-                if ($propRefl->class !== $class || array_key_exists($propRefl->name, $traitProps)) {
+            foreach ($classRefl->getProperties() as $propRefl)
+            {
+                if ($propRefl->class !== $class || array_key_exists($propRefl->name, $traitProps))
+                {
                     continue;
                 }
 
                 $name = $this->annotationReader->getPropertyAnnotation($propRefl, Name::class);
 
-                if (! $name) {
+                if (! $name)
+                {
                     continue;
                 }
 
-                $translation = new Translation($name->get("context"), $name->get("value"));
+                $translation = new Translation($name->get('context'), $name->get('value'));
                 $translation->addReference($fileLocation);
                 $event->addTranslation($translation);
-                $names[] = $name->get("value");
+                $names[] = $name->get('value');
             }
         }
     }
@@ -74,7 +79,8 @@ class TranslationsListener
     {
         $traitProps = [];
 
-        foreach ($classRefl->getTraits() as $traitRefl) {
+        foreach ($classRefl->getTraits() as $traitRefl)
+        {
             $traitProps += $traitRefl->getDefaultProperties();
             $traitProps += $this->getTraitProperties($traitRefl);
         }

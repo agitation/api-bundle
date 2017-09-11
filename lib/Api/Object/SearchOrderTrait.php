@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -19,7 +19,7 @@ trait SearchOrderTrait
      *
      * The field by which the result set should be ordered.
      */
-    public $orderBy = "id";
+    public $orderBy = 'id';
 
     /**
      * @Property\Name("Order direction")
@@ -27,5 +27,5 @@ trait SearchOrderTrait
      *
      * The field by which the result set should be ordered.
      */
-    public $orderDir = "asc";
+    public $orderDir = 'asc';
 }

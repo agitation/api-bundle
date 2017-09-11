@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -15,9 +15,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class CsrfTokenService
 {
-    private $sessionService;
-
     const sessionKey = 'agit.api.csrf.token';
+    private $sessionService;
 
     public function __construct(Session $sessionService)
     {
@@ -26,7 +25,8 @@ class CsrfTokenService
 
     public function initToken()
     {
-        if (! $this->sessionService->get(self::sessionKey)) {
+        if (! $this->sessionService->get(self::sessionKey))
+        {
             $this->sessionService->set(self::sessionKey, StringHelper::createRandomString(25));
         }
     }
@@ -42,8 +42,9 @@ class CsrfTokenService
     {
         $correctCsrfToken = $this->sessionService->get(self::sessionKey);
 
-        if (! $submittedToken || ! $correctCsrfToken || $submittedToken !== $correctCsrfToken) {
-            throw new CsrfException("The CSRF token is invalid.");
+        if (! $submittedToken || ! $correctCsrfToken || $submittedToken !== $correctCsrfToken)
+        {
+            throw new CsrfException('The CSRF token is invalid.');
         }
     }
 }

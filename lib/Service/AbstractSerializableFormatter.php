@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -27,8 +27,9 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
     {
         $headers = parent::getHttpHeaders($httpRequest, $result);
 
-        if (! $this->debug) {
-            $headers->set("Content-Encoding", "deflate");
+        if (! $this->debug)
+        {
+            $headers->set('Content-Encoding', 'deflate');
         }
 
         return $headers;
@@ -36,9 +37,10 @@ abstract class AbstractSerializableFormatter extends AbstractFormatter
 
     protected function getHttpContent(Request $httpRequest, $result)
     {
-        if (! $this->debug && $result && ! is_scalar($result) && $httpRequest->headers->get("x-api-serialize-compact", null, true) === "true") {
+        if (! $this->debug && $result && ! is_scalar($result) && $httpRequest->headers->get('x-api-serialize-compact', null, true) === 'true')
+        {
             $compactor = new Compactor($result);
-            $result = $this->objectMetaService->createObject("common.v1/Response");
+            $result = $this->objectMetaService->createObject('common.v1/Response');
             $result->setPayload($compactor->getPayload());
             $result->setEntityList($compactor->getEntities());
         }

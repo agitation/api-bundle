@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -84,6 +84,8 @@ abstract class AbstractEntityController extends AbstractController
      * Additional security checks, e.g. for entity endpoints which are not based
      * on the current user’s capabilities. To be overridden in the entity
      * controller, if necessary.
+     * @param mixed $request
+     * @param mixed $type
      */
     protected function checkPermissions($request, $type)
     {
@@ -99,14 +101,15 @@ abstract class AbstractEntityController extends AbstractController
 
     protected function getEntityClass()
     {
-        return $this->getMeta("Endpoint")->get("entity");
+        return $this->getMeta('Endpoint')->get('entity');
     }
 
     protected function getResponseObjectApiClass()
     {
-        $apiClass = $this->getMeta("Endpoint")->get("response");
+        $apiClass = $this->getMeta('Endpoint')->get('response');
 
-        if (substr($apiClass, -2) === "[]") {
+        if (substr($apiClass, -2) === '[]')
+        {
             $apiClass = substr($apiClass, 0, -2);
         }
 
@@ -119,8 +122,8 @@ abstract class AbstractEntityController extends AbstractController
 
         $qb = $this->entityManager
             ->createQueryBuilder()
-            ->select("e")->from($entityName, "e")
-            ->orderBy("e.id", "ASC");
+            ->select('e')->from($entityName, 'e')
+            ->orderBy('e.id', 'ASC');
 
         return $qb;
     }
@@ -129,10 +132,11 @@ abstract class AbstractEntityController extends AbstractController
     {
         $entity = $this->entityManager
             ->getRepository($entityClass)
-            ->findOneBy(["id" => $id]);
+            ->findOneBy(['id' => $id]);
 
-        if (! $entity) {
-            throw new ObjectNotFoundException(sprintf(Translate::t("The requested object with ID `%s` was not found."), $id));
+        if (! $entity)
+        {
+            throw new ObjectNotFoundException(sprintf(Translate::t('The requested object with ID `%s` was not found.'), $id));
         }
 
         return $entity;
@@ -149,13 +153,17 @@ abstract class AbstractEntityController extends AbstractController
     {
         $name = null;
 
-        if ($entity instanceof NameInterface) {
+        if ($entity instanceof NameInterface)
+        {
             $name = $entity->getName();
 
-            if (class_exists("Agit\MultilangBundle\Multilang")) {
+            if (class_exists("Agit\MultilangBundle\Multilang"))
+            {
                 $name = Multilang::u($name);
             }
-        } elseif ($entity instanceof IdentityInterface) {
+        }
+        elseif ($entity instanceof IdentityInterface)
+        {
             $name = $entity->getId();
         }
 
@@ -173,27 +181,36 @@ abstract class AbstractEntityController extends AbstractController
     {
         $output = null;
 
-        if (is_object($input)) {
+        if (is_object($input))
+        {
             $output = new stdClass();
             $reqObj = null;
 
-            if ($input instanceof AbstractEntityObject || $input instanceof AbstractValueObject || $input instanceof AbstractRequestObject) {
+            if ($input instanceof AbstractEntityObject || $input instanceof AbstractValueObject || $input instanceof AbstractRequestObject)
+            {
                 $reqObj = $input;
                 $input = $input->getValues();
             }
 
-            foreach ($input as $key => $value) {
-                if (! $reqObj || ! $reqObj->getPropertyMeta($key, "Type")->get("readonly")) {
+            foreach ($input as $key => $value)
+            {
+                if (! $reqObj || ! $reqObj->getPropertyMeta($key, 'Type')->get('readonly'))
+                {
                     $output->$key = $this->getPersistableData($value);
                 }
             }
-        } elseif (is_array($input)) {
+        }
+        elseif (is_array($input))
+        {
             $output = [];
 
-            foreach ($input as $key => $value) {
+            foreach ($input as $key => $value)
+            {
                 $output[$key] = $this->getPersistableData($value);
             }
-        } else {
+        }
+        else
+        {
             $output = $input;
         }
 
@@ -204,7 +221,8 @@ abstract class AbstractEntityController extends AbstractController
     {
         $result = [];
 
-        foreach ($entities as $entity) {
+        foreach ($entities as $entity)
+        {
             $result[] = $this->createObject($objectName, $entity);
         }
 

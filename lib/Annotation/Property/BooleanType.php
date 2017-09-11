@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -20,7 +20,8 @@ class BooleanType extends AbstractType
     {
         $this->init($value);
 
-        if ($this->mustCheck()) {
+        if ($this->mustCheck())
+        {
             static::$_validator->validate('boolean', $value);
         }
     }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -28,7 +28,7 @@ class TwigExtension extends Twig_Extension
      */
     public function getName()
     {
-        return "agit.api";
+        return 'agit.api';
     }
 
     /**
@@ -37,8 +37,8 @@ class TwigExtension extends Twig_Extension
     public function getFunctions()
     {
         return [
-            new Twig_SimpleFunction("getApiUrlBase", [$this, "getApiUrlBase"]),
-            new Twig_SimpleFunction("getCsrfToken", [$this, "getCsrfToken"])
+            new Twig_SimpleFunction('getApiUrlBase', [$this, 'getApiUrlBase']),
+            new Twig_SimpleFunction('getCsrfToken', [$this, 'getCsrfToken'])
         ];
     }
 
@@ -49,6 +49,6 @@ class TwigExtension extends Twig_Extension
 
     public function getApiUrlBase()
     {
-        return $this->urlService->createAppUrl("/api");
+        return $this->urlService->createAppUrl('/api');
     }
 }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -33,7 +33,8 @@ class ObjectType extends AbstractType
     {
         $this->init($value);
 
-        if ($this->mustCheck()) {
+        if ($this->mustCheck())
+        {
             $this->checkValue($value);
         }
     }
@@ -42,8 +43,9 @@ class ObjectType extends AbstractType
     {
         static::$_validator->validate('object', $value);
 
-        if (! ($value instanceof AbstractObject) || $value->getObjectName() !== $this->class) {
-            throw new InvalidObjectValueException(sprintf("The value must be a `%s` object.", $value->getObjectName()));
+        if (! ($value instanceof AbstractObject) || $value->getObjectName() !== $this->class)
+        {
+            throw new InvalidObjectValueException(sprintf('The value must be a `%s` object.', $value->getObjectName()));
         }
 
         $value->validate();

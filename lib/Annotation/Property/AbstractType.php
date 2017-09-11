@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -65,7 +65,7 @@ abstract class AbstractType extends AbstractPropertyMeta
 
     public function getType()
     {
-        return strtolower(substr(strrchr(get_class($this), "\\"), 1, -4));
+        return strtolower(substr(strrchr(get_class($this), '\\'), 1, -4));
     }
 
     public function isScalarType()
@@ -88,26 +88,37 @@ abstract class AbstractType extends AbstractPropertyMeta
         return $this->_isEntityType;
     }
 
+    // allows for on-the-fly transformations
+    public function filter($value)
+    {
+        return $value;
+    }
+
     protected function init($value)
     {
-        if (! static::$_validator) {
-            throw new InternalErrorException("The container must be set.");
+        if (! static::$_validator)
+        {
+            throw new InternalErrorException('The container must be set.');
         }
 
-        if ($this->readonly) {
-            if (isset($value)) {
-                throw new InvalidObjectValueException("The value is read-only and hence must not be set in a request.");
+        if ($this->readonly)
+        {
+            if (isset($value))
+            {
+                throw new InvalidObjectValueException('The value is read-only and hence must not be set in a request.');
             }
 
             // readonly implies nullable
             $this->nullable = true;
         }
 
-        if (! $this->nullable) {
+        if (! $this->nullable)
+        {
             static::$_validator->validate('notNull', $value);
         }
 
-        if ($this->nullable === true && is_null($value)) {
+        if ($this->nullable === true && $value === null)
+        {
             $this->_mustCheck = false;
         }
     }
@@ -115,11 +126,5 @@ abstract class AbstractType extends AbstractPropertyMeta
     protected function mustCheck()
     {
         return $this->_mustCheck;
-    }
-
-    // allows for on-the-fly transformations
-    public function filter($value)
-    {
-        return $value;
     }
 }
