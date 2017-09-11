@@ -180,7 +180,7 @@ class PersistenceService
 
                             $id = property_exists($childValue, 'id') ? $childValue->id : null;
 
-                            if ($id !== null&& ! isset($childrenArray[$id]))
+                            if ($id !== null && ! isset($childrenArray[$id]))
                             {
                                 throw new InternalErrorException("A child entity of $prop with ID $id doesn’t exist.");
                             }

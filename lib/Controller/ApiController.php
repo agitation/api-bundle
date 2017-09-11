@@ -143,7 +143,7 @@ class ApiController extends Controller
         $request = json_decode($rawRequest);
 
         // allow literal strings without quotes
-        if ($request === null&& strlen($rawRequest))
+        if ($request === null && strlen($rawRequest))
         {
             $request = $rawRequest;
         }

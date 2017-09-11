@@ -46,7 +46,7 @@ abstract class AbstractObjectService
         $result = null;
         $expectedType = $typeMeta->getType();
 
-        if (is_scalar($value) || $value === null|| $expectedType === 'polymorphic')
+        if (is_scalar($value) || $value === null || $expectedType === 'polymorphic')
         {
             $result = $value;
         }
