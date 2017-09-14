@@ -54,7 +54,7 @@ class ApiController extends Controller
             {
                 $requestData = $this->createRequestObject(
                     $endpointMeta->get('Endpoint')->get('request'),
-                    $request->get('request')
+                    (string)$request->get('request')
                 );
 
                 if (! is_callable([$controller, $method]))
