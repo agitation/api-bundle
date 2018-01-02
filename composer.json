@@ -2,8 +2,6 @@
     "name": "agitation/api-bundle",
     "type": "symfony-bundle",
     "require": {
-        "php": ">=5.6",
-        "symfony/symfony": "2.8.*",
         "agitation/base-bundle": "~1.0",
         "agitation/intl-bundle": "~1.0",
         "agitation/seed-bundle": "~1.0",
