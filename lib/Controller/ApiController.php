@@ -43,9 +43,10 @@ class ApiController extends Controller
 
             $endpointMeta = $endpointService->getEndpointMetaContainer($endpointName);
             $controller = $endpointService->createEndpointController($endpointName);
+            $crossOrigin = $endpointMeta->has('CrossOrigin') ? $endpointMeta->get('CrossOrigin')->get('allow') : "none";
             $requestObject = null;
 
-            if (! $isDev && ! $endpointMeta->get('Security')->get('allowCrossOrigin'))
+            if (! $isDev && $crossOrigin !== "all")
             {
                 $this->container->get('agit.api.csrf')->checkToken($this->getCsrfToken($request));
             }
@@ -66,7 +67,7 @@ class ApiController extends Controller
                 $response = $formatter->createResponse($request, $resultData);
             }
 
-            if ($endpointMeta->get('Security')->get('allowCrossOrigin'))
+            if ($crossOrigin === "all")
             {
                 $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->headers->set('Access-Control-Allow-Credentials', 'true');

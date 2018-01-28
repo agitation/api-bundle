@@ -12,10 +12,12 @@ namespace Agit\ApiBundle\Annotation\Endpoint;
 /**
  * @Annotation
  */
-class Security extends AbstractEndpointMeta
+class CrossOrigin extends AbstractEndpointMeta
 {
     /**
-     * @var user capability required for this call
+     * @var string "none"|"all"|"some"
+     *
+     * NOTE: "some" is not yet supported and is treated like "none"
      */
-    protected $capability;
+    protected $allow = "none";
 }

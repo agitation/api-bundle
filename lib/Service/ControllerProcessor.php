@@ -177,11 +177,6 @@ class ControllerProcessor extends AbstractProcessor
                 $endpointMeta['Endpoint']->set('response', 'common.v1/ScalarNull');
             }
 
-            if ($crossOrigin && in_array($method, ['get', 'search']))
-            {
-                $endpointMeta['Security']->set('allowCrossOrigin', true);
-            }
-
             $this->addEntry("$controllerName.$method", [
                 'class' => $class,
                 'deps' => $this->dissectMeta($deps),
