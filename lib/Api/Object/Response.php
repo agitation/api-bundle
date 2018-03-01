@@ -22,7 +22,7 @@ class Response extends AbstractResponseObject
 {
     /**
      * @Property\Name("Value")
-     * @Property\PolymorphicType
+     * @Property\RawType
      *
      * The actual response object, as specified in the endpoint call.
      */
@@ -30,7 +30,7 @@ class Response extends AbstractResponseObject
 
     /**
      * @Property\Name("Result list")
-     * @Property\PolymorphicType
+     * @Property\RawType
      *
      * Ok, this one is a bit complicated: Tixys extracts objects with an ID from
      * the payload, stores them in this list, and then sets a reference from

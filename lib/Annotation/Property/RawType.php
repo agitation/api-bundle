@@ -11,15 +11,16 @@ namespace Agit\ApiBundle\Annotation\Property;
 
 /**
  * @Annotation
+ *
+ * Container for raw data. ATTENTION: Handle with care! This should not be used
+ * in request objects. And if is unavoidable, proper validation must be applied!
  */
-class PolymorphicType extends AbstractType
+class RawType extends AbstractType
 {
     protected $nullable = true;
 
     public function check($value)
     {
         $this->init($value);
-
-        // other checks are performed in the respecitve endpoint
     }
 }
