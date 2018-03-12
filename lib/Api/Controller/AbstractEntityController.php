@@ -35,47 +35,38 @@ use stdClass;
 abstract class AbstractEntityController extends AbstractController
 {
     /**
-     * @var PersistenceService
-     */
-    private $persistenceService;
-
-    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
+
+    /**
+     * @var PersistenceService
+     */
+    private $persistenceService;
 
     /**
      * @var Logger
      */
     private $logger;
 
-    public function initExtra(PersistenceService $persistenceService, EntityManagerInterface $entityManager, Logger $logger)
+    public function initExtra(EntityManagerInterface $entityManager, PersistenceService $persistenceService, Logger $logger)
     {
-        $this->persistenceService = $persistenceService;
         $this->entityManager = $entityManager;
+        $this->persistenceService = $persistenceService;
         $this->logger = $logger;
     }
 
-    /**
-     * @return PersistenceService
-     */
-    protected function getPersistenceService()
+    protected function getPersistenceService() : PersistenceService
     {
         return $this->persistenceService;
     }
 
-    /**
-     * @return EntityManagerInterface
-     */
-    protected function getEntityManager()
+    protected function getEntityManager() : EntityManagerInterface
     {
         return $this->entityManager;
     }
 
-    /**
-     * @return Logger
-     */
-    protected function getLogger()
+    protected function getLogger() : Logger
     {
         return $this->logger;
     }

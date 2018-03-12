@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Service;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Agit\ApiBundle\Api\Controller\AbstractEntityController;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\ApiBundle\Exception\UnauthorizedException;
@@ -24,16 +25,34 @@ class EndpointService
 {
     use MetaAwareTrait;
 
+    /**
+     * @var ResponseService
+     */
     protected $responseService;
 
+    /**
+     * @var PersistenceService
+     */
     protected $persistenceService;
 
+    /**
+     * @var Logger
+     */
     protected $logger;
 
+    /**
+     * @var EntityManagerInterface
+     */
     protected $entityManager;
 
+    /**
+     * @var Factory
+     */
     protected $factory;
 
+    /**
+     * @var UserService
+     */
     protected $userService;
 
     private $endpoints = [];
@@ -44,7 +63,7 @@ class EndpointService
         Cache $cache,
         ResponseService $responseService,
         PersistenceService $persistenceService,
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         Factory $factory,
         Logger $logger = null,
         UserService $userService = null
@@ -75,7 +94,7 @@ class EndpointService
 
         if ($controller instanceof AbstractEntityController)
         {
-            $controller->initExtra($this->persistenceService, $this->entityManager, $this->logger);
+            $controller->initExtra($this->entityManager, $this->persistenceService, $this->logger);
         }
 
         return $controller;
