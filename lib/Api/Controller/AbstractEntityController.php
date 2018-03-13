@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Api\Controller;
 
+use Agit\ApiBundle\Api\Object\AbstractValueObject;
 use Agit\ApiBundle\Api\Object\AbstractEntityObject;
+use Agit\ApiBundle\Api\Object\AbstractRequestObject;
 use Agit\ApiBundle\Api\Object\RequestObjectInterface;
 use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Service\PersistenceService;
