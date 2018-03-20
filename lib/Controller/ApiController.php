@@ -108,8 +108,8 @@ class ApiController extends Controller
     {
         if ($this->container->has('agit.user'))
         {
-            $username = $request->headers->get('x-user', null, true);
-            $password = $request->headers->get('x-password', null, true);
+            $username = $request->headers->get('php-auth-user');
+            $password = $request->headers->get('php-auth-pw');
 
             if ($username && $password)
             {
