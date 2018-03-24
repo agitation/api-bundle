@@ -62,11 +62,6 @@ services:
         class: Agit\ApiBundle\Service\ClassCollector
         arguments: [ "@agit.common.filecollector" ]
 
-    agit.api.seed.logentry_category:
-        private: true
-        class: Agit\ApiBundle\Service\LogentryCategorySeed
-        tags: [{ name: kernel.event_listener, event: agit.seed, method: registerSeed }]
-
     agit.api.csrf:
         class: Agit\ApiBundle\Service\CsrfTokenService
         arguments: [ "@session" ]
