@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -43,10 +44,10 @@ class ApiController extends Controller
 
             $endpointMeta = $endpointService->getEndpointMetaContainer($endpointName);
             $controller = $endpointService->createEndpointController($endpointName);
-            $crossOrigin = $endpointMeta->has('CrossOrigin') ? $endpointMeta->get('CrossOrigin')->get('allow') : "none";
+            $crossOrigin = $endpointMeta->has('CrossOrigin') ? $endpointMeta->get('CrossOrigin')->get('allow') : 'none';
             $requestObject = null;
 
-            if (! $isDev && $crossOrigin !== "all")
+            if (! $isDev && $crossOrigin !== 'all')
             {
                 $this->container->get('agit.api.csrf')->checkToken($this->getCsrfToken($request));
             }
@@ -67,7 +68,7 @@ class ApiController extends Controller
                 $response = $formatter->createResponse($request, $resultData);
             }
 
-            if ($crossOrigin === "all")
+            if ($crossOrigin === 'all')
             {
                 $response->headers->set('Access-Control-Allow-Origin', '*');
                 $response->headers->set('Access-Control-Allow-Credentials', 'true');

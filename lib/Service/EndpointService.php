@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -9,7 +10,6 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Agit\ApiBundle\Api\Controller\AbstractEntityController;
 use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Agit\ApiBundle\Exception\UnauthorizedException;
@@ -18,7 +18,7 @@ use Agit\IntlBundle\Tool\Translate;
 use Agit\LoggingBundle\Service\Logger;
 use Agit\UserBundle\Service\UserService;
 use Doctrine\Common\Cache\Cache;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class EndpointService

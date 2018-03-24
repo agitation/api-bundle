@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /*
  * @package    agitation/api-bundle
  * @link       http://github.com/agitation/api-bundle
@@ -19,5 +20,5 @@ class CrossOrigin extends AbstractEndpointMeta
      *
      * NOTE: "some" is not yet supported and is treated like "none"
      */
-    protected $allow = "none";
+    protected $allow = 'none';
 }
