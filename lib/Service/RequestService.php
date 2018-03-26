@@ -13,9 +13,8 @@ namespace Agit\ApiBundle\Service;
 use Agit\ApiBundle\Api\Object\RequestObjectInterface;
 use Agit\ApiBundle\Exception\InvalidObjectException;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Tool\Translate;
 
-class RequestService extends AbstractObjectService
+class RequestService extends AbstractObjectService implements SimpleTypesInterface
 {
     public function createRequestObject($expectedObject, $rawRequest)
     {
@@ -25,7 +24,7 @@ class RequestService extends AbstractObjectService
         {
             if (! is_array($rawRequest))
             {
-                throw new InvalidObjectException(Translate::t('The request is expected to be an array.'));
+                throw new InvalidObjectException('The request is expected to be an array.');
             }
 
             $result = [];
@@ -37,22 +36,27 @@ class RequestService extends AbstractObjectService
         }
         else
         {
-            $meta = $this->objectMetaService->getObjectMetas($expectedObject);
-            $expectsScalar = $meta->get('Object')->get('scalar');
-
-            if ($expectsScalar)
+            if (in_array($expectedObject, self::SIMPLE_TYPES))
             {
-                if (! is_scalar($rawRequest))
+                if ($expectedObject === 'string' && !is_string($rawRequest))
                 {
-                    throw new InvalidObjectException(Translate::t('The request is expected to be a scalar value.'));
+                    throw new InvalidObjectException('The request is expected to be a string value.');
                 }
 
-                // we fill the scalar object, but only to see if it passes validation.
-                // then we return the bare request
-                $object = $this->createObject($expectedObject);
+                if ($expectedObject === 'integer' && !is_int($rawRequest))
+                {
+                    throw new InvalidObjectException('The request is expected to be a integer value.');
+                }
 
-                $object->set('_', $rawRequest);
-                $object->validate();
+                if ($expectedObject === 'boolean' && !is_bool($rawRequest))
+                {
+                    throw new InvalidObjectException('The request is expected to be a boolean value.');
+                }
+
+                if ($expectedObject === 'null' && $rawRequest !== null)
+                {
+                    throw new InvalidObjectException('The request is expected to be null.');
+                }
 
                 $result = $rawRequest;
             }

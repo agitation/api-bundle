@@ -83,7 +83,7 @@ class ObjectMetaService
     {
         if (! isset($this->objects[$objectName]))
         {
-            throw new InvalidObjectException("Invalid object: $objectName");
+            throw new InternalErrorException("Invalid object: $objectName");
         }
 
         if (! isset($this->objectMetaCache[$objectName]))

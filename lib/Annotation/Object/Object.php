@@ -16,19 +16,14 @@ namespace Agit\ApiBundle\Annotation\Object;
 class Object extends AbstractObjectMeta
 {
     /**
-     * @var the API namespace, e.g. `foobar.v1`
+     * @var string the API namespace, e.g. `foobar.v1`
      */
     public $namespace;
 
     /**
-     * @var full object name with namespace prefix, e.g. `foobar.v1/SomeObject`.
+     * @var string full object name with namespace prefix, e.g. `foobar.v1/SomeObject`.
      *
      * @internal do not set this field, it will be filled automatically
      */
     protected $objectName;
-
-    /**
-     * @var this is a scalar "object", i.e. a dummy object that carries a scalar value.
-     */
-    protected $scalar = false;
 }

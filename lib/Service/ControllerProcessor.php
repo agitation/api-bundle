@@ -131,7 +131,7 @@ class ControllerProcessor extends AbstractProcessor
         $capPrefix = $desc->get('cap');
         $entityMeta = $this->entityManager->getClassMetadata($desc->get('entity'));
         $entityIdFieldMeta = $entityMeta->getFieldMapping($entityMeta->getSingleIdentifierFieldName());
-        $idObject = ($entityIdFieldMeta['type'] === 'integer') ? 'common.v1/ScalarInteger' : 'common.v1/ScalarString';
+        $idObject = ($entityIdFieldMeta['type'] === 'integer') ? 'integer' : 'string';
         $crossOrigin = $desc->get('crossOrigin');
 
         $usedTraits = $this->getTraits($classRefl);
@@ -156,7 +156,7 @@ class ControllerProcessor extends AbstractProcessor
             elseif ($method === 'all')
             {
                 $endpointMeta['Security']->set('capability', $readCap);
-                $endpointMeta['Endpoint']->set('request', 'common.v1/ScalarNull');
+                $endpointMeta['Endpoint']->set('request', 'null');
                 $endpointMeta['Endpoint']->set('response', "{$controllerName}[]");
             }
             elseif ($method === 'search')
@@ -175,7 +175,7 @@ class ControllerProcessor extends AbstractProcessor
             {
                 $endpointMeta['Security']->set('capability', $writeCap);
                 $endpointMeta['Endpoint']->set('request', $idObject);
-                $endpointMeta['Endpoint']->set('response', 'common.v1/ScalarNull');
+                $endpointMeta['Endpoint']->set('response', 'null');
             }
 
             $this->addEntry("$controllerName.$method", [

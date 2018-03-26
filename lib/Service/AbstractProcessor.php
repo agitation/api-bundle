@@ -17,7 +17,7 @@ use Doctrine\Common\Cache\Cache;
 use ReflectionClass;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
-abstract class AbstractProcessor implements CacheWarmerInterface
+abstract class AbstractProcessor implements CacheWarmerInterface, SimpleTypesInterface
 {
     const API_SUBDIR = 'Api';
 
@@ -39,7 +39,6 @@ abstract class AbstractProcessor implements CacheWarmerInterface
             foreach ($this->classCollector->collect($path) as $class)
             {
                 $classRefl = new ReflectionClass($class);
-                // $desc = $this->annotationReader->getClassAnnotation($classRefl, $annotationClass);
 
                 $annotations = $this->getAllClassAnnotations($classRefl);
 
@@ -108,7 +107,9 @@ abstract class AbstractProcessor implements CacheWarmerInterface
 
     protected function fixObjectName($namespace, $name)
     {
-        return (preg_match("|^[a-z0-9]+\.v\d+/[a-z0-9\.]+(\[\])?$|i", $name))
+        $testName = (substr($name, -2) === '[]') ? substr($name, 0, -2) : $name;
+
+        return (preg_match("|^[a-z0-9]+\.v\d+/[a-z0-9\.]+$|i", $testName) || in_array($testName, self::SIMPLE_TYPES))
             ? $name
             : "$namespace/$name";
     }

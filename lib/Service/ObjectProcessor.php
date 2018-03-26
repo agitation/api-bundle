@@ -124,12 +124,6 @@ class ObjectProcessor extends AbstractProcessor
             $propMetaList[$propName] = $this->dissectMetaList($propMeta);
         }
 
-        // check scalar "objects"
-        if ($objectMeta['Object']->get('scalar') && (count($propMetaList) !== 1 || ! isset($propMetaList['_'])))
-        {
-            throw new InternalErrorException('Scalar objects must contain only a `_` property.');
-        }
-
         $this->addEntry($objectName, [
             'class' => $classRefl->getName(),
             'deps' => $this->dissectMeta($deps),
