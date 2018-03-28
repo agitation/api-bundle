@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Exception\FormatterNotFoundException;
-use Agit\IntlBundle\Tool\Translate;
 
 class FormatterService
 {
@@ -31,7 +30,7 @@ class FormatterService
     {
         if (! $this->formatExists($extension))
         {
-            throw new FormatterNotFoundException(Translate::t('The requested format is not supported.'));
+            throw new FormatterNotFoundException('The requested format is not supported.');
         }
 
         return $this->formatters[$extension];

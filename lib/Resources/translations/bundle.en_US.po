@@ -3,81 +3,51 @@ msgstr ""
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: @AgitApiBundle/Service/LogentryCategorySeed.php:20
-msgctxt "logging category"
-msgid "API"
+#: @AgitApiBundle/Service/EndpointService.php:153
+msgid "You must be logged in to perform this operation."
 msgstr ""
 
-#: @AgitApiBundle/Service/LogentryCategorySeed.php:21
-msgctxt "logging category"
-msgid "Entity API"
+#: @AgitApiBundle/Service/EndpointService.php:158
+msgid "You do not have sufficient permissions to perform this operation."
 msgstr ""
 
-#: @AgitApiBundle/Service/AbstractObjectService.php:61
-#: @AgitApiBundle/Service/AbstractObjectService.php:68
+#: @AgitApiBundle/Service/AbstractObjectService.php:58
+#: @AgitApiBundle/Service/AbstractObjectService.php:87
 #, php-format
 msgid "Invalid value for the `%s` property."
 msgstr ""
 
-#: @AgitApiBundle/Service/RequestService.php:25
-msgid "The request is expected to be an array."
-msgstr ""
-
-#: @AgitApiBundle/Service/RequestService.php:39
-msgid "The request is expected to be a scalar value."
-msgstr ""
-
-#: @AgitApiBundle/Service/FormatterService.php:32
-msgid "The requested format is not supported."
-msgstr ""
-
-#: @AgitApiBundle/Service/EndpointService.php:125
-msgid "You must be logged in to perform this operation."
-msgstr ""
-
-#: @AgitApiBundle/Service/EndpointService.php:129
-msgid "You do not have sufficient permissions to perform this operation."
-msgstr ""
-
-#: @AgitApiBundle/Annotation/Property/StringType.php:62
+#: @AgitApiBundle/Annotation/Property/StringType.php:71
 #, php-format
 msgid "The “%s” character must not be contained."
 msgstr ""
 
-#: @AgitApiBundle/Api/Object/AbstractObject.php:132
-#, php-format
-msgid "The `%s` object does not have a `%s` property."
+#: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:44
+msgid "This entity is already deactivated."
 msgstr ""
 
-#: @AgitApiBundle/Api/Object/AbstractObject.php:157
-msgid "Invalid value for “%s“: %s"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Period.php:41
-msgid "The start date must be earlier than or equal to the end date."
-msgstr ""
-
-#: @AgitApiBundle/Api/Controller/EntityCreateTrait.php:51
+#: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:54
 msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been created."
+msgid "%1$s “%2$s” has been deactivated."
 msgstr ""
 
-#: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:38
+#: @AgitApiBundle/Api/Controller/EntityUpdateTrait.php:57
 msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been removed permanently."
+msgid "%1$s “%2$s” has been updated."
 msgstr ""
 
-#: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:45
-msgid "This object cannot be removed, because there are other objects depending on it."
-msgstr ""
-
-#: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:39
+#: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:44
 msgid "This entity is not deactivated and hence cannot be activated."
 msgstr ""
 
-#: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:49
+#: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:54
 msgctxt "1: object type, 2: name"
 msgid "%1$s “%2$s” has been reactivated."
+msgstr ""
+
+#: @AgitApiBundle/Api/Controller/EntityCreateTrait.php:57
+msgctxt "1: object type, 2: name"
+msgid "%1$s “%2$s” has been created."
 msgstr ""
 
 #: @AgitApiBundle/Api/Controller/AbstractEntityController.php:133
@@ -85,106 +55,19 @@ msgstr ""
 msgid "The requested object with ID `%s` was not found."
 msgstr ""
 
-#: @AgitApiBundle/Api/Controller/EntityUpdateTrait.php:51
+#: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:41
 msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been updated."
+msgid "%1$s “%2$s” has been removed permanently."
 msgstr ""
 
-#: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:39
-msgid "This entity is already deactivated."
+#: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:51
+msgid "This object cannot be removed, because there are other objects depending on it."
 msgstr ""
 
-#: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:49
-msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been deactivated."
+#: @AgitApiBundle/Api/Object/Period.php:41
+msgid "The start date must be earlier than or equal to the end date."
 msgstr ""
 
-#: @AgitApiBundle/Api/Object/DeletedTrait.php
-#: @AgitApiBundle/Api/Object/SearchDeletedTrait.php
-msgid "Is deleted"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/ScalarInteger.php
-#: @AgitApiBundle/Api/Object/Response.php
-#: @AgitApiBundle/Api/Object/ScalarString.php
-msgid "Value"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Response.php
-msgid "Result list"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Location.php
-msgid "Latitude"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Location.php
-msgid "Longitude"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Money.php
-msgid "Amount"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Money.php
-msgid "Currency"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/SearchPaginationTrait.php
-msgid "Start offset"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/SearchPaginationTrait.php
-msgid "Items per page"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/NameTrait.php
-#: @AgitApiBundle/Api/Object/SearchNameTrait.php
-msgid "Name"
-msgstr "Name"
-
-#: @AgitApiBundle/Api/Object/DateTrait.php
-msgid "Day"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/TimeTrait.php
-msgid "Hour"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/TimeTrait.php
-msgid "Minute"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/IdTrait.php
-msgid "ID"
-msgstr "ID"
-
-#: @AgitApiBundle/Api/Object/Period.php
-msgctxt "date"
-msgid "From"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/Period.php
-msgctxt "date"
-msgid "Until"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/SearchPeriodTrait.php
-msgid "Search period"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/SearchOrderTrait.php
-msgid "Order by field"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/SearchOrderTrait.php
-msgid "Order direction"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/MonthTrait.php
-msgid "Month"
-msgstr ""
-
-#: @AgitApiBundle/Api/Object/MonthTrait.php
-msgid "Year"
+#: @AgitApiBundle/Api/Object/AbstractObject.php:170
+msgid "Invalid value for “%s“: %s"
 msgstr ""

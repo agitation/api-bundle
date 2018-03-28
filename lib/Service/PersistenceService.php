@@ -120,15 +120,18 @@ class PersistenceService
                     {
                         // ONE_TO_ONE
 
-                        $childEntity = $entityMeta->getFieldValue($entity, $prop);
+                        $child = $entityMeta->getFieldValue($entity, $prop);
 
-                        if (! $childEntity)
+                        if (! $child)
                         {
-                            $childEntity = $this->entityManager->getClassMetadata($targetEntity)->newInstance();
+                            $childMeta = $this->entityManager->getClassMetadata($targetEntity);
+                            $child = $childMeta->newInstance();
+                            $parentField = $this->getParentFieldName($childMeta, $entityClassName);
+                            $childMeta->setFieldValue($child, $parentField, $entity);
                         }
 
-                        $this->fillEntity($childEntity, $value);
-                        $entity->$setter($childEntity);
+                        $this->fillEntity($child, $value);
+                        $entity->$setter($child);
                     }
                 }
                 elseif ($mapping['type'] & ClassMetadataInfo::TO_MANY)
@@ -194,26 +197,9 @@ class PersistenceService
                             else
                             {
                                 $childMeta = $this->entityManager->getClassMetadata($targetEntity);
-                                $childClassName = $childMeta->getName();
-                                $child = new $childClassName();
-                                $parentField = null;
-
-                                foreach ($childMeta->getAssociationMappings() as $field => $childFieldMapping)
-                                {
-                                    if ($childFieldMapping['targetEntity'] === $entityClassName)
-                                    {
-                                        $parentField = $field;
-
-                                        break;
-                                    }
-                                }
-
-                                if (! $parentField)
-                                {
-                                    throw new InternalErrorException('Bad child entity: the child entity class is missing a relation to the parent.');
-                                }
-
-                                $childMeta->setFieldValue($child, $field, $entity);
+                                $child = $childMeta->newInstance();
+                                $parentField = $this->getParentFieldName($childMeta, $entityClassName);
+                                $childMeta->setFieldValue($child, $parentField, $entity);
                             }
 
                             $this->fillEntity($child, $childValue);
@@ -245,5 +231,27 @@ class PersistenceService
         {
             throw new PersistenceException((string) $errors);
         }
+    }
+
+    private function getParentFieldName($childMeta, $entityClassName)
+    {
+        $parentField = null;
+
+        foreach ($childMeta->getAssociationMappings() as $field => $childFieldMapping)
+        {
+            if ($childFieldMapping['targetEntity'] === $entityClassName)
+            {
+                $parentField = $field;
+
+                break;
+            }
+        }
+
+        if (! $parentField)
+        {
+            throw new InternalErrorException('Bad child entity: the child entity class is missing a relation to the parent.');
+        }
+
+        return $parentField;
     }
 }
