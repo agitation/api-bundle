@@ -15,13 +15,11 @@ use Agit\ApiBundle\Annotation\Property;
 trait MonthTrait
 {
     /**
-     * @Property\Name("Month")
      * @Property\IntegerType(minValue=1, maxValue=12)
      */
     public $month;
 
     /**
-     * @Property\Name("Year")
      * @Property\IntegerType(minValue=2000, maxValue=2100)
      */
     public $year;

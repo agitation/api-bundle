@@ -17,7 +17,6 @@ trait DateTrait
     use MonthTrait;
 
     /**
-     * @Property\Name("Day")
      * @Property\IntegerType(minValue=1, maxValue=31)
      */
     public $day;

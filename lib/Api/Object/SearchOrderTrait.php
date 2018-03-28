@@ -15,7 +15,6 @@ use Agit\ApiBundle\Annotation\Property;
 trait SearchOrderTrait
 {
     /**
-     * @Property\Name("Order by field")
      * @Property\StringType(nullable=true)
      *
      * The field by which the result set should be ordered.
@@ -23,7 +22,6 @@ trait SearchOrderTrait
     public $orderBy = 'id';
 
     /**
-     * @Property\Name("Order direction")
      * @Property\StringType(nullable=true, allowedValues={"asc", "desc"})
      *
      * The field by which the result set should be ordered.

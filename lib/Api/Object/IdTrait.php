@@ -15,7 +15,6 @@ use Agit\ApiBundle\Annotation\Property;
 trait IdTrait
 {
     /**
-     * @Property\Name("ID")
      * @Property\IntegerType(nullable=true)
      */
     public $id;

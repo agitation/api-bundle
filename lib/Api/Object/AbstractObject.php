@@ -31,12 +31,12 @@ abstract class AbstractObject implements ObjectInterface
     protected $propertyMetas = [];
 
     /**
-     * @var API object name with namespace prefix, e.g. `common.v1/SomeObject`
+     * @var string API object name with namespace prefix, e.g. `common.v1/SomeObject`
      */
     protected $objectName;
 
     /**
-     * @var API namespace
+     * @var string API namespace
      */
     protected $apiNamespace;
 
@@ -151,7 +151,7 @@ abstract class AbstractObject implements ObjectInterface
         if (! $this->has($key))
         {
             throw new InvalidObjectException(sprintf(
-                Translate::t('The `%s` object does not have a `%s` property.'),
+                'The `%s` object does not have a `%s` property.',
                 $this->getName(),
                 $key
             ));

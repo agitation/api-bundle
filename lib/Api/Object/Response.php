@@ -22,7 +22,6 @@ use Agit\ApiBundle\Annotation\Property;
 class Response extends AbstractResponseObject
 {
     /**
-     * @Property\Name("Value")
      * @Property\RawType
      *
      * The actual response object, as specified in the endpoint call.
@@ -30,7 +29,6 @@ class Response extends AbstractResponseObject
     protected $payload = null;
 
     /**
-     * @Property\Name("Result list")
      * @Property\RawType
      *
      * Ok, this one is a bit complicated: Tixys extracts objects with an ID from

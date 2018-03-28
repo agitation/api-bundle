@@ -21,13 +21,11 @@ use Agit\ApiBundle\Annotation\Property;
 class Money extends AbstractValueObject
 {
     /**
-     * @Property\Name("Amount")
      * @Property\FloatType
      */
     public $amount;
 
     /**
-     * @Property\Name("Currency")
      * @Property\StringType(minLength=3, maxLength=3)
      */
     public $currency;

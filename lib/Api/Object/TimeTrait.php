@@ -15,13 +15,11 @@ use Agit\ApiBundle\Annotation\Property;
 trait TimeTrait
 {
     /**
-     * @Property\Name("Hour")
      * @Property\IntegerType(minValue=0, maxValue=23)
      */
     public $hour;
 
     /**
-     * @Property\Name("Minute")
      * @Property\IntegerType(minValue=0, maxValue=59)
      */
     public $minute;

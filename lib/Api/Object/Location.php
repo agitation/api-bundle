@@ -19,13 +19,11 @@ use Agit\ApiBundle\Annotation\Property;
 class Location extends AbstractValueObject
 {
     /**
-     * @Property\Name("Latitude")
      * @Property\FloatType(minValue=-90, maxValue=90)
      */
     public $lat;
 
     /**
-     * @Property\Name("Longitude")
      * @Property\FloatType(minValue=-180, maxValue=180)
      */
     public $lon;

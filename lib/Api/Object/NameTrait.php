@@ -15,7 +15,6 @@ use Agit\ApiBundle\Annotation\Property;
 trait NameTrait
 {
     /**
-     * @Property\Name("Name")
      * @Property\StringType(minLength=1)
      */
     public $name;

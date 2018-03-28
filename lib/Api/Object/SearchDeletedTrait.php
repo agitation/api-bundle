@@ -15,7 +15,6 @@ use Agit\ApiBundle\Annotation\Property;
 trait SearchDeletedTrait
 {
     /**
-     * @Property\Name("Is deleted")
      * @Property\BooleanType(nullable=true)
      *
      * Whether or not to include deleted objects in a search.

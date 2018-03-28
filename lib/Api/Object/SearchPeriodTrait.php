@@ -15,7 +15,6 @@ use Agit\ApiBundle\Annotation\Property;
 trait SearchPeriodTrait
 {
     /**
-     * @Property\Name("Search period")
      * @Property\ObjectType(class="common.v1/Period", nullable=true)
      */
     public $period;

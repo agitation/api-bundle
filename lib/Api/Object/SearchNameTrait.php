@@ -15,7 +15,6 @@ use Agit\ApiBundle\Annotation\Property;
 trait SearchNameTrait
 {
     /**
-     * @Property\Name("Name")
      * @Property\StringType(nullable=true)
      */
     public $name;
