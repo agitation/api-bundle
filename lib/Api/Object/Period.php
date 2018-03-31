@@ -12,8 +12,7 @@ namespace Agit\ApiBundle\Api\Object;
 
 use Agit\ApiBundle\Annotation\Object;
 use Agit\ApiBundle\Annotation\Property;
-use Agit\ApiBundle\Exception\InvalidRangeException;
-use Agit\IntlBundle\Tool\Translate;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Object\Object(namespace="common.v1")
@@ -38,7 +37,7 @@ class Period extends AbstractValueObject
 
         if ($this->from->getDate()->getTimestamp() > $this->until->getDate()->getTimestamp())
         {
-            throw new InvalidRangeException(Translate::t('The start date must be earlier than or equal to the end date.'));
+            throw new BadRequestHttpException('The start date must be earlier than or equal to the end date.');
         }
     }
 }

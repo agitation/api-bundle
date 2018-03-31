@@ -14,7 +14,6 @@ use Agit\ApiBundle\Api\Object\AbstractEntityObject;
 use Agit\ApiBundle\Api\Object\AbstractRequestObject;
 use Agit\ApiBundle\Api\Object\AbstractValueObject;
 use Agit\ApiBundle\Api\Object\RequestObjectInterface;
-use Agit\ApiBundle\Exception\ObjectNotFoundException;
 use Agit\ApiBundle\Service\PersistenceService;
 use Agit\BaseBundle\Entity\IdentityInterface;
 use Agit\BaseBundle\Entity\NameInterface;
@@ -24,6 +23,8 @@ use Agit\LoggingBundle\Service\Logger;
 use Agit\MultilangBundle\Multilang;
 use Doctrine\ORM\EntityManagerInterface;
 use stdClass;
+
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Endpoint class providing CRUD operations for entities.
@@ -130,7 +131,7 @@ abstract class AbstractEntityController extends AbstractController
 
         if (! $entity)
         {
-            throw new ObjectNotFoundException(sprintf(Translate::t('The requested object with ID `%s` was not found.'), $id));
+            throw new NotFoundHttpException(sprintf(Translate::t('The requested object with ID `%s` was not found.'), $id));
         }
 
         return $entity;

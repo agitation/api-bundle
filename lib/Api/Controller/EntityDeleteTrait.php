@@ -10,12 +10,13 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Api\Controller;
 
-use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
 use Exception;
 use Psr\Log\LogLevel;
+
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 trait EntityDeleteTrait
 {
@@ -41,7 +42,7 @@ trait EntityDeleteTrait
 
             if ($entity->isDeleted())
             {
-                throw new BadRequestException(Translate::t('This entity is already deactivated.'));
+                throw new BadRequestHttpException(Translate::t('This entity is already deactivated.'));
             }
 
             $entity->setDeleted(true);

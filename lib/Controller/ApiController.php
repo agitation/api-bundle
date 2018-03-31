@@ -12,12 +12,13 @@ namespace Agit\ApiBundle\Controller;
 
 use Agit\ApiBundle\Event\ApiRequestErrorEvent;
 use Agit\ApiBundle\Event\ApiRequestSuccessEvent;
-use Agit\ApiBundle\Exception\InvalidEndpointException;
 use Exception;
 use Locale;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApiController extends Controller
 {
@@ -61,7 +62,7 @@ class ApiController extends Controller
 
                 if (! is_callable([$controller, $method]))
                 {
-                    throw new InvalidEndpointException("The `$endpointName` controller does not have a `$method` method.");
+                    throw new BadRequestHttpException("The `$endpointName` controller does not have a `$method` method.");
                 }
 
                 $resultData = $controller->$method($requestData);

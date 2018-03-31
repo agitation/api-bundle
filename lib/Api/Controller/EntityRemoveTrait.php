@@ -10,11 +10,12 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Api\Controller;
 
-use Agit\ApiBundle\Exception\BadRequestException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
 use Exception;
 use Psr\Log\LogLevel;
+
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 trait EntityRemoveTrait
 {
@@ -48,7 +49,7 @@ trait EntityRemoveTrait
         {
             $this->getEntityManager()->rollBack();
 
-            throw new BadRequestException(Translate::t('This object cannot be removed, because there are other objects depending on it.'));
+            throw new ConflictHttpException(Translate::t('This object cannot be removed, because there are other objects depending on it.'));
         }
     }
 }

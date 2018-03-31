@@ -11,8 +11,6 @@ declare(strict_types=1);
 namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Api\Controller\AbstractEntityController;
-use Agit\ApiBundle\Exception\InvalidEndpointException;
-use Agit\ApiBundle\Exception\UnauthorizedException;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\LoggingBundle\Service\Logger;
@@ -20,6 +18,8 @@ use Agit\UserBundle\Service\UserService;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class EndpointService
 {
@@ -81,7 +81,7 @@ class EndpointService
     {
         if (! isset($this->endpoints[$name]))
         {
-            throw new InvalidEndpointException("Invalid endpoint: $name");
+            throw new BadRequestHttpException("Invalid endpoint: $name");
         }
 
         $metaContainer = $this->getEndpointMetaContainer($name);
@@ -150,12 +150,12 @@ class EndpointService
 
             if (! $user)
             {
-                throw new UnauthorizedException(Translate::t('You must be logged in to perform this operation.'));
+                throw new UnauthorizedHttpException(Translate::t('You must be logged in to perform this operation.'));
             }
 
             if (! $user->hasCapability($reqCapibilty))
             {
-                throw new UnauthorizedException(Translate::t('You do not have sufficient permissions to perform this operation.'));
+                throw new UnauthorizedHttpException(Translate::t('You do not have sufficient permissions to perform this operation.'));
             }
         }
     }

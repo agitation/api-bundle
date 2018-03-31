@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\ApiBundle\Exception\FormatterNotFoundException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class FormatterService
 {
@@ -30,7 +30,7 @@ class FormatterService
     {
         if (! $this->formatExists($extension))
         {
-            throw new FormatterNotFoundException('The requested format is not supported.');
+            throw new BadRequestHttpException('The requested format is not supported.');
         }
 
         return $this->formatters[$extension];

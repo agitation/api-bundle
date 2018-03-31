@@ -46,11 +46,6 @@ services:
         arguments: [ "@agit.api.objectmeta", "%kernel.debug%" ]
         tags: [{ name: agit.api.formatter, extension: json }]
 
-    agit.api.jsonp_formatter:
-        class: Agit\ApiBundle\Service\JsonpFormatter
-        arguments: [ "@agit.api.objectmeta", "%kernel.debug%" ]
-        tags: [{ name: agit.api.formatter, extension: jsonp }]
-
     # various other services
 
     agit.api.cache:

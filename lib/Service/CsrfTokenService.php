@@ -10,9 +10,10 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Service;
 
-use Agit\ApiBundle\Exception\CsrfException;
 use Agit\BaseBundle\Tool\StringHelper;
 use Symfony\Component\HttpFoundation\Session\Session;
+
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CsrfTokenService
 {
@@ -45,7 +46,7 @@ class CsrfTokenService
 
         if (! $submittedToken || ! $correctCsrfToken || $submittedToken !== $correctCsrfToken)
         {
-            throw new CsrfException('The CSRF token is invalid.');
+            throw new BadRequestHttpException('The CSRF token is invalid.');
         }
     }
 }
