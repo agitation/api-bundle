@@ -10,9 +10,6 @@ declare(strict_types=1);
 
 namespace Agit\ApiBundle\Controller;
 
-use Agit\ApiBundle\Event\ApiRequestErrorEvent;
-use Agit\ApiBundle\Event\ApiRequestSuccessEvent;
-use Exception;
 use Locale;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,77 +28,47 @@ class ApiController extends Controller
         $response = new Response();
         $isDev = ($this->container->getParameter('kernel.environment') === 'dev');
 
-        // we must init the variables we’re using for the success and error events
-        $endpointName = $requestData = $resultData = null;
+        $this->setLocale();
+        $this->checkHeaderAuth($request);
 
-        try
+        $formatter = $this->container->get('agit.api.formatter')->getFormatter($_ext);
+        $endpointService = $this->container->get('agit.api.endpoint');
+        $endpointName = "$namespace/$class.$method";
+
+        $endpointMeta = $endpointService->getEndpointMetaContainer($endpointName);
+        $controller = $endpointService->createEndpointController($endpointName);
+        $crossOrigin = $endpointMeta->has('CrossOrigin') ? $endpointMeta->get('CrossOrigin')->get('allow') : 'none';
+        $requestObject = null;
+
+        if (! $isDev && $crossOrigin !== 'all')
         {
-            $this->setLocale();
-            $this->checkHeaderAuth($request);
-
-            $formatter = $this->container->get('agit.api.formatter')->getFormatter($_ext);
-            $endpointService = $this->container->get('agit.api.endpoint');
-            $endpointName = "$namespace/$class.$method";
-
-            $endpointMeta = $endpointService->getEndpointMetaContainer($endpointName);
-            $controller = $endpointService->createEndpointController($endpointName);
-            $crossOrigin = $endpointMeta->has('CrossOrigin') ? $endpointMeta->get('CrossOrigin')->get('allow') : 'none';
-            $requestObject = null;
-
-            if (! $isDev && $crossOrigin !== 'all')
-            {
-                $this->container->get('agit.api.csrf')->checkToken($this->getCsrfToken($request));
-            }
-
-            if ($request->getMethod() !== 'OPTIONS')
-            {
-                $requestData = $this->createRequestObject(
-                    $endpointMeta->get('Endpoint')->get('request'),
-                    (string)$request->get('request')
-                );
-
-                if (! is_callable([$controller, $method]))
-                {
-                    throw new BadRequestHttpException("The `$endpointName` controller does not have a `$method` method.");
-                }
-
-                $resultData = $controller->$method($requestData);
-                $response = $formatter->createResponse($request, $resultData);
-            }
-
-            if ($crossOrigin === 'all')
-            {
-                $response->headers->set('Access-Control-Allow-Origin', '*');
-                $response->headers->set('Access-Control-Allow-Credentials', 'true');
-            }
-
-            $response->headers->set('Cache-Control', 'no-cache, must-revalidate, max-age=0', true);
-            $response->headers->set('Pragma', 'no-store', true);
-
-            $eventDispatcher->dispatch('agit.api.request.success', new ApiRequestSuccessEvent(
-                $request,
-                $response,
-                $endpointName,
-                $requestData,
-                $resultData,
-                microtime(true) - $time,
-                memory_get_peak_usage(true) - $mem
-            ));
+            $this->container->get('agit.api.csrf')->checkToken($this->getCsrfToken($request));
         }
-        catch (Exception $e)
+
+        if ($request->getMethod() !== 'OPTIONS')
         {
-            $eventDispatcher->dispatch('agit.api.request.error', new ApiRequestErrorEvent(
-                $request,
-                $response,
-                $endpointName,
-                $requestData,
-                $e,
-                microtime(true) - $time,
-                memory_get_peak_usage(true) - $mem
-            ));
+            $requestData = $this->createRequestObject(
+                $endpointMeta->get('Endpoint')->get('request'),
+                (string)$request->get('request')
+            );
 
-            throw $e;
+            if (! is_callable([$controller, $method]))
+            {
+                throw new BadRequestHttpException("The `$endpointName` controller does not have a `$method` method.");
+            }
+
+            $resultData = $controller->$method($requestData);
+            $response = $formatter->createResponse($request, $resultData);
         }
+
+        if ($crossOrigin === 'all')
+        {
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+        }
+
+        $response->headers->set('Cache-Control', 'no-cache, must-revalidate, max-age=0', true);
+        $response->headers->set('Pragma', 'no-store', true);
 
         return $response;
     }
