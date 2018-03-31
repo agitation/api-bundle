@@ -26,39 +26,14 @@ msgstr "Das Zeichen „%s“ darf nicht enthalten sein."
 msgid "This entity is already deactivated."
 msgstr "Dieses Objekt ist bereits deaktiviert."
 
-#: @AgitApiBundle/Api/Controller/EntityDeleteTrait.php:54
-msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been deactivated."
-msgstr "%1$s „%2$s“ wurde deaktiviert."
-
-#: @AgitApiBundle/Api/Controller/EntityUpdateTrait.php:57
-msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been updated."
-msgstr "%1$s „%2$s“ wurde aktualisiert."
-
 #: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:44
 msgid "This entity is not deactivated and hence cannot be activated."
 msgstr "Dieses Objekt ist nicht deaktiviert und kann also nicht aktiviert werden."
-
-#: @AgitApiBundle/Api/Controller/EntityUndeleteTrait.php:54
-msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been reactivated."
-msgstr "%1$s „%2$s“ wurde wiederaktiviert."
-
-#: @AgitApiBundle/Api/Controller/EntityCreateTrait.php:57
-msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been created."
-msgstr "%1$s „%2$s“ wurde neu angelegt."
 
 #: @AgitApiBundle/Api/Controller/AbstractEntityController.php:133
 #, php-format
 msgid "The requested object with ID `%s` was not found."
 msgstr "Das gewünschte Objekt mit der ID `%s` wurde nicht gefunden."
-
-#: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:41
-msgctxt "1: object type, 2: name"
-msgid "%1$s “%2$s” has been removed permanently."
-msgstr "%1$s „%2$s“ wurde endgültig gelöscht."
 
 #: @AgitApiBundle/Api/Controller/EntityRemoveTrait.php:51
 msgid "This object cannot be removed, because there are other objects depending on it."
