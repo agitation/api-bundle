@@ -65,9 +65,3 @@ services:
         class: Agit\ApiBundle\Service\TwigExtension
         arguments:  [ "@agit.common.url", "@agit.api.csrf" ]
         tags: [{ name: twig.extension }]
-
-    # registration listener for translation catalogs
-    agit.api.bundle.translations:
-        class: Agit\ApiBundle\EventListener\TranslationsListener
-        arguments: [ "@kernel", "@agit.api.classcollector", "@annotation_reader" ]
-        tags: [{ name: kernel.event_listener, event: agit.intl.bundle.translations, method: onRegistration }]
