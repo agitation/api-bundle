@@ -18,4 +18,9 @@ trait IdTrait
      * @Property\IntegerType(nullable=true)
      */
     public $id;
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }
