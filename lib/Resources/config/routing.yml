@@ -1,5 +1,5 @@
 AgitApiBundle_call:
-    path: /{namespace}/{class}.{method}.{_ext}
+    path: /{namespace}/{class}.{method}
     defaults: { _controller : AgitApiBundle:Api:call, _format : txt } # *
     requirements:
         path: ".*"
