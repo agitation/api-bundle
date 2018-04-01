@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApiController extends Controller
 {
-    public function callAction(Request $request, $namespace, $class, $method, $_ext)
+    public function callAction(Request $request, $namespace, $class, $method)
     {
         $time = microtime(true);
         $mem = memory_get_peak_usage(true);
@@ -31,7 +31,6 @@ class ApiController extends Controller
         $this->setLocale();
         $this->checkHeaderAuth($request);
 
-        $formatter = $this->container->get('agit.api.formatter')->getFormatter($_ext);
         $endpointService = $this->container->get('agit.api.endpoint');
         $endpointName = "$namespace/$class.$method";
 
@@ -58,7 +57,7 @@ class ApiController extends Controller
             }
 
             $resultData = $controller->$method($requestData);
-            $response = $formatter->createResponse($request, $resultData);
+            $response = $this->container->get('agit.api.formatter')->createResponse($request, $resultData);
         }
 
         if ($crossOrigin === 'all')

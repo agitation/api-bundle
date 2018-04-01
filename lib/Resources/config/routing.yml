@@ -1,6 +1,6 @@
 AgitApiBundle_call:
     path: /{namespace}/{class}.{method}.{_ext}
-    defaults: { _controller : AgitApiBundle:Api:call, _ext : json, _format : txt } # *
+    defaults: { _controller : AgitApiBundle:Api:call, _format : txt } # *
     requirements:
         path: ".*"
     methods: [GET, POST, OPTIONS]
