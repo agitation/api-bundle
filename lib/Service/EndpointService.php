@@ -19,6 +19,7 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class EndpointService
@@ -109,7 +110,7 @@ class EndpointService
     {
         if (! isset($this->endpoints[$endpointName]))
         {
-            throw new InternalErrorException('This endpoint does not exist.');
+            throw new NotFoundHttpException('This endpoint does not exist.');
         }
 
         return $this->endpoints[$endpointName]['class'];
@@ -119,7 +120,7 @@ class EndpointService
     {
         if (! isset($this->endpoints[$name]))
         {
-            throw new InternalErrorException('This endpoint does not exist.');
+            throw new NotFoundHttpException('This endpoint does not exist.');
         }
 
         if (! isset($this->endpointMetas[$name]))
