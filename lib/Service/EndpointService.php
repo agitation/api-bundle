@@ -11,12 +11,12 @@ declare(strict_types=1);
 namespace Agit\ApiBundle\Service;
 
 use Agit\ApiBundle\Api\Controller\AbstractEntityController;
-use Agit\BaseBundle\Exception\InternalErrorException;
+
 use Agit\IntlBundle\Tool\Translate;
-use Agit\LoggingBundle\Service\Logger;
 use Agit\UserBundle\Service\UserService;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -35,11 +35,6 @@ class EndpointService
      * @var PersistenceService
      */
     protected $persistenceService;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
 
     /**
      * @var EntityManagerInterface
@@ -66,8 +61,7 @@ class EndpointService
         PersistenceService $persistenceService,
         EntityManagerInterface $entityManager,
         Factory $factory,
-        Logger $logger = null,
-        UserService $userService = null
+        UserService $userService
     ) {
         $this->endpoints = $cache->fetch('agit.api.endpoint') ?: [];
         $this->responseService = $responseService;
@@ -75,7 +69,6 @@ class EndpointService
         $this->entityManager = $entityManager;
         $this->factory = $factory;
         $this->userService = $userService;
-        $this->logger = $logger;
     }
 
     public function createEndpointController($name, Request $request = null)
@@ -95,7 +88,7 @@ class EndpointService
 
         if ($controller instanceof AbstractEntityController)
         {
-            $controller->initExtra($this->entityManager, $this->persistenceService, $this->logger);
+            $controller->initExtra($this->entityManager, $this->persistenceService);
         }
 
         return $controller;
@@ -137,24 +130,12 @@ class EndpointService
 
         if ($reqCapibilty === null)
         {
-            throw new InternalErrorException('The endpoint call must specify the required capabilities.');
+            throw new Exception('The endpoint call must specify the required capabilities.');
         }
 
         if ($reqCapibilty)
         {
-            if (! $this->userService)
-            {
-                throw new InternalErrorException('The `agitation/user` bundle must be loaded to support capability-aware endpoints.');
-            }
-
-            $user = $this->userService->getCurrentUser();
-
-            if (! $user)
-            {
-                throw new UnauthorizedHttpException(Translate::t('You must be logged in to perform this operation.'));
-            }
-
-            if (! $user->hasCapability($reqCapibilty))
+            if (! $this->userService->currentUserCan($reqCapibilty))
             {
                 throw new UnauthorizedHttpException(Translate::t('You do not have sufficient permissions to perform this operation.'));
             }

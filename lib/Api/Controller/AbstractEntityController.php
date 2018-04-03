@@ -19,7 +19,6 @@ use Agit\BaseBundle\Entity\IdentityInterface;
 use Agit\BaseBundle\Entity\NameInterface;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
-use Agit\LoggingBundle\Service\Logger;
 use Agit\MultilangBundle\Multilang;
 use Doctrine\ORM\EntityManagerInterface;
 use stdClass;
@@ -48,16 +47,10 @@ abstract class AbstractEntityController extends AbstractController
      */
     private $persistenceService;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    public function initExtra(EntityManagerInterface $entityManager, PersistenceService $persistenceService, Logger $logger)
+    public function initExtra(EntityManagerInterface $entityManager, PersistenceService $persistenceService)
     {
         $this->entityManager = $entityManager;
         $this->persistenceService = $persistenceService;
-        $this->logger = $logger;
     }
 
     protected function getPersistenceService() : PersistenceService
@@ -68,11 +61,6 @@ abstract class AbstractEntityController extends AbstractController
     protected function getEntityManager() : EntityManagerInterface
     {
         return $this->entityManager;
-    }
-
-    protected function getLogger() : Logger
-    {
-        return $this->logger;
     }
 
     /**

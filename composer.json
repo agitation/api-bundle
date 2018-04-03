@@ -5,8 +5,7 @@
         "agitation/base-bundle": "~1.0",
         "agitation/intl-bundle": "~1.0",
         "agitation/seed-bundle": "~1.0",
-        "agitation/validation-bundle": "~1.1",
-        "agitation/logging-bundle": "~1.0"
+        "agitation/validation-bundle": "~1.1"
     },
     "suggest": {
         "agitation/user-bundle": "Required to check for user capabilities. Without it, all calls requiring a user capability will fail."

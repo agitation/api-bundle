@@ -1,7 +1,7 @@
 services:
     agit.api.endpoint:
         class: Agit\ApiBundle\Service\EndpointService
-        arguments: [ "@agit.api.cache", "@agit.api.response", "@agit.api.persistence", "@doctrine.orm.entity_manager", "@agit.api.factory", "@?agit.logger", "@?agit.user" ]
+        arguments: [ "@agit.api.cache", "@agit.api.response", "@agit.api.persistence", "@doctrine.orm.entity_manager", "@agit.api.factory", "@agit.user" ]
 
     agit.api.objectmeta:
         class: Agit\ApiBundle\Service\ObjectMetaService

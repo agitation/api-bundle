@@ -13,7 +13,6 @@ namespace Agit\ApiBundle\Api\Controller;
 use Agit\ApiBundle\Api\Object\AbstractEntityObject;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Exception;
-use Psr\Log\LogLevel;
 
 trait EntityUpdateTrait
 {
@@ -49,13 +48,6 @@ trait EntityUpdateTrait
     {
         $entity = $this->retrieveEntity($this->getEntityClass(), $request->get('id'));
         $this->saveEntity($entity, $request);
-
-        $this->getLogger()->log(
-            LogLevel::NOTICE,
-            'agit.api.entity',
-            sprintf('%1$s “%2$s” has been updated.', $this->getEntityClassName($entity), $this->getEntityName($entity)),
-            true
-        );
 
         return $entity;
     }

@@ -12,9 +12,7 @@ namespace Agit\ApiBundle\Api\Controller;
 
 use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Exception\InternalErrorException;
-use Agit\IntlBundle\Tool\Translate;
 use Exception;
-use Psr\Log\LogLevel;
 
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -42,19 +40,12 @@ trait EntityUndeleteTrait
 
             if (! $entity->isDeleted())
             {
-                throw new BadRequestHttpException(Translate::t('This entity is not deactivated and hence cannot be activated.'));
+                throw new BadRequestHttpException('This entity is not deactivated and hence cannot be activated.');
             }
 
             $entity->setDeleted(false);
             $this->getEntityManager()->persist($entity);
             $this->getEntityManager()->flush();
-
-            $this->getLogger()->log(
-                LogLevel::NOTICE,
-                'agit.api.entity',
-                sprintf('%1$s “%2$s” has been reactivated.', $this->getEntityClassName($entity), $this->getEntityName($entity)),
-                true
-            );
 
             $this->getEntityManager()->commit();
         }

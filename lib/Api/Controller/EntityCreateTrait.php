@@ -13,7 +13,6 @@ namespace Agit\ApiBundle\Api\Controller;
 use Agit\ApiBundle\Api\Object\AbstractEntityObject;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Exception;
-use Psr\Log\LogLevel;
 
 trait EntityCreateTrait
 {
@@ -49,13 +48,6 @@ trait EntityCreateTrait
     {
         $className = $this->getEntityManager()->getClassMetadata($this->getEntityClass())->getName();
         $entity = $this->saveEntity(new $className(), $request);
-
-        $this->getLogger()->log(
-            LogLevel::NOTICE,
-            'agit.api.entity',
-            sprintf('%1$s “%2$s” has been created.', $this->getEntityClassName($entity), $this->getEntityName($entity)),
-            true
-        );
 
         return $entity;
     }

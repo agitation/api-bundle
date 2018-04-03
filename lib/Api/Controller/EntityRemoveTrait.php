@@ -13,7 +13,6 @@ namespace Agit\ApiBundle\Api\Controller;
 use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
 use Exception;
-use Psr\Log\LogLevel;
 
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
@@ -35,13 +34,6 @@ trait EntityRemoveTrait
 
             $this->getEntityManager()->remove($entity);
             $this->getEntityManager()->flush();
-
-            $this->getLogger()->log(
-                LogLevel::NOTICE,
-                'agit.api.entity',
-                sprintf('%1$s “%2$s” has been removed permanently.', $this->getEntityClassName($entity), $this->getEntityName($entity)),
-                true
-            );
 
             $this->getEntityManager()->commit();
         }
