@@ -15,11 +15,7 @@ use Agit\ApiBundle\Api\Object\AbstractRequestObject;
 use Agit\ApiBundle\Api\Object\AbstractValueObject;
 use Agit\ApiBundle\Api\Object\RequestObjectInterface;
 use Agit\ApiBundle\Service\PersistenceService;
-use Agit\BaseBundle\Entity\IdentityInterface;
-use Agit\BaseBundle\Entity\NameInterface;
-use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
-use Agit\MultilangBundle\Multilang;
 use Doctrine\ORM\EntityManagerInterface;
 use stdClass;
 
@@ -130,34 +126,6 @@ abstract class AbstractEntityController extends AbstractController
         $this->persistenceService->saveEntity($entity, $this->getPersistableData($request));
 
         return $entity;
-    }
-
-    protected function getEntityName($entity)
-    {
-        $name = null;
-
-        if ($entity instanceof NameInterface)
-        {
-            $name = $entity->getName();
-
-            if (class_exists("Agit\MultilangBundle\Multilang"))
-            {
-                $name = Multilang::u($name);
-            }
-        }
-        elseif ($entity instanceof IdentityInterface)
-        {
-            $name = $entity->getId();
-        }
-
-        return $name;
-    }
-
-    protected function getEntityClassName($entity)
-    {
-        return $entity instanceof IdentityInterface
-            ? $entity->getEntityClassName()
-            : StringHelper::getBareClassName($entity);
     }
 
     protected function getPersistableData($input)
